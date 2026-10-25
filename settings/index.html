@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <style>
+    label { display: block; margin-top: 12px; font-weight: 600; }
+    input, select { width: 100%; box-sizing: border-box; padding: 6px; }
+    .hint { font-size: 13px; opacity: .7; }
+    button { margin-top: 16px; margin-right: 8px; }
+    #status { margin: 12px 0; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Foreldrestyring</h1>
+  <p class="hint">
+    På TV-en må «LG Connect Apps» og «Slå på via Wi-Fi/mobil» (Wake-on-LAN) være slått på.
+    Gi TV-en fast IP-adresse i routeren. Trykk «Tillat» på TV-en med fjernkontrollen første gang du kobler til.
+  </p>
+  <div id="status">…</div>
+
+  <label for="host">TV-ens IP-adresse</label>
+  <input id="host" placeholder="192.168.1.50">
+  <label for="mac">TV-ens MAC-adresse (for å slå på TV-en)</label>
+  <input id="mac" placeholder="AA:BB:CC:DD:EE:FF">
+  <label for="weekday">Kvote hverdager (minutter)</label>
+  <input id="weekday" type="number" min="0">
+  <label for="weekend">Kvote lørdag og søndag (minutter)</label>
+  <input id="weekend" type="number" min="0">
+
+  <label for="weekstart">Uka begynner på</label>
+  <select id="weekstart">
+    <option value="1">Mandag</option><option value="2">Tirsdag</option><option value="3">Onsdag</option>
+    <option value="4">Torsdag</option><option value="5">Fredag</option><option value="6">Lørdag</option>
+    <option value="0">Søndag</option>
+  </select>
+
+  <button class="hy-button-primary" id="save">Lagre og koble til</button>
+  <button id="wake">Slå på TV-en</button>
+
+  <script>
+    function onHomeyReady(Homey) {
+      var $ = function (id) { return document.getElementById(id); };
+      var connText = { unconfigured: 'TV ikke satt opp', connecting: 'Kobler til …', prompt: 'Trykk «Tillat» på TV-en',
+        connected: 'Tilkoblet', offline: 'TV utilgjengelig' };
+      var filled = false;
+
+      function render(s) {
+        $('status').textContent = connText[s.connection];
+        if (!filled) {
+          filled = true;
+          $('host').value = s.settings.host;
+          $('mac').value = s.settings.mac;
+          $('weekday').value = s.settings.weekdayMinutes;
+          $('weekend').value = s.settings.weekendMinutes;
+          $('weekstart').value = s.settings.weekStartDay;
+        }
+      }
+      function refresh() { Homey.api('GET', '/status', null, function (err, s) { if (!err) render(s); }); }
+
+      $('save').addEventListener('click', function () {
+        Homey.api('POST', '/configure', {
+          host: $('host').value, mac: $('mac').value,
+          weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value, weekStartDay: $('weekstart').value,
+        }, function (err, s) { if (err) Homey.alert(err.message); else render(s); });
+      });
+      $('wake').addEventListener('click', function () {
+        Homey.api('POST', '/wake', null, function (err) { if (err) Homey.alert(err.message); });
+      });
+
+      refresh();
+      setInterval(refresh, 3000);
+      Homey.ready();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "id": "no.salhus.foreldrestyring",
+  "version": "0.1.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Parental TV Quota",
+    "no": "Foreldrestyring"
+  },
+  "description": {
+    "en": "Daily time quota for an LG webOS TV, controlled from your phone.",
+    "no": "Daglig tidskvote for LG webOS-TV, styrt fra telefonen."
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "author": {
+    "name": "Erik Salhus"
+  },
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png"
+  },
+  "api": {
+    "getStatus": {
+      "method": "GET",
+      "path": "/status"
+    },
+    "setChildMode": {
+      "method": "POST",
+      "path": "/child-mode"
+    },
+    "addExtraTime": {
+      "method": "POST",
+      "path": "/extra-time"
+    },
+    "configure": {
+      "method": "POST",
+      "path": "/configure"
+    },
+    "wakeTv": {
+      "method": "POST",
+      "path": "/wake"
+    },
+    "resetToday": {
+      "method": "POST",
+      "path": "/reset-today"
+    }
+  },
+  "brandColor": "#2B6CB0"
+}

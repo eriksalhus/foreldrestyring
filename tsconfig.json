@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "node16",
+    "moduleResolution": "node16",
+    "outDir": ".homeybuild",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node", "homey"]
+  },
+  "include": ["app.ts", "lib/**/*.ts"],
+  "exclude": ["node_modules", ".homeybuild", "tests"]
+}

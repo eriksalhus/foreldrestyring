@@ -1,0 +1,25 @@
+{
+  "name": {
+    "en": "Child mode",
+    "no": "Barnemodus"
+  },
+  "settings": [],
+  "api": {
+    "getStatus": {
+      "method": "GET",
+      "path": "/status"
+    },
+    "setChildMode": {
+      "method": "POST",
+      "path": "/child-mode"
+    },
+    "addExtraTime": {
+      "method": "POST",
+      "path": "/extra-time"
+    },
+    "resetToday": {
+      "method": "POST",
+      "path": "/reset-today"
+    }
+  }
+}

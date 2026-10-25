@@ -1,0 +1,20 @@
+{
+  "name": "foreldrestyring",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Telefonstyrt tidskvote for LG webOS-TV, som Homey Pro-app",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "lgtv2": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2"
+  }
+}
