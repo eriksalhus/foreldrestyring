@@ -7,7 +7,7 @@
     "invalidMinutes": "Nombre de minutes invalide"
   },
   "settings": {
-    "title": "Temps TV des enfants",
+    "title": "Contrôle parental TV",
     "hint": "Sur la télévision, activez « LG Connect Apps » et « Allumer via Wi-Fi » (Wake-on-LAN). Attribuez une adresse IP fixe à la télévision dans votre routeur. Lors de la première connexion, appuyez sur « Autoriser » sur la télévision avec la télécommande.",
     "tvIp": "Adresse IP de la télévision",
     "tvMac": "Adresse MAC de la télévision (pour l’allumer)",

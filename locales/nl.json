@@ -7,7 +7,7 @@
     "invalidMinutes": "Ongeldig aantal minuten"
   },
   "settings": {
-    "title": "Tv-tijd voor kinderen",
+    "title": "Tv-tijdbeheer",
     "hint": "Zet op de tv “LG Connect Apps” en “Inschakelen via Wi-Fi” (Wake-on-LAN) aan. Geef de tv een vast IP-adres in je router. Druk bij de eerste verbinding op “Toestaan” op de tv met de afstandsbediening.",
     "tvIp": "IP-adres van de tv",
     "tvMac": "MAC-adres van de tv (om de tv in te schakelen)",

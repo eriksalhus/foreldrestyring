@@ -1,4 +1,4 @@
-# Foreldrestyring
+# TV Parental Control (TV-foreldrestyring)
 
 Homey Pro-app som gir en LG webOS-TV en daglig tidskvote, styrt fra Homey-appen. Språket i prosjektet er definert i [GLOSSARY.md](GLOSSARY.md), og de viktigste designvalgene står i [docs/adr](docs/adr).
 

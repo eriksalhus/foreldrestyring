@@ -7,7 +7,7 @@
     "invalidMinutes": "Número de minutos no válido"
   },
   "settings": {
-    "title": "Tiempo de TV infantil",
+    "title": "Control parental TV",
     "hint": "En el televisor, activa “LG Connect Apps” y “Encender mediante Wi-Fi” (Wake-on-LAN). Asigna una dirección IP fija al televisor en tu router. La primera vez que te conectes, pulsa “Permitir” en el televisor con el mando.",
     "tvIp": "Dirección IP del televisor",
     "tvMac": "Dirección MAC del televisor (para encenderlo)",

@@ -7,7 +7,7 @@
     "invalidMinutes": "Ugyldig antall minutter"
   },
   "settings": {
-    "title": "Barne-TV-tid",
+    "title": "TV-foreldrestyring",
     "hint": "På TV-en må «LG Connect Apps» og «Slå på via Wi-Fi/mobil» (Wake-on-LAN) være slått på. Gi TV-en fast IP-adresse i routeren. Trykk «Tillat» på TV-en med fjernkontrollen første gang du kobler til.",
     "tvIp": "TV-ens IP-adresse",
     "tvMac": "TV-ens MAC-adresse (for å slå på TV-en)",

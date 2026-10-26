@@ -7,7 +7,7 @@
     "invalidMinutes": "Ungültige Minutenzahl"
   },
   "settings": {
-    "title": "Fernsehzeit für Kinder",
+    "title": "TV-Zeitkontrolle",
     "hint": "Aktiviere am Fernseher „LG Connect Apps“ und „Über WLAN einschalten“ (Wake-on-LAN). Vergib dem Fernseher im Router eine feste IP-Adresse. Bestätige beim ersten Verbinden mit der Fernbedienung „Zulassen“ am Fernseher.",
     "tvIp": "IP-Adresse des Fernsehers",
     "tvMac": "MAC-Adresse des Fernsehers (zum Einschalten)",
