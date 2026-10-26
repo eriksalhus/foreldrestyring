@@ -7,12 +7,26 @@
     "local"
   ],
   "name": {
-    "en": "Parental TV Quota",
-    "no": "Foreldrestyring"
+    "en": "Kids TV Time",
+    "no": "Barne-TV-tid",
+    "nl": "Tv-tijd voor kinderen",
+    "de": "Fernsehzeit für Kinder",
+    "sv": "TV-tid för barn",
+    "da": "TV-tid til børn",
+    "fr": "Temps TV des enfants",
+    "it": "Tempo TV dei bambini",
+    "es": "Tiempo de TV infantil"
   },
   "description": {
-    "en": "Daily time quota for an LG webOS TV, controlled from your phone.",
-    "no": "Daglig tidskvote for LG webOS-TV, styrt fra telefonen."
+    "en": "Set a daily TV time limit for your kids from your phone.",
+    "no": "Sett en daglig TV-grense for barna fra telefonen.",
+    "nl": "Stel vanaf je telefoon een dagelijkse tv-limiet voor je kinderen in.",
+    "de": "Lege vom Smartphone aus ein tägliches Fernsehlimit für deine Kinder fest.",
+    "sv": "Sätt en daglig TV-gräns för barnen från mobilen.",
+    "da": "Sæt en daglig tv-grænse for børnene fra din telefon.",
+    "fr": "Fixez depuis votre téléphone une limite quotidienne de télé pour vos enfants.",
+    "it": "Imposta dal telefono un limite giornaliero di TV per i tuoi figli.",
+    "es": "Fija desde tu móvil un límite diario de televisión para tus hijos."
   },
   "category": [
     "tools"

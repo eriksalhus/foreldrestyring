@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "Je hebt nog __minutes__ min over",
+    "timeUp": "De tv-tijd is op"
+  },
+  "error": {
+    "invalidMinutes": "Ongeldig aantal minuten"
+  },
+  "settings": {
+    "title": "Tv-tijd voor kinderen",
+    "hint": "Zet op de tv “LG Connect Apps” en “Inschakelen via Wi-Fi” (Wake-on-LAN) aan. Geef de tv een vast IP-adres in je router. Druk bij de eerste verbinding op “Toestaan” op de tv met de afstandsbediening.",
+    "tvIp": "IP-adres van de tv",
+    "tvMac": "MAC-adres van de tv (om de tv in te schakelen)",
+    "weekdayQuota": "Limiet op weekdagen (minuten)",
+    "weekendQuota": "Limiet op zaterdag en zondag (minuten)",
+    "weekStart": "Begin van de week",
+    "day": {
+      "d1": "Maandag",
+      "d2": "Dinsdag",
+      "d3": "Woensdag",
+      "d4": "Donderdag",
+      "d5": "Vrijdag",
+      "d6": "Zaterdag",
+      "d0": "Zondag"
+    },
+    "save": "Opslaan en verbinden",
+    "wake": "Tv inschakelen",
+    "status": {
+      "unconfigured": "Tv niet ingesteld",
+      "connecting": "Verbinden …",
+      "prompt": "Druk op “Toestaan” op de tv",
+      "connected": "Verbonden",
+      "offline": "Tv niet beschikbaar"
+    }
+  },
+  "widget": {
+    "title": "Kindermodus",
+    "stateOn": "Aan",
+    "stateLocked": "Aan · vergrendeld",
+    "stateOff": "Uit · geen telling of vergrendeling",
+    "minutesLeft": "nog __minutes__ min",
+    "locked": "Vergrendeld",
+    "extraTime": "Extra tijd geven",
+    "today": "Vandaag",
+    "thisWeek": "Deze week",
+    "minUsed": "min gebruikt",
+    "ofTotal": "van __total__ min",
+    "inclExtra": "incl. __extra__ extra",
+    "connUnconfigured": "Niet ingesteld",
+    "connNotConnected": "Niet verbonden",
+    "connPrompt": "Druk op “Toestaan” op tv",
+    "connConnected": "Verbonden",
+    "tvOn": "Tv aan",
+    "tvOff": "Tv uit",
+    "reset": "Resetten",
+    "resetTitle": "Tijd en extra tijd van vandaag resetten",
+    "tapAgain": "Tik nogmaals",
+    "error": "Fout"
+  }
+}

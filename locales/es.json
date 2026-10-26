@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "Te quedan __minutes__ min",
+    "timeUp": "Se acabó el tiempo de TV"
+  },
+  "error": {
+    "invalidMinutes": "Número de minutos no válido"
+  },
+  "settings": {
+    "title": "Tiempo de TV infantil",
+    "hint": "En el televisor, activa “LG Connect Apps” y “Encender mediante Wi-Fi” (Wake-on-LAN). Asigna una dirección IP fija al televisor en tu router. La primera vez que te conectes, pulsa “Permitir” en el televisor con el mando.",
+    "tvIp": "Dirección IP del televisor",
+    "tvMac": "Dirección MAC del televisor (para encenderlo)",
+    "weekdayQuota": "Cuota entre semana (minutos)",
+    "weekendQuota": "Cuota sábado y domingo (minutos)",
+    "weekStart": "Inicio de la semana",
+    "day": {
+      "d1": "Lunes",
+      "d2": "Martes",
+      "d3": "Miércoles",
+      "d4": "Jueves",
+      "d5": "Viernes",
+      "d6": "Sábado",
+      "d0": "Domingo"
+    },
+    "save": "Guardar y conectar",
+    "wake": "Encender el televisor",
+    "status": {
+      "unconfigured": "Televisor no configurado",
+      "connecting": "Conectando …",
+      "prompt": "Pulsa “Permitir” en el televisor",
+      "connected": "Conectado",
+      "offline": "Televisor no disponible"
+    }
+  },
+  "widget": {
+    "title": "Modo infantil",
+    "stateOn": "Activado",
+    "stateLocked": "Activado · bloqueado",
+    "stateOff": "Desactivado · sin recuento ni bloqueo",
+    "minutesLeft": "quedan __minutes__ min",
+    "locked": "Bloqueado",
+    "extraTime": "Dar tiempo extra",
+    "today": "Hoy",
+    "thisWeek": "Esta semana",
+    "minUsed": "min usados",
+    "ofTotal": "de __total__ min",
+    "inclExtra": "incl. __extra__ extra",
+    "connUnconfigured": "No configurado",
+    "connNotConnected": "No conectado",
+    "connPrompt": "Pulsa “Permitir” en la TV",
+    "connConnected": "Conectado",
+    "tvOn": "TV encendida",
+    "tvOff": "TV apagada",
+    "reset": "Restablecer",
+    "resetTitle": "Restablecer el tiempo y el tiempo extra de hoy",
+    "tapAgain": "Toca otra vez",
+    "error": "Error"
+  }
+}

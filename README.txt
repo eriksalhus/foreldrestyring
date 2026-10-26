@@ -1,0 +1,3 @@
+Give your kids a daily TV time quota that you control from your phone. When Child mode is on, the app counts how long your LG webOS TV is switched on. When the quota is used up, the TV is switched off and stays locked until you give extra time or turn Child mode off.
+
+The app talks directly to your TV over your home network. A widget for your Homey dashboard shows the time left and lets both parents turn Child mode on or off, give extra time and see how much time has been used today and this week. Anyone can still switch the TV on with the remote, but while it is locked it is switched off again within seconds. Child mode is switched off automatically when a new day starts at 05:00.

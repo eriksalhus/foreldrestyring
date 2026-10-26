@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "Du har __minutes__ min kvar",
+    "timeUp": "TV-tiden är slut"
+  },
+  "error": {
+    "invalidMinutes": "Ogiltigt antal minuter"
+  },
+  "settings": {
+    "title": "TV-tid för barn",
+    "hint": "Slå på ”LG Connect Apps” och ”Slå på via Wi-Fi” (Wake-on-LAN) i TV:n. Ge TV:n en fast IP-adress i routern. Första gången du ansluter trycker du på ”Tillåt” på TV:n med fjärrkontrollen.",
+    "tvIp": "TV:ns IP-adress",
+    "tvMac": "TV:ns MAC-adress (för att slå på TV:n)",
+    "weekdayQuota": "Kvot på vardagar (minuter)",
+    "weekendQuota": "Kvot på lördag och söndag (minuter)",
+    "weekStart": "Veckan börjar",
+    "day": {
+      "d1": "Måndag",
+      "d2": "Tisdag",
+      "d3": "Onsdag",
+      "d4": "Torsdag",
+      "d5": "Fredag",
+      "d6": "Lördag",
+      "d0": "Söndag"
+    },
+    "save": "Spara och anslut",
+    "wake": "Slå på TV:n",
+    "status": {
+      "unconfigured": "TV:n är inte konfigurerad",
+      "connecting": "Ansluter …",
+      "prompt": "Tryck på ”Tillåt” på TV:n",
+      "connected": "Ansluten",
+      "offline": "TV:n är inte tillgänglig"
+    }
+  },
+  "widget": {
+    "title": "Barnläge",
+    "stateOn": "På",
+    "stateLocked": "På · låst",
+    "stateOff": "Av · ingen räkning eller lås",
+    "minutesLeft": "__minutes__ min kvar",
+    "locked": "Låst",
+    "extraTime": "Ge extra tid",
+    "today": "Idag",
+    "thisWeek": "Denna vecka",
+    "minUsed": "min använt",
+    "ofTotal": "av __total__ min",
+    "inclExtra": "inkl. __extra__ extra",
+    "connUnconfigured": "Inte konfigurerad",
+    "connNotConnected": "Inte ansluten",
+    "connPrompt": "Tryck ”Tillåt” på TV",
+    "connConnected": "Ansluten",
+    "tvOn": "TV på",
+    "tvOff": "TV av",
+    "reset": "Nollställ",
+    "resetTitle": "Nollställ dagens tid och extra tid",
+    "tapAgain": "Tryck igen",
+    "error": "Fel"
+  }
+}

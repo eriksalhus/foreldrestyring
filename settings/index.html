@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="no">
+<html>
 <head>
   <meta charset="utf-8">
   <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
@@ -12,41 +12,42 @@
   </style>
 </head>
 <body>
-  <h1>Foreldrestyring</h1>
-  <p class="hint">
-    På TV-en må «LG Connect Apps» og «Slå på via Wi-Fi/mobil» (Wake-on-LAN) være slått på.
-    Gi TV-en fast IP-adresse i routeren. Trykk «Tillat» på TV-en med fjernkontrollen første gang du kobler til.
-  </p>
+  <h1 data-i18n="settings.title"></h1>
+  <p class="hint" data-i18n="settings.hint"></p>
   <div id="status">…</div>
 
-  <label for="host">TV-ens IP-adresse</label>
+  <label for="host" data-i18n="settings.tvIp"></label>
   <input id="host" placeholder="192.168.1.50">
-  <label for="mac">TV-ens MAC-adresse (for å slå på TV-en)</label>
+  <label for="mac" data-i18n="settings.tvMac"></label>
   <input id="mac" placeholder="AA:BB:CC:DD:EE:FF">
-  <label for="weekday">Kvote hverdager (minutter)</label>
+  <label for="weekday" data-i18n="settings.weekdayQuota"></label>
   <input id="weekday" type="number" min="0">
-  <label for="weekend">Kvote lørdag og søndag (minutter)</label>
+  <label for="weekend" data-i18n="settings.weekendQuota"></label>
   <input id="weekend" type="number" min="0">
 
-  <label for="weekstart">Uka begynner på</label>
+  <label for="weekstart" data-i18n="settings.weekStart"></label>
   <select id="weekstart">
-    <option value="1">Mandag</option><option value="2">Tirsdag</option><option value="3">Onsdag</option>
-    <option value="4">Torsdag</option><option value="5">Fredag</option><option value="6">Lørdag</option>
-    <option value="0">Søndag</option>
+    <option value="1" data-i18n="settings.day.d1"></option>
+    <option value="2" data-i18n="settings.day.d2"></option>
+    <option value="3" data-i18n="settings.day.d3"></option>
+    <option value="4" data-i18n="settings.day.d4"></option>
+    <option value="5" data-i18n="settings.day.d5"></option>
+    <option value="6" data-i18n="settings.day.d6"></option>
+    <option value="0" data-i18n="settings.day.d0"></option>
   </select>
 
-  <button class="hy-button-primary" id="save">Lagre og koble til</button>
-  <button id="wake">Slå på TV-en</button>
+  <button class="hy-button-primary" id="save" data-i18n="settings.save"></button>
+  <button id="wake" data-i18n="settings.wake"></button>
 
   <script>
     function onHomeyReady(Homey) {
       var $ = function (id) { return document.getElementById(id); };
-      var connText = { unconfigured: 'TV ikke satt opp', connecting: 'Kobler til …', prompt: 'Trykk «Tillat» på TV-en',
-        connected: 'Tilkoblet', offline: 'TV utilgjengelig' };
+      var statusKey = { unconfigured: 'unconfigured', connecting: 'connecting', prompt: 'prompt',
+        connected: 'connected', offline: 'offline' };
       var filled = false;
 
       function render(s) {
-        $('status').textContent = connText[s.connection];
+        $('status').textContent = Homey.__('settings.status.' + statusKey[s.connection]);
         if (!filled) {
           filled = true;
           $('host').value = s.settings.host;

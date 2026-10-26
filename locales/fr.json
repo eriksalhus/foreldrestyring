@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "Il te reste __minutes__ min",
+    "timeUp": "Le temps de télé est écoulé"
+  },
+  "error": {
+    "invalidMinutes": "Nombre de minutes invalide"
+  },
+  "settings": {
+    "title": "Temps TV des enfants",
+    "hint": "Sur la télévision, activez « LG Connect Apps » et « Allumer via Wi-Fi » (Wake-on-LAN). Attribuez une adresse IP fixe à la télévision dans votre routeur. Lors de la première connexion, appuyez sur « Autoriser » sur la télévision avec la télécommande.",
+    "tvIp": "Adresse IP de la télévision",
+    "tvMac": "Adresse MAC de la télévision (pour l’allumer)",
+    "weekdayQuota": "Quota en semaine (minutes)",
+    "weekendQuota": "Quota le samedi et le dimanche (minutes)",
+    "weekStart": "Début de la semaine",
+    "day": {
+      "d1": "Lundi",
+      "d2": "Mardi",
+      "d3": "Mercredi",
+      "d4": "Jeudi",
+      "d5": "Vendredi",
+      "d6": "Samedi",
+      "d0": "Dimanche"
+    },
+    "save": "Enregistrer et connecter",
+    "wake": "Allumer la télévision",
+    "status": {
+      "unconfigured": "Télévision non configurée",
+      "connecting": "Connexion …",
+      "prompt": "Appuyez sur « Autoriser » sur la télévision",
+      "connected": "Connecté",
+      "offline": "Télévision indisponible"
+    }
+  },
+  "widget": {
+    "title": "Mode enfant",
+    "stateOn": "Activé",
+    "stateLocked": "Activé · verrouillé",
+    "stateOff": "Désactivé · ni décompte ni verrouillage",
+    "minutesLeft": "__minutes__ min restantes",
+    "locked": "Verrouillé",
+    "extraTime": "Donner du temps en plus",
+    "today": "Aujourd’hui",
+    "thisWeek": "Cette semaine",
+    "minUsed": "min utilisées",
+    "ofTotal": "sur __total__ min",
+    "inclExtra": "dont __extra__ en plus",
+    "connUnconfigured": "Non configuré",
+    "connNotConnected": "Non connecté",
+    "connPrompt": "« Autoriser » sur la télé",
+    "connConnected": "Connecté",
+    "tvOn": "TV allumée",
+    "tvOff": "TV éteinte",
+    "reset": "Réinitialiser",
+    "resetTitle": "Réinitialiser le temps et le temps supplémentaire du jour",
+    "tapAgain": "Appuyez encore",
+    "error": "Erreur"
+  }
+}

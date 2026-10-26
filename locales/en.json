@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "You have __minutes__ min left",
+    "timeUp": "TV time is up"
+  },
+  "error": {
+    "invalidMinutes": "Invalid number of minutes"
+  },
+  "settings": {
+    "title": "Kids TV Time",
+    "hint": "On the TV, turn on “LG Connect Apps” and “Turn on via Wi-Fi” (Wake-on-LAN). Give the TV a fixed IP address in your router. The first time you connect, press “Allow” on the TV with the remote.",
+    "tvIp": "TV IP address",
+    "tvMac": "TV MAC address (to turn the TV on)",
+    "weekdayQuota": "Weekday quota (minutes)",
+    "weekendQuota": "Saturday and Sunday quota (minutes)",
+    "weekStart": "Week starts on",
+    "day": {
+      "d1": "Monday",
+      "d2": "Tuesday",
+      "d3": "Wednesday",
+      "d4": "Thursday",
+      "d5": "Friday",
+      "d6": "Saturday",
+      "d0": "Sunday"
+    },
+    "save": "Save and connect",
+    "wake": "Turn on TV",
+    "status": {
+      "unconfigured": "TV not set up",
+      "connecting": "Connecting …",
+      "prompt": "Press “Allow” on the TV",
+      "connected": "Connected",
+      "offline": "TV unavailable"
+    }
+  },
+  "widget": {
+    "title": "Child mode",
+    "stateOn": "On",
+    "stateLocked": "On · locked",
+    "stateOff": "Off · no counting or lock",
+    "minutesLeft": "__minutes__ min left",
+    "locked": "Locked",
+    "extraTime": "Give extra time",
+    "today": "Today",
+    "thisWeek": "This week",
+    "minUsed": "min used",
+    "ofTotal": "of __total__ min",
+    "inclExtra": "incl. __extra__ extra",
+    "connUnconfigured": "Not set up",
+    "connNotConnected": "Not connected",
+    "connPrompt": "Press “Allow” on TV",
+    "connConnected": "Connected",
+    "tvOn": "TV on",
+    "tvOff": "TV off",
+    "reset": "Reset",
+    "resetTitle": "Reset today’s time and extra time",
+    "tapAgain": "Tap again",
+    "error": "Error"
+  }
+}

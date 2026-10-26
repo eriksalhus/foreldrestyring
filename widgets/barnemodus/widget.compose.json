@@ -1,7 +1,14 @@
 {
   "name": {
     "en": "Child mode",
-    "no": "Barnemodus"
+    "no": "Barnemodus",
+    "nl": "Kindermodus",
+    "de": "Kindermodus",
+    "sv": "Barnläge",
+    "da": "Børnetilstand",
+    "fr": "Mode enfant",
+    "it": "Modalità bambini",
+    "es": "Modo infantil"
   },
   "settings": [],
   "api": {
@@ -20,6 +27,10 @@
     "resetToday": {
       "method": "POST",
       "path": "/reset-today"
+    },
+    "getStrings": {
+      "method": "GET",
+      "path": "/strings"
     }
   }
 }

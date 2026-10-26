@@ -1,0 +1,3 @@
+Giv børnene en daglig tv-kvote, som du styrer fra din telefon. Når Børnetilstand er slået til, tæller appen, hvor længe dit LG webOS-tv er tændt. Når kvoten er brugt op, slukkes tv'et og forbliver låst, indtil du giver ekstra tid eller slår Børnetilstand fra.
+
+Appen kommunikerer direkte med tv'et over dit hjemmenetværk. En widget til dit Homey-dashboard viser den resterende tid og lader begge forældre slå Børnetilstand til og fra, give ekstra tid og se, hvor meget tid der er brugt i dag og denne uge. Alle kan stadig tænde tv'et med fjernbetjeningen, men mens det er låst, slukkes det igen inden for få sekunder. Børnetilstand slås automatisk fra, når et nyt døgn begynder kl. 05.00.

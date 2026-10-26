@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "Ti restano __minutes__ min",
+    "timeUp": "Il tempo davanti alla TV è finito"
+  },
+  "error": {
+    "invalidMinutes": "Numero di minuti non valido"
+  },
+  "settings": {
+    "title": "Tempo TV dei bambini",
+    "hint": "Sul televisore attiva “LG Connect Apps” e “Accendi tramite Wi-Fi” (Wake-on-LAN). Assegna al televisore un indirizzo IP fisso nel router. Al primo collegamento premi “Consenti” sul televisore con il telecomando.",
+    "tvIp": "Indirizzo IP del televisore",
+    "tvMac": "Indirizzo MAC del televisore (per accenderlo)",
+    "weekdayQuota": "Quota nei giorni feriali (minuti)",
+    "weekendQuota": "Quota del sabato e della domenica (minuti)",
+    "weekStart": "Inizio della settimana",
+    "day": {
+      "d1": "Lunedì",
+      "d2": "Martedì",
+      "d3": "Mercoledì",
+      "d4": "Giovedì",
+      "d5": "Venerdì",
+      "d6": "Sabato",
+      "d0": "Domenica"
+    },
+    "save": "Salva e collega",
+    "wake": "Accendi il televisore",
+    "status": {
+      "unconfigured": "Televisore non configurato",
+      "connecting": "Connessione in corso …",
+      "prompt": "Premi “Consenti” sul televisore",
+      "connected": "Connesso",
+      "offline": "Televisore non disponibile"
+    }
+  },
+  "widget": {
+    "title": "Modalità bambini",
+    "stateOn": "Attivo",
+    "stateLocked": "Attivo · bloccato",
+    "stateOff": "Disattivato · nessun conteggio né blocco",
+    "minutesLeft": "__minutes__ min rimasti",
+    "locked": "Bloccato",
+    "extraTime": "Aggiungi tempo",
+    "today": "Oggi",
+    "thisWeek": "Questa settimana",
+    "minUsed": "min usati",
+    "ofTotal": "su __total__ min",
+    "inclExtra": "di cui __extra__ extra",
+    "connUnconfigured": "Non configurato",
+    "connNotConnected": "Non connesso",
+    "connPrompt": "Premi “Consenti” sulla TV",
+    "connConnected": "Connesso",
+    "tvOn": "TV accesa",
+    "tvOff": "TV spenta",
+    "reset": "Azzera",
+    "resetTitle": "Azzera il tempo e il tempo extra di oggi",
+    "tapAgain": "Tocca di nuovo",
+    "error": "Errore"
+  }
+}

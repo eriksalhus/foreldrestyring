@@ -1,0 +1,3 @@
+Geef je kinderen een dagelijkse tv-limiet die je vanaf je telefoon beheert. Als de Kindermodus aan staat, telt de app hoe lang je LG webOS-tv aanstaat. Als de limiet op is, wordt de tv uitgeschakeld en blijft hij vergrendeld totdat je extra tijd geeft of de Kindermodus uitzet.
+
+De app praat rechtstreeks met je tv via je thuisnetwerk. Een widget voor je Homey-dashboard toont de resterende tijd en laat beide ouders de Kindermodus in- of uitschakelen, extra tijd geven en zien hoeveel tijd er vandaag en deze week is gebruikt. Iedereen kan de tv nog steeds met de afstandsbediening aanzetten, maar zolang hij vergrendeld is, gaat hij binnen enkele seconden weer uit. De Kindermodus wordt automatisch uitgeschakeld als er om 05:00 een nieuwe dag begint.

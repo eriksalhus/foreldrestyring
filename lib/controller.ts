@@ -26,6 +26,8 @@ export interface Host {
   setInterval(fn: () => void, ms: number): unknown;
   clearInterval(handle: any): void;
   setTimeout(fn: () => void, ms: number): unknown;
+  __(key: string, tokens?: Record<string, string | number>): string;
+  clock: { getTimezone(): string };
 }
 
 export interface TvSettings {
@@ -71,6 +73,8 @@ export class Controller {
   async start(): Promise<void> {
     const saved = this.host.settings.get('tvSettings');
     if (saved) this.applySettings(saved);
+    const timeZone = this.host.clock.getTimezone();
+    if (timeZone) this.config.timeZone = timeZone;
     this.state = { ...emptyState(), ...(this.host.settings.get('state') ?? {}) };
     this.state.lastOnObservedMs = null;
     if (applyDayRolloverOff(this.state, Date.now(), this.config)) this.host.log('Barnemodus slått av ved nytt Kvotedøgn (mens appen var nede)');
@@ -171,7 +175,7 @@ export class Controller {
     const { crossed } = tick(this.state, now, on, this.config);
     if (crossed.length) {
       const min = Math.min(...crossed);
-      this.say(`Du har ${min} min igjen`);
+      this.say(this.host.__('toast.minutesLeft', { minutes: min }));
     }
     prune(this.state, now);
     this.enforce();
@@ -184,7 +188,7 @@ export class Controller {
     if (this.state.childMode && !isLocked(this.state, now, this.config)) {
       this.host.setTimeout(() => {
         const left = minutes(remainingMs(this.state, Date.now(), this.config));
-        if (this.state.childMode && this.tv?.isOn) this.say(`Du har ${left} min igjen`);
+        if (this.state.childMode && this.tv?.isOn) this.say(this.host.__('toast.minutesLeft', { minutes: left }));
       }, WELCOME_DELAY_MS);
     }
   }
@@ -195,7 +199,7 @@ export class Controller {
     if (!this.tv?.isOn || !isLocked(this.state, now, this.config)) return;
     if (now - this.lastEnforceMs < ENFORCE_MIN_INTERVAL_MS) return;
     this.lastEnforceMs = now;
-    this.say('TV-tiden er brukt opp');
+    this.say(this.host.__('toast.timeUp'));
     this.host.setTimeout(() => {
       if (!isLocked(this.state, Date.now(), this.config)) return;
       this.tv?.turnOff().catch((err) => this.host.error('turnOff feilet:', err.message));

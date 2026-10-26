@@ -1,0 +1,60 @@
+{
+  "toast": {
+    "minutesLeft": "Du hast noch __minutes__ Min.",
+    "timeUp": "Die Fernsehzeit ist abgelaufen"
+  },
+  "error": {
+    "invalidMinutes": "Ungültige Minutenzahl"
+  },
+  "settings": {
+    "title": "Fernsehzeit für Kinder",
+    "hint": "Aktiviere am Fernseher „LG Connect Apps“ und „Über WLAN einschalten“ (Wake-on-LAN). Vergib dem Fernseher im Router eine feste IP-Adresse. Bestätige beim ersten Verbinden mit der Fernbedienung „Zulassen“ am Fernseher.",
+    "tvIp": "IP-Adresse des Fernsehers",
+    "tvMac": "MAC-Adresse des Fernsehers (zum Einschalten)",
+    "weekdayQuota": "Kontingent an Wochentagen (Minuten)",
+    "weekendQuota": "Kontingent am Samstag und Sonntag (Minuten)",
+    "weekStart": "Wochenbeginn",
+    "day": {
+      "d1": "Montag",
+      "d2": "Dienstag",
+      "d3": "Mittwoch",
+      "d4": "Donnerstag",
+      "d5": "Freitag",
+      "d6": "Samstag",
+      "d0": "Sonntag"
+    },
+    "save": "Speichern und verbinden",
+    "wake": "Fernseher einschalten",
+    "status": {
+      "unconfigured": "Fernseher nicht eingerichtet",
+      "connecting": "Verbindung wird hergestellt …",
+      "prompt": "„Zulassen“ am Fernseher bestätigen",
+      "connected": "Verbunden",
+      "offline": "Fernseher nicht erreichbar"
+    }
+  },
+  "widget": {
+    "title": "Kindermodus",
+    "stateOn": "An",
+    "stateLocked": "An · gesperrt",
+    "stateOff": "Aus · keine Zählung oder Sperre",
+    "minutesLeft": "noch __minutes__ Min.",
+    "locked": "Gesperrt",
+    "extraTime": "Extra Zeit geben",
+    "today": "Heute",
+    "thisWeek": "Diese Woche",
+    "minUsed": "Min. genutzt",
+    "ofTotal": "von __total__ Min.",
+    "inclExtra": "inkl. __extra__ extra",
+    "connUnconfigured": "Nicht eingerichtet",
+    "connNotConnected": "Nicht verbunden",
+    "connPrompt": "„Zulassen“ am Fernseher",
+    "connConnected": "Verbunden",
+    "tvOn": "TV an",
+    "tvOff": "TV aus",
+    "reset": "Zurücksetzen",
+    "resetTitle": "Heutige Zeit und Zusatzzeit zurücksetzen",
+    "tapAgain": "Nochmal tippen",
+    "error": "Fehler"
+  }
+}
