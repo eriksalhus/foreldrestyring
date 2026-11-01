@@ -89,7 +89,6 @@ export const lgWebos: TvDriver = {
     {
       key: 'host',
       required: true,
-      inputMode: 'decimal',
       placeholder: '192.168.1.50',
       label: {
         en: 'TV IP address',

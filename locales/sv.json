@@ -26,7 +26,6 @@
     "autoOn": "Slå på automatiskt",
     "autoOnHint": "Barnläge slås på varje dag",
     "autoOnTime": "Tidpunkt för att slå på",
-    "save": "Spara",
     "saved": "Sparat",
     "day": {
       "d1": "Måndag",

@@ -26,7 +26,6 @@
     "autoOn": "Automatisch einschalten",
     "autoOnHint": "Der Kindermodus startet jeden Tag",
     "autoOnTime": "Uhrzeit zum Einschalten",
-    "save": "Speichern",
     "saved": "Gespeichert",
     "day": {
       "d1": "Montag",

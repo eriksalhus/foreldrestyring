@@ -26,7 +26,6 @@
     "autoOn": "Turn on automatically",
     "autoOnHint": "Child mode turns on every day",
     "autoOnTime": "Time to turn on",
-    "save": "Save",
     "saved": "Saved",
     "day": {
       "d1": "Monday",

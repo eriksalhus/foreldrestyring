@@ -26,7 +26,6 @@
     "autoOn": "Activer automatiquement",
     "autoOnHint": "Le mode enfant s’active chaque jour",
     "autoOnTime": "Heure d’activation",
-    "save": "Enregistrer",
     "saved": "Enregistré",
     "day": {
       "d1": "Lundi",

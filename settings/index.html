@@ -101,8 +101,10 @@
     button.fs-btn.fs-btn.fs-ghost { background: transparent !important; color: var(--accent) !important; border: 1.5px solid var(--line) !important; }
     button.fs-btn:disabled { opacity: .6; cursor: default; }
     button.fs-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    button.fs-btn.fs-btn.fs-save { margin-top: 18px !important; }
-    .fs-saved { min-height: 1.4em; margin-top: 10px; text-align: center; font-weight: 600; color: var(--good); opacity: 0; transition: opacity .2s; }
+    /* Changes are saved by themselves; a small pill confirms it. */
+    .fs-saved { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+      padding: 8px 18px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+      font-size: 14px; font-weight: 600; color: var(--good); opacity: 0; pointer-events: none; transition: opacity .2s; }
     .fs-saved.fs-show { opacity: 1; }
   </style>
 </head>
@@ -186,7 +188,6 @@
         </div>
       </section>
 
-      <button type="submit" class="fs-btn fs-save" id="save" data-i18n="settings.save"></button>
       <div class="fs-saved" id="saved" role="status" data-i18n="settings.saved"></div>
     </form>
   </main>
@@ -204,6 +205,10 @@
       var drivers = [];
       var values = {}; // driver id → { field key → value }, so what was typed survives switching brand
       var currentDriver = null;
+      var lastSettings = null; // what the app has stored
+      var saving = false;
+      var unsaved = false; // something was changed that has not been sent yet
+      var resend = false; // changed again while a save was on its way
 
       function driverById(id) {
         for (var i = 0; i < drivers.length; i++) if (drivers[i].id === id) return drivers[i];
@@ -233,7 +238,10 @@
           input.setAttribute('inputmode', f.inputMode);
           input.placeholder = f.placeholder;
           input.value = mine[f.key] || '';
-          input.addEventListener('input', function () { mine[f.key] = input.value; });
+          input.autocapitalize = 'off';
+          input.spellcheck = false;
+          input.addEventListener('input', function () { mine[f.key] = input.value; unsaved = true; });
+          input.addEventListener('change', saveNow);
           wrap.appendChild(label);
           wrap.appendChild(input);
           if (f.hint) wrap.appendChild(el('p', 'fs-hint', f.hint));
@@ -253,6 +261,7 @@
       function syncAutoTime() { $('autotimegroup').hidden = !$('autoon').checked; }
 
       function render(s) {
+        lastSettings = s.settings;
         var c = connection[s.connection];
         $('hero').className = 'fs-hero ' + c[0];
         $('status').textContent = Homey.__('settings.status.' + c[1]);
@@ -285,25 +294,69 @@
         savedTimer = setTimeout(function () { $('saved').classList.remove('fs-show'); }, 3000);
       }
 
-      $('driver').addEventListener('change', function () { renderDriver($('driver').value); });
-      $('autoon').addEventListener('change', syncAutoTime);
-      $('daystart').addEventListener('input', syncDayStart);
-      $('daystart').addEventListener('change', syncDayStart);
-      $('form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        $('save').disabled = true;
+      function validQuota(id) { return /^\d+$/.test($(id).value) && Number($(id).value) <= 1440; }
+      // Only a complete, valid form is saved, so a half-typed value never replaces a working setup.
+      function canSave() {
+        var d = driverById(currentDriver);
+        if (!filled || !d) return false;
+        var mine = values[currentDriver] || {};
+        for (var i = 0; i < d.fields.length; i++) {
+          if (d.fields[i].required && !String(mine[d.fields[i].key] || '').trim()) return false;
+        }
+        return validQuota('weekday') && validQuota('weekend') && Boolean($('daystart').value) &&
+          (!$('autoon').checked || Boolean($('autotime').value));
+      }
+      function saveNow() {
+        if (!canSave()) return;
+        if (saving) { resend = true; return; }
+        saving = true;
+        resend = false;
+        unsaved = false;
         Homey.api('POST', '/configure', {
           driver: currentDriver, driverConfig: values[currentDriver] || {},
           weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value,
           dayStartTime: $('daystart').value, weekStartDay: $('weekstart').value,
           autoOffAtRollover: $('autooff').checked, autoOnEnabled: $('autoon').checked, autoOnTime: $('autotime').value,
         }, function (err, s) {
-          $('save').disabled = false;
-          if (err) { Homey.alert(err.message); return; }
+          saving = false;
+          if (err) { unsaved = true; Homey.alert(err.message); return; }
           render(s);
           showSaved();
+          if (resend) saveNow();
         });
-      });
+      }
+      function showSaved() {
+        $('saved').classList.add('fs-show');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(function () { $('saved').classList.remove('fs-show'); }, 2000);
+      }
+      // Text, number and time fields save when the user leaves the field (the browser fires `change` then).
+      function autosave(id) {
+        $(id).addEventListener('input', function () { unsaved = true; });
+        $(id).addEventListener('change', saveNow);
+      }
+      // A field left empty or invalid goes back to what is stored, instead of silently not saving.
+      function restoreOnBlur(id, valid, stored) {
+        $(id).addEventListener('blur', function () {
+          if (!valid(id) && lastSettings) $(id).value = stored(lastSettings);
+        });
+      }
+
+      $('driver').addEventListener('change', function () { renderDriver($('driver').value); saveNow(); });
+      $('autoon').addEventListener('change', function () { syncAutoTime(); saveNow(); });
+      $('autooff').addEventListener('change', saveNow);
+      $('weekstart').addEventListener('change', saveNow);
+      ['weekday', 'weekend', 'daystart', 'autotime'].forEach(autosave);
+      restoreOnBlur('weekday', validQuota, function (st) { return st.weekdayMinutes; });
+      restoreOnBlur('weekend', validQuota, function (st) { return st.weekendMinutes; });
+      restoreOnBlur('daystart', function (id) { return Boolean($(id).value); }, function (st) { return st.dayStartTime; });
+      restoreOnBlur('autotime', function (id) { return Boolean($(id).value); }, function (st) { return st.autoOnTime; });
+      $('daystart').addEventListener('input', syncDayStart);
+      $('daystart').addEventListener('change', syncDayStart);
+      $('form').addEventListener('submit', function (e) { e.preventDefault(); saveNow(); });
+      // Leaving the page while a field still has focus: send the change now.
+      document.addEventListener('visibilitychange', function () { if (document.hidden && unsaved) saveNow(); });
+      window.addEventListener('pagehide', function () { if (unsaved) saveNow(); });
       $('wake').addEventListener('click', function () {
         Homey.api('POST', '/wake', null, function (err) { if (err) Homey.alert(err.message); });
       });

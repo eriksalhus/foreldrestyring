@@ -26,7 +26,6 @@
     "autoOn": "Slå på automatisk",
     "autoOnHint": "Barnemodus slås på hver dag",
     "autoOnTime": "Klokkeslett for å slå på",
-    "save": "Lagre",
     "saved": "Lagret",
     "day": {
       "d1": "Mandag",

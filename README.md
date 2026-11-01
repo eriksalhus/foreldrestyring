@@ -27,7 +27,7 @@ Each brand is one file in `lib/drivers/` that fulfils the contract in `lib/drive
 
 1. Turn on "LG Connect Apps" and "Turn on via Wi-Fi" (Wake-on-LAN) in the TV settings.
 2. Give the TV a fixed IP address in your router, preferably on a cable.
-3. Open the app's settings in Homey: enter the IP address and MAC address, press "Save", and press "Allow" on the TV.
+3. Open the app's settings in Homey: enter the IP address and MAC address, and press "Allow" on the TV. Changes in the settings are saved automatically.
 4. Put the "Child mode" widget on a Homey dashboard.
 
 ## License

@@ -26,7 +26,6 @@
     "autoOn": "Slå til automatisk",
     "autoOnHint": "Børnetilstand slås til hver dag",
     "autoOnTime": "Tidspunkt for at slå til",
-    "save": "Gem",
     "saved": "Gemt",
     "day": {
       "d1": "Mandag",
