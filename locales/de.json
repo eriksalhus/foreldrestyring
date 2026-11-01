@@ -14,6 +14,10 @@
     "weekdayQuota": "Kontingent an Wochentagen (Minuten)",
     "weekendQuota": "Kontingent am Samstag und Sonntag (Minuten)",
     "weekStart": "Wochenbeginn",
+    "autoTitle": "Automatik",
+    "autoOff": "Kindermodus beenden, wenn ein neuer Tag beginnt (05:00 Uhr)",
+    "autoOn": "Kindermodus jeden Tag automatisch einschalten",
+    "autoOnTime": "Uhrzeit zum Einschalten",
     "day": {
       "d1": "Montag",
       "d2": "Dienstag",

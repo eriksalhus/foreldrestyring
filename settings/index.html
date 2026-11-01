@@ -6,6 +6,9 @@
   <style>
     label { display: block; margin-top: 12px; font-weight: 600; }
     input, select { width: 100%; box-sizing: border-box; padding: 6px; }
+    input[type=checkbox] { width: auto; margin-right: 8px; }
+    label.check { font-weight: 400; display: flex; align-items: center; }
+    h2 { margin-top: 24px; font-size: 18px; }
     .hint { font-size: 13px; opacity: .7; }
     button { margin-top: 16px; margin-right: 8px; }
     #status { margin: 12px 0; font-weight: 600; }
@@ -36,6 +39,12 @@
     <option value="0" data-i18n="settings.day.d0"></option>
   </select>
 
+  <h2 data-i18n="settings.autoTitle"></h2>
+  <label class="check" for="autooff"><input id="autooff" type="checkbox"><span data-i18n="settings.autoOff"></span></label>
+  <label class="check" for="autoon"><input id="autoon" type="checkbox"><span data-i18n="settings.autoOn"></span></label>
+  <label for="autotime" data-i18n="settings.autoOnTime"></label>
+  <input id="autotime" type="time" step="60">
+
   <button class="hy-button-primary" id="save" data-i18n="settings.save"></button>
   <button id="wake" data-i18n="settings.wake"></button>
 
@@ -55,16 +64,23 @@
           $('weekday').value = s.settings.weekdayMinutes;
           $('weekend').value = s.settings.weekendMinutes;
           $('weekstart').value = s.settings.weekStartDay;
+          $('autooff').checked = s.settings.autoOffAtRollover;
+          $('autoon').checked = s.settings.autoOnEnabled;
+          $('autotime').value = s.settings.autoOnTime;
+          syncAutoTime();
         }
       }
+      function syncAutoTime() { $('autotime').disabled = !$('autoon').checked; }
       function refresh() { Homey.api('GET', '/status', null, function (err, s) { if (!err) render(s); }); }
 
       $('save').addEventListener('click', function () {
         Homey.api('POST', '/configure', {
           host: $('host').value, mac: $('mac').value,
           weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value, weekStartDay: $('weekstart').value,
+          autoOffAtRollover: $('autooff').checked, autoOnEnabled: $('autoon').checked, autoOnTime: $('autotime').value,
         }, function (err, s) { if (err) Homey.alert(err.message); else render(s); });
       });
+      $('autoon').addEventListener('change', syncAutoTime);
       $('wake').addEventListener('click', function () {
         Homey.api('POST', '/wake', null, function (err) { if (err) Homey.alert(err.message); });
       });

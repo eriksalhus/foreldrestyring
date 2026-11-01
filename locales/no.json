@@ -14,6 +14,10 @@
     "weekdayQuota": "Kvote hverdager (minutter)",
     "weekendQuota": "Kvote lørdag og søndag (minutter)",
     "weekStart": "Uka begynner på",
+    "autoTitle": "Automatikk",
+    "autoOff": "Slå av Barnemodus når et nytt døgn begynner (kl. 05:00)",
+    "autoOn": "Slå på Barnemodus automatisk hver dag",
+    "autoOnTime": "Klokkeslett for å slå på",
     "day": {
       "d1": "Mandag",
       "d2": "Tirsdag",

@@ -14,6 +14,10 @@
     "weekdayQuota": "Quota nei giorni feriali (minuti)",
     "weekendQuota": "Quota del sabato e della domenica (minuti)",
     "weekStart": "Inizio della settimana",
+    "autoTitle": "Automazione",
+    "autoOff": "Disattiva la modalità bambini all’inizio di un nuovo giorno (05:00)",
+    "autoOn": "Attiva automaticamente la modalità bambini ogni giorno",
+    "autoOnTime": "Ora di attivazione",
     "day": {
       "d1": "Lunedì",
       "d2": "Martedì",

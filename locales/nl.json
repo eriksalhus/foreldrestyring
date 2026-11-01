@@ -14,6 +14,10 @@
     "weekdayQuota": "Limiet op weekdagen (minuten)",
     "weekendQuota": "Limiet op zaterdag en zondag (minuten)",
     "weekStart": "Begin van de week",
+    "autoTitle": "Automatisering",
+    "autoOff": "Kindermodus uitschakelen als er een nieuwe dag begint (05:00)",
+    "autoOn": "Kindermodus elke dag automatisch inschakelen",
+    "autoOnTime": "Tijdstip om in te schakelen",
     "day": {
       "d1": "Maandag",
       "d2": "Dinsdag",

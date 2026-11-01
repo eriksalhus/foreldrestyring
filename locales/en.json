@@ -14,6 +14,10 @@
     "weekdayQuota": "Weekday quota (minutes)",
     "weekendQuota": "Saturday and Sunday quota (minutes)",
     "weekStart": "Week starts on",
+    "autoTitle": "Automation",
+    "autoOff": "Turn off Child mode when a new day starts (05:00)",
+    "autoOn": "Turn on Child mode automatically every day",
+    "autoOnTime": "Time to turn on",
     "day": {
       "d1": "Monday",
       "d2": "Tuesday",

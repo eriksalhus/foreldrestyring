@@ -14,6 +14,10 @@
     "weekdayQuota": "Cuota entre semana (minutos)",
     "weekendQuota": "Cuota sábado y domingo (minutos)",
     "weekStart": "Inicio de la semana",
+    "autoTitle": "Automatización",
+    "autoOff": "Desactivar el modo infantil cuando empiece un nuevo día (05:00)",
+    "autoOn": "Activar automáticamente el modo infantil cada día",
+    "autoOnTime": "Hora de activación",
     "day": {
       "d1": "Lunes",
       "d2": "Martes",

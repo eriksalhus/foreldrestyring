@@ -3,6 +3,7 @@ import {
   QuotaConfig,
   QuotaState,
   addExtra,
+  applyAutoOn,
   applyDayRolloverOff,
   dayKey,
   emptyState,
@@ -12,6 +13,7 @@ import {
   reduceTime,
   resetDay,
   quotaMs,
+  rearmAutoOn,
   remainingMs,
   setChildMode,
   tick,
@@ -37,6 +39,12 @@ export interface TvSettings {
   weekdayMinutes: number;
   weekendMinutes: number;
   weekStartDay: number;
+  /** Slå av Barnemodus når et nytt Kvotedøgn begynner (kl. 05:00). */
+  autoOffAtRollover: boolean;
+  /** Slå på Barnemodus automatisk hver dag. */
+  autoOnEnabled: boolean;
+  /** Klokkeslettet Barnemodus slås på, «HH:MM». */
+  autoOnTime: string;
 }
 
 export interface Status {
@@ -61,9 +69,24 @@ const TURN_OFF_DELAY_MS = 3_000;
 
 const minutes = (ms: number) => Math.round(ms / 60_000);
 
+/** «HH:MM» → minutter etter midnatt. Ugyldig tekst gir standardtiden. */
+function parseTime(time: string): number {
+  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time);
+  return match ? Number(match[1]) * 60 + Number(match[2]) : DEFAULT_CONFIG.autoOnMinute;
+}
+
 export class Controller {
   private config: QuotaConfig = { ...DEFAULT_CONFIG };
-  private settings: TvSettings = { host: '', mac: '', weekdayMinutes: 30, weekendMinutes: 60, weekStartDay: 1 };
+  private settings: TvSettings = {
+    host: '',
+    mac: '',
+    weekdayMinutes: 30,
+    weekendMinutes: 60,
+    weekStartDay: 1,
+    autoOffAtRollover: true,
+    autoOnEnabled: false,
+    autoOnTime: '15:00',
+  };
   private state: QuotaState = emptyState();
   private tv: TvClient | null = null;
   private timers: unknown[] = [];
@@ -78,7 +101,9 @@ export class Controller {
     if (timeZone) this.config.timeZone = timeZone;
     this.state = { ...emptyState(), ...(this.host.settings.get('state') ?? {}) };
     this.state.lastOnObservedMs = null;
-    if (applyDayRolloverOff(this.state, Date.now(), this.config)) this.host.log('Barnemodus slått av ved nytt Kvotedøgn (mens appen var nede)');
+    const now = Date.now();
+    if (applyDayRolloverOff(this.state, now, this.config)) this.host.log('Barnemodus slått av ved nytt Kvotedøgn (mens appen var nede)');
+    if (applyAutoOn(this.state, now, this.config)) this.host.log('Barnemodus slått på automatisk (mens appen var nede)');
     this.timers.push(this.host.setInterval(() => this.onTick(), TICK_MS));
     this.timers.push(this.host.setInterval(() => this.save(), SAVE_MS));
     await this.connect();
@@ -94,7 +119,13 @@ export class Controller {
 
   async configure(settings: TvSettings): Promise<void> {
     const hostChanged = settings.host !== this.settings.host || settings.mac !== this.settings.mac;
+    const autoOnChanged =
+      settings.autoOnEnabled !== this.settings.autoOnEnabled || settings.autoOnTime !== this.settings.autoOnTime;
     this.applySettings(settings);
+    if (autoOnChanged) {
+      rearmAutoOn(this.state, Date.now(), this.config);
+      this.save();
+    }
     this.host.settings.set('tvSettings', this.settings);
     if (hostChanged) await this.connect();
   }
@@ -154,6 +185,9 @@ export class Controller {
       weekdayMinutes: this.settings.weekdayMinutes,
       weekendMinutes: this.settings.weekendMinutes,
       weekStartDay: this.settings.weekStartDay,
+      autoOffAtRollover: this.settings.autoOffAtRollover,
+      autoOnEnabled: this.settings.autoOnEnabled,
+      autoOnMinute: parseTime(this.settings.autoOnTime),
     };
   }
 
@@ -178,6 +212,10 @@ export class Controller {
     const now = Date.now();
     if (applyDayRolloverOff(this.state, now, this.config)) {
       this.host.log('Barnemodus slått av ved nytt Kvotedøgn');
+      this.save();
+    }
+    if (applyAutoOn(this.state, now, this.config)) {
+      this.host.log('Barnemodus slått på automatisk');
       this.save();
     }
     const on = Boolean(tv?.isOn && tv.connection === 'connected');

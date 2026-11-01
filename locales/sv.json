@@ -14,6 +14,10 @@
     "weekdayQuota": "Kvot på vardagar (minuter)",
     "weekendQuota": "Kvot på lördag och söndag (minuter)",
     "weekStart": "Veckan börjar",
+    "autoTitle": "Automatik",
+    "autoOff": "Stäng av Barnläge när ett nytt dygn börjar (05:00)",
+    "autoOn": "Slå på Barnläge automatiskt varje dag",
+    "autoOnTime": "Tidpunkt för att slå på",
     "day": {
       "d1": "Måndag",
       "d2": "Tisdag",

@@ -5,6 +5,12 @@ export interface QuotaConfig {
   resetHour: number;
   /** Ukedagen uka begynner på: 0 = søndag, 1 = mandag, … 6 = lørdag. */
   weekStartDay: number;
+  /** Slår Barnemodus av når et nytt Kvotedøgn begynner. */
+  autoOffAtRollover: boolean;
+  /** Slår Barnemodus på av seg selv hver dag. */
+  autoOnEnabled: boolean;
+  /** Klokkeslettet Barnemodus slås på, i minutter etter midnatt lokal tid. */
+  autoOnMinute: number;
   timeZone: string;
   /** Lengre hull mellom to observasjoner enn dette telles ikke som TV-tid. */
   maxGapMs: number;
@@ -15,6 +21,9 @@ export const DEFAULT_CONFIG: QuotaConfig = {
   weekendMinutes: 60,
   resetHour: 5,
   weekStartDay: 1,
+  autoOffAtRollover: true,
+  autoOnEnabled: false,
+  autoOnMinute: 15 * 60,
   timeZone: 'Europe/Oslo',
   maxGapMs: 60_000,
 };
@@ -30,6 +39,8 @@ export interface QuotaState {
   lastOnObservedMs: number | null;
   /** Kvotedøgnet Barnemodus sist ble sjekket mot, for å se når et nytt begynner. */
   lastDayKey: string | null;
+  /** Den lokale datoen (YYYY-MM-DD) automatisk påslåing sist ble utført eller hoppet over. */
+  lastAutoOnDate: string | null;
   /** Nøkkel: Kvotedøgnets startdato, YYYY-MM-DD. */
   days: Record<string, DayRecord>;
 }
@@ -41,7 +52,7 @@ const DAY_MS = 86_400_000;
 const KEEP_DAYS = 60;
 
 export function emptyState(): QuotaState {
-  return { childMode: false, lastOnObservedMs: null, lastDayKey: null, days: {} };
+  return { childMode: false, lastOnObservedMs: null, lastDayKey: null, lastAutoOnDate: null, days: {} };
 }
 
 function localParts(ms: number, timeZone: string) {
@@ -51,10 +62,11 @@ function localParts(ms: number, timeZone: string) {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
+    minute: '2-digit',
     hourCycle: 'h23',
   }).formatToParts(new Date(ms));
   const get = (type: string) => Number(parts.find((p) => p.type === type)!.value);
-  return { year: get('year'), month: get('month'), day: get('day'), hour: get('hour') };
+  return { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
 }
 
 /** Kvotedøgnet `nowMs` tilhører, som startdato YYYY-MM-DD. */
@@ -66,16 +78,48 @@ export function dayKey(nowMs: number, config: QuotaConfig): string {
 }
 
 /**
- * Slår Barnemodus av når et nytt Kvotedøgn har begynt siden forrige sjekk (kl. 05:00 lokal tid).
- * Fanger også skiftet hvis det passerte mens appen var nede. Returnerer true hvis Barnemodus ble slått av.
+ * Slår Barnemodus av når et nytt Kvotedøgn har begynt siden forrige sjekk (kl. 05:00 lokal tid),
+ * hvis `autoOffAtRollover` er på. Fanger også skiftet hvis det passerte mens appen var nede.
+ * Returnerer true hvis Barnemodus ble slått av.
  */
 export function applyDayRolloverOff(state: QuotaState, nowMs: number, config: QuotaConfig): boolean {
   const today = dayKey(nowMs, config);
   const rolledOver = state.lastDayKey !== null && state.lastDayKey !== today;
   state.lastDayKey = today;
-  if (!rolledOver || !state.childMode) return false;
+  if (!config.autoOffAtRollover || !rolledOver || !state.childMode) return false;
   state.childMode = false;
   return true;
+}
+
+/** Lokal dato (YYYY-MM-DD) og minutter etter midnatt for `nowMs`. */
+function localDateAndMinute(nowMs: number, config: QuotaConfig): { date: string; minute: number } {
+  const { year, month, day, hour, minute } = localParts(nowMs, config.timeZone);
+  const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  return { date, minute: hour * 60 + minute };
+}
+
+/**
+ * Slår Barnemodus på første gang etter at klokkeslettet `autoOnMinute` er passert hver lokale dag, hvis
+ * `autoOnEnabled` er på. En Forelder som slår Barnemodus av igjen samme dag blir ikke overstyrt.
+ * Fanger også klokkeslettet hvis det passerte mens appen var nede. Returnerer true hvis Barnemodus ble slått på.
+ */
+export function applyAutoOn(state: QuotaState, nowMs: number, config: QuotaConfig): boolean {
+  if (!config.autoOnEnabled) return false;
+  const { date, minute } = localDateAndMinute(nowMs, config);
+  if (minute < config.autoOnMinute || state.lastAutoOnDate === date) return false;
+  state.lastAutoOnDate = date;
+  if (state.childMode) return false;
+  state.childMode = true;
+  return true;
+}
+
+/**
+ * Kalles når innstillingene for automatisk påslåing er endret. Har klokkeslettet allerede passert i dag,
+ * regnes i dag som utført, så Barnemodus ikke slås på i det øyeblikket en Forelder lagrer innstillingen.
+ */
+export function rearmAutoOn(state: QuotaState, nowMs: number, config: QuotaConfig): void {
+  const { date, minute } = localDateAndMinute(nowMs, config);
+  state.lastAutoOnDate = minute >= config.autoOnMinute ? date : null;
 }
 
 function isWeekend(key: string): boolean {

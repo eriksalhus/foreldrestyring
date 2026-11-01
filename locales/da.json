@@ -14,6 +14,10 @@
     "weekdayQuota": "Kvote på hverdage (minutter)",
     "weekendQuota": "Kvote lørdag og søndag (minutter)",
     "weekStart": "Ugen starter",
+    "autoTitle": "Automatik",
+    "autoOff": "Slå Børnetilstand fra, når et nyt døgn begynder (kl. 05.00)",
+    "autoOn": "Slå Børnetilstand til automatisk hver dag",
+    "autoOnTime": "Tidspunkt for at slå til",
     "day": {
       "d1": "Mandag",
       "d2": "Tirsdag",

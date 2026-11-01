@@ -3,10 +3,12 @@ import { test } from 'node:test';
 import {
   DEFAULT_CONFIG,
   addExtra,
+  applyAutoOn,
   applyDayRolloverOff,
   dayKey,
   emptyState,
   isLocked,
+  rearmAutoOn,
   reduceTime,
   remainingMs,
   resetDay,
@@ -211,4 +213,61 @@ test('Trekk av tid gjelder bare inneværende Kvotedøgn', () => {
   setChildMode(s, true);
   reduceTime(s, 10, MON_16, cfg);
   assert.equal(remainingMs(s, MON_16 + 24 * 60 * MIN, cfg), 30 * MIN);
+});
+
+test('Barnemodus står på over Kvotedøgn-skiftet når automatisk avslåing er skrudd av', () => {
+  const noReset = { ...cfg, autoOffAtRollover: false };
+  const s = emptyState();
+  setChildMode(s, true);
+  applyDayRolloverOff(s, Date.parse('2026-10-26T20:00:00Z'), noReset);
+  assert.equal(applyDayRolloverOff(s, Date.parse('2026-10-27T05:00:00Z'), noReset), false);
+  assert.equal(s.childMode, true);
+});
+
+const autoOn = { ...cfg, autoOnEnabled: true, autoOnMinute: 16 * 60 }; // kl. 16:00
+// Mandag 2026-10-26 (CET, UTC+1): 15:59 og 16:00 lokal tid
+const MON_1559 = Date.parse('2026-10-26T14:59:00Z');
+const MON_1600 = Date.parse('2026-10-26T15:00:00Z');
+
+test('Barnemodus slås på automatisk ved valgt klokkeslett', () => {
+  const s = emptyState();
+  assert.equal(applyAutoOn(s, MON_1559, autoOn), false);
+  assert.equal(s.childMode, false);
+  assert.equal(applyAutoOn(s, MON_1600, autoOn), true);
+  assert.equal(s.childMode, true);
+});
+
+test('automatisk påslåing gjør ingenting når den er skrudd av', () => {
+  const s = emptyState();
+  assert.equal(applyAutoOn(s, MON_1600, cfg), false);
+  assert.equal(s.childMode, false);
+});
+
+test('en Forelder som slår Barnemodus av etter automatisk påslåing, blir ikke overstyrt samme dag', () => {
+  const s = emptyState();
+  applyAutoOn(s, MON_1600, autoOn);
+  setChildMode(s, false);
+  assert.equal(applyAutoOn(s, MON_1600 + 60 * MIN, autoOn), false);
+  assert.equal(s.childMode, false);
+  // Neste dag slås den på igjen
+  assert.equal(applyAutoOn(s, MON_1600 + 24 * 60 * MIN, autoOn), true);
+});
+
+test('automatisk påslåing fanger klokkeslettet som passerte mens appen var nede', () => {
+  const s = emptyState();
+  assert.equal(applyAutoOn(s, MON_1600 + 3 * 60 * MIN, autoOn), true);
+});
+
+test('lagring etter klokkeslettet har passert slår ikke på Barnemodus før neste dag', () => {
+  const s = emptyState();
+  const evening = MON_1600 + 2 * 60 * MIN;
+  rearmAutoOn(s, evening, autoOn);
+  assert.equal(applyAutoOn(s, evening, autoOn), false);
+  assert.equal(applyAutoOn(s, MON_1600 + 24 * 60 * MIN, autoOn), true);
+});
+
+test('lagring før klokkeslettet har passert slår på Barnemodus ved klokkeslettet i dag', () => {
+  const s = emptyState();
+  rearmAutoOn(s, MON_1559, autoOn);
+  assert.equal(applyAutoOn(s, MON_1600, autoOn), true);
 });
