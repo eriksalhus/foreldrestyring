@@ -7,7 +7,7 @@ Maintainer checklist. Publishing is done by a person with a Homey developer acco
 - [ ] `homey app validate --level publish` passes (it does at the time of writing).
 - [ ] `npm test` and `npm run typecheck` pass, and the GitHub Actions run on `main` is green.
 - [ ] The repository is **public**. The manifest links to it (`source`, `bugs`), and store users, reviewers and contributors follow those links.
-- [ ] Create a topic for the app on the [Homey Community Forum](https://community.homey.app) and add its number as `homeyCommunityTopicId` in `.homeycompose/app.json`. Reviewers and users expect it as the support channel.
+- [x] A topic for the app on the [Homey Community Forum](https://community.homey.app/t/app-pro-tv-parental-control-daily-tv-time-quota-for-your-kids/161648) exists, and its number is `homeyCommunityTopicId` in `.homeycompose/app.json`. Reviewers and users expect it as the support channel.
 - [ ] Test on a real Homey Pro with a real TV: first pairing ("Allow" on the TV), Child mode, the Lock, Extra time, Remove time, automatic turn-on and turn-off, and the widget on a dashboard.
 - [ ] Decide the first version number. It is `0.1.0` in `.homeycompose/app.json`; the entry in `.homeychangelog.json` must match the version being published.
 
