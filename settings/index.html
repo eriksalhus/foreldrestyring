@@ -2,85 +2,264 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
   <style>
-    label { display: block; margin-top: 12px; font-weight: 600; }
-    input, select { width: 100%; box-sizing: border-box; padding: 6px; }
-    input[type=checkbox] { width: auto; margin-right: 8px; }
-    label.check { font-weight: 400; display: flex; align-items: center; }
-    h2 { margin-top: 24px; font-size: 18px; }
-    .hint { font-size: 13px; opacity: .7; }
-    button { margin-top: 16px; margin-right: 8px; }
-    #status { margin: 12px 0; font-weight: 600; }
+    /* Statuskort øverst, så ett kort per tema. Feltene har etiketten over. Fargene følger lys eller mørk modus. */
+    :root {
+      --bg: #e9ecf1;
+      --surface: #ffffff;
+      --surface-2: #f3f5f8;
+      --ink: #1b2330;
+      --ink-2: #5d6778;
+      --line: #dde2ea;
+      --accent: #3f86ee;
+      --accent-ink: #ffffff;
+      --accent-soft: #e4eefd;
+      --good: #3f9b1f;
+      --warn-bg: #f0b04a;
+      --warn-ink: #3a2600;
+      --bad-bg: #d6403a;
+      --bad-ink: #ffffff;
+      --track: #c3cad6;
+      --shadow: 0 1px 2px rgba(20, 30, 50, .06), 0 6px 20px rgba(20, 30, 50, .06);
+      --control-h: 48px;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #11151b; --surface: #1c222b; --surface-2: #252c37; --ink: #eef1f6; --ink-2: #99a3b3; --line: #2f3744;
+        --accent: #5b9bf5; --accent-ink: #0c1a30; --accent-soft: #1f3150; --good: #7fcf4f;
+        --warn-bg: #f0b04a; --warn-ink: #3a2600; --bad-bg: #f2736d; --bad-ink: #3a0b09;
+        --track: #46505f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+        color-scheme: dark;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { min-height: 100%; background: var(--bg); }
+    body { min-height: 100vh; margin: 0; padding: 20px 16px 32px; background: var(--bg); color: var(--ink);
+      font: 15px/1.4 var(--homey-font-family, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); }
+    main { max-width: 560px; margin: 0 auto; }
+    button, input, select { font: inherit; color: inherit; }
+
+    .fs-hero { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 18px;
+      background: var(--accent); color: var(--accent-ink); transition: background .2s; }
+    .fs-hero.fs-warn { background: var(--warn-bg); color: var(--warn-ink); }
+    .fs-hero.fs-bad { background: var(--bad-bg); color: var(--bad-ink); }
+    .fs-hero svg { flex: none; width: 36px; height: 36px; }
+    .fs-hero b { display: block; font-size: 17px; }
+    .fs-hero span { font-size: 14px; opacity: .85; }
+
+    .fs-card { margin-top: 12px; padding: 16px; border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); }
+    .fs-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .fs-badge { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--accent-soft); color: var(--accent); }
+    .fs-badge svg { width: 20px; height: 20px; }
+    .fs-card-head h2 { margin: 0; font-size: 16px; }
+    .fs-card-head p { margin: 1px 0 0; font-size: 13px; color: var(--ink-2); }
+    .fs-stack { display: grid; gap: 14px; }
+
+    label.fs-label.fs-label { display: block !important; margin: 0 0 6px !important; font-size: 13px !important; font-weight: 600 !important; line-height: 1.3 !important;
+      letter-spacing: normal !important; text-transform: none !important; color: var(--ink-2) !important; }
+    p.fs-hint { margin: 6px 0 0; font-size: 13px; line-height: 1.4; letter-spacing: normal; text-transform: none; color: var(--ink-2); }
+
+    /* Alle felt har samme høyde. Nettleseren gir tall- og klokkeslettfelt egne mål hvis vi ikke fjerner dem. */
+    .fs-field { display: block; width: 100%; height: var(--control-h); margin: 0; padding: 0 14px; border: 1px solid var(--line);
+      border-radius: 12px; background: var(--surface-2); color: var(--ink); }
+    input.fs-field[type=number], input.fs-field[type=time] { -webkit-appearance: none; appearance: none; }
+    input[type=number] { -moz-appearance: textfield; }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input.fs-field[type=time] { display: flex !important; align-items: center !important; padding-top: 0 !important; padding-bottom: 0 !important; line-height: normal; }
+    input[type=time]::-webkit-date-and-time-value { text-align: left; margin: 0; min-height: 1.2em; }
+    input[type=time]::-webkit-datetime-edit { padding: 0; }
+    .fs-field:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+
+    .fs-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 14px;
+      border-radius: 12px; background: var(--surface-2); cursor: pointer; }
+    label.fs-toggle-row.fs-toggle-row, label.fs-toggle-row.fs-toggle-row * { text-transform: none !important; letter-spacing: normal !important; }
+    label.fs-toggle-row.fs-toggle-row { color: var(--ink) !important; font-size: 15px !important; font-weight: 400 !important; line-height: 1.4 !important; }
+    .fs-toggle-row b { display: block; font-size: 15px; font-weight: 600; color: var(--ink); }
+    .fs-toggle-row span.fs-d { display: block; font-size: 13px; font-weight: 400; color: var(--ink-2); }
+    .fs-switch { position: relative; display: inline-flex; flex: none; width: 52px; height: 30px; }
+    .fs-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+    .fs-switch i { position: absolute; inset: 0; border-radius: 15px; background: var(--track); transition: background .15s; pointer-events: none; }
+    .fs-switch i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform .15s; }
+    .fs-switch input:checked + i { background: var(--accent); }
+    .fs-switch input:checked + i::after { transform: translateX(22px); }
+    .fs-switch input:focus-visible + i { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Egne klassenavn og nullstilling, så Homeys globale knappestiler ikke slår gjennom. */
+    button.fs-btn.fs-btn { -webkit-appearance: none !important; appearance: none !important; box-sizing: border-box !important;
+      display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important;
+      height: var(--control-h) !important; min-height: var(--control-h) !important; max-height: none !important;
+      margin: 0 !important; padding: 0 20px !important; border: 0 !important; border-radius: 12px !important;
+      background: var(--accent) !important; color: var(--accent-ink) !important; box-shadow: none !important;
+      font: inherit !important; font-weight: 700 !important; line-height: 1.2 !important; letter-spacing: normal !important;
+      text-transform: none !important; text-align: center !important; cursor: pointer; }
+    button.fs-btn.fs-btn.fs-ghost { background: transparent !important; color: var(--accent) !important; border: 1.5px solid var(--line) !important; }
+    button.fs-btn:disabled { opacity: .6; cursor: default; }
+    button.fs-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    button.fs-btn.fs-btn.fs-save { margin-top: 18px !important; }
+    .fs-saved { min-height: 1.4em; margin-top: 10px; text-align: center; font-weight: 600; color: var(--good); opacity: 0; transition: opacity .2s; }
+    .fs-saved.fs-show { opacity: 1; }
   </style>
 </head>
 <body>
-  <h1 data-i18n="settings.title"></h1>
-  <p class="hint" data-i18n="settings.hint"></p>
-  <div id="status">…</div>
+  <main>
+    <div class="fs-hero" id="hero" role="status">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="19" height="13" rx="2.5"/><path d="M8 21h8M12 17v4"/></svg>
+      <div><b id="status">…</b><span id="substatus"></span></div>
+    </div>
 
-  <label for="host" data-i18n="settings.tvIp"></label>
-  <input id="host" placeholder="192.168.1.50">
-  <label for="mac" data-i18n="settings.tvMac"></label>
-  <input id="mac" placeholder="AA:BB:CC:DD:EE:FF">
-  <label for="weekday" data-i18n="settings.weekdayQuota"></label>
-  <input id="weekday" type="number" min="0">
-  <label for="weekend" data-i18n="settings.weekendQuota"></label>
-  <input id="weekend" type="number" min="0">
+    <form id="form" novalidate>
+      <section class="fs-card">
+        <div class="fs-card-head">
+          <div class="fs-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></div>
+          <div><h2 data-i18n="settings.sectionTv"></h2><p data-i18n="settings.sectionTvSub"></p></div>
+        </div>
+        <div class="fs-stack">
+          <div>
+            <label class="fs-label" for="host" data-i18n="settings.tvIp"></label>
+            <input class="fs-field" id="host" inputmode="decimal" autocomplete="off" placeholder="192.168.1.50">
+          </div>
+          <div>
+            <label class="fs-label" for="mac" data-i18n="settings.tvMac"></label>
+            <input class="fs-field" id="mac" autocomplete="off" placeholder="AA:BB:CC:DD:EE:FF">
+          </div>
+          <button type="button" class="fs-btn fs-ghost" id="wake" data-i18n="settings.wake"></button>
+          <p class="fs-hint" style="margin:0" data-i18n="settings.hint"></p>
+        </div>
+      </section>
 
-  <label for="weekstart" data-i18n="settings.weekStart"></label>
-  <select id="weekstart">
-    <option value="1" data-i18n="settings.day.d1"></option>
-    <option value="2" data-i18n="settings.day.d2"></option>
-    <option value="3" data-i18n="settings.day.d3"></option>
-    <option value="4" data-i18n="settings.day.d4"></option>
-    <option value="5" data-i18n="settings.day.d5"></option>
-    <option value="6" data-i18n="settings.day.d6"></option>
-    <option value="0" data-i18n="settings.day.d0"></option>
-  </select>
+      <section class="fs-card">
+        <div class="fs-card-head">
+          <div class="fs-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div><h2 data-i18n="settings.sectionQuota"></h2><p data-i18n="settings.sectionQuotaSub"></p></div>
+        </div>
+        <div class="fs-stack">
+          <div>
+            <label class="fs-label" for="weekday" data-i18n="settings.weekdayQuota"></label>
+            <input class="fs-field" id="weekday" type="number" inputmode="numeric" min="0" max="1440">
+          </div>
+          <div>
+            <label class="fs-label" for="weekend" data-i18n="settings.weekendQuota"></label>
+            <input class="fs-field" id="weekend" type="number" inputmode="numeric" min="0" max="1440">
+          </div>
+          <div>
+            <label class="fs-label" for="weekstart" data-i18n="settings.weekStart"></label>
+            <select class="fs-field" id="weekstart">
+              <option value="1" data-i18n="settings.day.d1"></option>
+              <option value="2" data-i18n="settings.day.d2"></option>
+              <option value="3" data-i18n="settings.day.d3"></option>
+              <option value="4" data-i18n="settings.day.d4"></option>
+              <option value="5" data-i18n="settings.day.d5"></option>
+              <option value="6" data-i18n="settings.day.d6"></option>
+              <option value="0" data-i18n="settings.day.d0"></option>
+            </select>
+            <p class="fs-hint" data-i18n="settings.weekStartHint"></p>
+          </div>
+          <div>
+            <label class="fs-label" for="daystart" data-i18n="settings.dayStart"></label>
+            <input class="fs-field" id="daystart" type="time" step="60">
+          </div>
+        </div>
+      </section>
 
-  <h2 data-i18n="settings.autoTitle"></h2>
-  <label class="check" for="autooff"><input id="autooff" type="checkbox"><span data-i18n="settings.autoOff"></span></label>
-  <label class="check" for="autoon"><input id="autoon" type="checkbox"><span data-i18n="settings.autoOn"></span></label>
-  <label for="autotime" data-i18n="settings.autoOnTime"></label>
-  <input id="autotime" type="time" step="60">
+      <section class="fs-card">
+        <div class="fs-card-head">
+          <div class="fs-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/></svg></div>
+          <div><h2 data-i18n="settings.autoTitle"></h2><p id="autosub"></p></div>
+        </div>
+        <div class="fs-stack">
+          <label class="fs-toggle-row" for="autooff">
+            <div><b data-i18n="settings.autoOff"></b><span class="fs-d" id="autoffhint"></span></div>
+            <span class="fs-switch"><input id="autooff" type="checkbox" role="switch"><i></i></span>
+          </label>
+          <label class="fs-toggle-row" for="autoon">
+            <div><b data-i18n="settings.autoOn"></b><span class="fs-d" data-i18n="settings.autoOnHint"></span></div>
+            <span class="fs-switch"><input id="autoon" type="checkbox" role="switch"><i></i></span>
+          </label>
+          <div id="autotimegroup" hidden>
+            <label class="fs-label" for="autotime" data-i18n="settings.autoOnTime"></label>
+            <input class="fs-field" id="autotime" type="time" step="60">
+          </div>
+        </div>
+      </section>
 
-  <button class="hy-button-primary" id="save" data-i18n="settings.save"></button>
-  <button id="wake" data-i18n="settings.wake"></button>
+      <button type="submit" class="fs-btn fs-save" id="save" data-i18n="settings.save"></button>
+      <div class="fs-saved" id="saved" role="status" data-i18n="settings.saved"></div>
+    </form>
+  </main>
 
   <script>
     function onHomeyReady(Homey) {
       var $ = function (id) { return document.getElementById(id); };
-      var statusKey = { unconfigured: 'unconfigured', connecting: 'connecting', prompt: 'prompt',
-        connected: 'connected', offline: 'offline' };
+      // [heltoneklasse, tekstnøkkel]
+      var connection = {
+        unconfigured: ['fs-bad', 'unconfigured'], connecting: ['fs-warn', 'connecting'], prompt: ['fs-warn', 'prompt'],
+        connected: [''  , 'connected'], offline: ['fs-bad', 'offline'],
+      };
       var filled = false;
+      var savedTimer = null;
+
+      // Tekstene om nullstilling følger klokkeslettet brukeren har valgt for når døgnet begynner.
+      function syncDayStart() {
+        var time = $('daystart').value || '05:00';
+        $('autosub').textContent = Homey.__('settings.autoSub', { time: time });
+        $('autoffhint').textContent = Homey.__('settings.autoOffHint', { time: time });
+      }
+      function syncAutoTime() { $('autotimegroup').hidden = !$('autoon').checked; }
 
       function render(s) {
-        $('status').textContent = Homey.__('settings.status.' + statusKey[s.connection]);
-        if (!filled) {
-          filled = true;
-          $('host').value = s.settings.host;
-          $('mac').value = s.settings.mac;
-          $('weekday').value = s.settings.weekdayMinutes;
-          $('weekend').value = s.settings.weekendMinutes;
-          $('weekstart').value = s.settings.weekStartDay;
-          $('autooff').checked = s.settings.autoOffAtRollover;
-          $('autoon').checked = s.settings.autoOnEnabled;
-          $('autotime').value = s.settings.autoOnTime;
-          syncAutoTime();
-        }
+        var c = connection[s.connection];
+        $('hero').className = 'fs-hero ' + c[0];
+        $('status').textContent = Homey.__('settings.status.' + c[1]);
+        var parts = [];
+        if (s.configured && s.connection === 'connected') parts.push(Homey.__(s.tvOn ? 'widget.tvOn' : 'widget.tvOff'));
+        if (s.settings.host) parts.push(s.settings.host);
+        $('substatus').textContent = parts.join(' · ');
+        if (filled) return; // ikke overskriv det brukeren holder på å skrive
+        filled = true;
+        $('host').value = s.settings.host;
+        $('mac').value = s.settings.mac;
+        $('weekday').value = s.settings.weekdayMinutes;
+        $('weekend').value = s.settings.weekendMinutes;
+        $('daystart').value = s.settings.dayStartTime;
+        $('weekstart').value = s.settings.weekStartDay;
+        $('autooff').checked = s.settings.autoOffAtRollover;
+        $('autoon').checked = s.settings.autoOnEnabled;
+        $('autotime').value = s.settings.autoOnTime;
+        syncAutoTime();
+        syncDayStart();
       }
-      function syncAutoTime() { $('autotime').disabled = !$('autoon').checked; }
       function refresh() { Homey.api('GET', '/status', null, function (err, s) { if (!err) render(s); }); }
 
-      $('save').addEventListener('click', function () {
+      function showSaved() {
+        $('saved').classList.add('fs-show');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(function () { $('saved').classList.remove('fs-show'); }, 3000);
+      }
+
+      $('autoon').addEventListener('change', syncAutoTime);
+      $('daystart').addEventListener('input', syncDayStart);
+      $('daystart').addEventListener('change', syncDayStart);
+      $('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        $('save').disabled = true;
         Homey.api('POST', '/configure', {
           host: $('host').value, mac: $('mac').value,
-          weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value, weekStartDay: $('weekstart').value,
+          weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value,
+          dayStartTime: $('daystart').value, weekStartDay: $('weekstart').value,
           autoOffAtRollover: $('autooff').checked, autoOnEnabled: $('autoon').checked, autoOnTime: $('autotime').value,
-        }, function (err, s) { if (err) Homey.alert(err.message); else render(s); });
+        }, function (err, s) {
+          $('save').disabled = false;
+          if (err) { Homey.alert(err.message); return; }
+          render(s);
+          showSaved();
+        });
       });
-      $('autoon').addEventListener('change', syncAutoTime);
       $('wake').addEventListener('click', function () {
         Homey.api('POST', '/wake', null, function (err) { if (err) Homey.alert(err.message); });
       });
