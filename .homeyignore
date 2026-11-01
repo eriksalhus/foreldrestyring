@@ -1,3 +1,7 @@
 tests/
 docs/
 GLOSSARY.md
+.github/
+CONTRIBUTING.md
+README.md
+LICENSE

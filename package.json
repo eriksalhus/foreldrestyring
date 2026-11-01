@@ -5,7 +5,7 @@
   "description": "Phone-controlled daily TV time quota for your TV, as a Homey Pro app",
   "scripts": {
     "build": "tsc",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"tests/*.test.ts\"",
     "typecheck": "tsc --noEmit"
   },
   "license": "MIT",

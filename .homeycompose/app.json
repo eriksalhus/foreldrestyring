@@ -74,5 +74,9 @@
       "path": "/reset-today"
     }
   },
-  "brandColor": "#2B6CB0"
+  "brandColor": "#2B6CB0",
+  "source": "https://github.com/eriksalhus/foreldrestyring",
+  "bugs": {
+    "url": "https://github.com/eriksalhus/foreldrestyring/issues"
+  }
 }

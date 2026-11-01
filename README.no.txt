@@ -1,3 +1,5 @@
 Gi barna en daglig TV-kvote som du styrer fra telefonen. Når Barnemodus er på, teller appen hvor lenge LG webOS-TV-en din er slått på. Når kvoten er brukt opp, slås TV-en av og forblir låst til du gir ekstra tid eller slår av Barnemodus.
 
 Appen snakker direkte med TV-en over hjemmenettet. En widget til Homey-dashbordet viser tid igjen og lar begge foreldre slå Barnemodus på og av, gi ekstra tid og se hvor mye tid som er brukt i dag og denne uka. Hvem som helst kan fortsatt slå på TV-en med fjernkontrollen, men mens den er låst slås den av igjen i løpet av sekunder. Barnemodus kan slås av automatisk når et nytt døgn begynner, og slås på automatisk til et klokkeslett du velger. Begge deler stilles inn på innstillingssiden, der du også velger når døgnet begynner (standard kl. 05:00).
+
+Ikke tilknyttet, godkjent av eller sponset av LG Electronics. LG og webOS er varemerker som tilhører LG Electronics. Appen virker bare på hjemmenettverket ditt og sender ingen data noe sted.

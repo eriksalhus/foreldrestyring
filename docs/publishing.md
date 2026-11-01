@@ -1,0 +1,48 @@
+# Publishing to the Homey App Store
+
+Maintainer checklist. Publishing is done by a person with a Homey developer account, not by CI.
+
+## Before the first publish
+
+- [ ] `homey app validate --level publish` passes (it does at the time of writing).
+- [ ] `npm test` and `npm run typecheck` pass, and the GitHub Actions run on `main` is green.
+- [ ] The repository is **public**. The manifest links to it (`source`, `bugs`), and store users, reviewers and contributors follow those links.
+- [ ] Create a topic for the app on the [Homey Community Forum](https://community.homey.app) and add its number as `homeyCommunityTopicId` in `.homeycompose/app.json`. Reviewers and users expect it as the support channel.
+- [ ] Test on a real Homey Pro with a real TV: first pairing ("Allow" on the TV), Child mode, the Lock, Extra time, Remove time, automatic turn-on and turn-off, and the widget on a dashboard.
+- [ ] Decide the first version number. It is `0.1.0` in `.homeycompose/app.json`; the entry in `.homeychangelog.json` must match the version being published.
+
+## What the store shows
+
+| Item | Where |
+| --- | --- |
+| Name, description, category, brand colour | `.homeycompose/app.json` |
+| Store text | `README.txt` (English, required) and `README.<language>.txt`. Plain text, no Markdown. |
+| Images | `assets/images/{small,large,xlarge}.png` (250×175, 500×350, 1000×700), made from `docs/promo.svg` |
+| App icon | `assets/icon.svg` |
+| What's new | `.homeychangelog.json`, keyed by version |
+
+`README.md` is for GitHub only and is not shipped; `.homeyignore` keeps the repository files out of the app bundle.
+
+## Publishing
+
+```sh
+homey login
+homey app publish
+```
+
+`homey app publish` uploads a build, and the app first appears as a **test version** that only people with the link can install. When it has been tried, submit it for certification in the [Homey developer tools](https://tools.developer.homey.app); Athom reviews it before it goes live in the store.
+
+## Releasing a new version
+
+```sh
+homey app version patch   # or minor / major: bumps the version in .homeycompose/app.json
+```
+
+Add an entry for the new version to `.homeychangelog.json`, commit, and run `homey app publish` again.
+
+## Things to keep in mind
+
+- **Do not change the app id** (`no.salhus.foreldrestyring`) or the widget id (`barnemodus`) after publishing. Users' installs and dashboards depend on them.
+- **Brand names.** The app name does not contain a TV brand, and the store text says it is not affiliated with LG Electronics. Keep it that way when adding drivers: the app name stays generic, and brands appear only in the description of what is supported.
+- **Privacy.** The app talks only to the TV on the local network and sends nothing elsewhere. Say so in the store text if that ever changes.
+- **Settings are not migrated by Homey.** If you change the stored settings shape, migrate it in `migrateSavedSettings` (see `lib/controller.ts`), as was done when drivers were introduced.
