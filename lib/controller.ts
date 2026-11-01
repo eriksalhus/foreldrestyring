@@ -40,18 +40,18 @@ export interface Host {
 export interface TvSettings {
   /** Id for the TV driver, e.g. `lg-webos`. */
   driver: string;
-  /** Verdiene i driverens felt (IP-adresse og lignende). */
+  /** The values of the driver's fields (IP address and the like). */
   driverConfig: Record<string, string>;
   weekdayMinutes: number;
   weekendMinutes: number;
   weekStartDay: number;
-  /** Klokkeslettet et Kvotedøgn begynner og Kvoten nullstilles, «HH:MM». */
+  /** When a Quota day begins and the Quota resets, "HH:MM". */
   dayStartTime: string;
-  /** Slå av Barnemodus når et nytt Kvotedøgn begynner. */
+  /** Turn Child mode off when a new Quota day begins. */
   autoOffAtRollover: boolean;
-  /** Slå på Barnemodus automatisk hver dag. */
+  /** Turn Child mode on automatically every day. */
   autoOnEnabled: boolean;
-  /** Klokkeslettet Barnemodus slås på, «HH:MM». */
+  /** When Child mode is turned on, "HH:MM". */
   autoOnTime: string;
 }
 
@@ -77,7 +77,7 @@ const TURN_OFF_DELAY_MS = 3_000;
 
 const minutes = (ms: number) => Math.round(ms / 60_000);
 
-/** Innstillinger fra før TV-driverne kom hadde `host` og `mac` på toppnivå, og alltid LG. */
+/** Settings from before TV drivers had `host` and `mac` at the top level, and were always LG. */
 export function migrateSavedSettings(saved: any): Partial<TvSettings> {
   if (!saved || typeof saved !== 'object') return {};
   const { host, mac, ...rest } = saved;
@@ -85,7 +85,7 @@ export function migrateSavedSettings(saved: any): Partial<TvSettings> {
   return { ...rest, driver: 'lg-webos', driverConfig: { host: String(host ?? ''), mac: String(mac ?? '') } };
 }
 
-/** «HH:MM» → minutter etter midnatt. Ugyldig tekst gir `fallback`. */
+/** "HH:MM" → minutes after midnight. Invalid text gives `fallback`. */
 function parseTime(time: string, fallback: number): number {
   const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time);
   return match ? Number(match[1]) * 60 + Number(match[2]) : fallback;
@@ -125,8 +125,8 @@ export class Controller {
     this.state = { ...emptyState(), ...(this.host.settings.get('state') ?? {}) };
     this.state.lastOnObservedMs = null;
     const now = Date.now();
-    if (applyDayRolloverOff(this.state, now, this.config)) this.host.log('Barnemodus slått av ved nytt Kvotedøgn (mens appen var nede)');
-    if (applyAutoOn(this.state, now, this.config)) this.host.log('Barnemodus slått på automatisk (mens appen var nede)');
+    if (applyDayRolloverOff(this.state, now, this.config)) this.host.log('Child mode turned off at new Quota day (while the app was down)');
+    if (applyAutoOn(this.state, now, this.config)) this.host.log('Child mode turned on automatically (while the app was down)');
     this.timers.push(this.host.setInterval(() => this.onTick(), TICK_MS));
     this.timers.push(this.host.setInterval(() => this.save(), SAVE_MS));
     await this.connect();
@@ -150,7 +150,7 @@ export class Controller {
     const autoOnChanged =
       settings.autoOnEnabled !== this.settings.autoOnEnabled || settings.autoOnTime !== this.settings.autoOnTime;
     this.applySettings(settings);
-    // Nytt starttidspunkt for Kvotedøgnet skal ikke telle som et døgnskifte som slår av Barnemodus.
+    // A new start time for the Quota day must not count as a rollover that turns Child mode off.
     if (dayStartChanged) this.state.lastDayKey = dayKey(Date.now(), this.config);
     if (autoOnChanged) rearmAutoOn(this.state, Date.now(), this.config);
     if (dayStartChanged || autoOnChanged) this.save();
@@ -188,7 +188,7 @@ export class Controller {
     return this.getStatus();
   }
 
-  /** Trekker minutter fra dagens Kvote. Når resten blir 0, vises «tiden er brukt opp» og TV-en slås av. */
+  /** Removes minutes from today's Quota. When nothing is left, "time is up" is shown and the TV is turned off. */
   reduceTime(reduceMinutes: number): Status {
     reduceTime(this.state, reduceMinutes, Date.now(), this.config);
     this.save();
@@ -206,7 +206,7 @@ export class Controller {
     await this.tv?.wake?.();
   }
 
-  /** TV-merkene appen kan styre, med feltene innstillingssiden skal tegne, på brukerens språk. */
+  /** The TV brands the app can control, with the fields the settings page draws, in the user's language. */
   getDrivers(): DriverDescription[] {
     return describeDrivers(this.host.i18n.getLanguage(), this.drivers);
   }
@@ -234,7 +234,7 @@ export class Controller {
     return Boolean(driver && isConfigured(driver, this.settings.driverConfig));
   }
 
-  /** Paringsdata per driver. LG lagret tidligere nøkkelen som `clientKey`, den leses fortsatt. */
+  /** Pairing data per driver. LG used to store its key as `clientKey`; it is still read. */
   private loadCredentials(driverId: string): unknown {
     const all = this.host.settings.get('tvCredentials') ?? {};
     if (driverId in all) return all[driverId];
@@ -265,11 +265,11 @@ export class Controller {
     const tv = this.tv;
     const now = Date.now();
     if (applyDayRolloverOff(this.state, now, this.config)) {
-      this.host.log('Barnemodus slått av ved nytt Kvotedøgn');
+      this.host.log('Child mode turned off at new Quota day');
       this.save();
     }
     if (applyAutoOn(this.state, now, this.config)) {
-      this.host.log('Barnemodus slått på automatisk');
+      this.host.log('Child mode turned on automatically');
       this.save();
     }
     const on = Boolean(tv?.isOn && tv.connection === 'connected');
@@ -294,7 +294,7 @@ export class Controller {
     }
   }
 
-  /** Slår TV-en av hvis Låsen er aktiv og TV-en er på. */
+  /** Turns the TV off if the Lock is engaged and the TV is on. */
   private enforce(): void {
     const now = Date.now();
     if (!this.tv?.isOn || !isLocked(this.state, now, this.config)) return;
@@ -303,12 +303,12 @@ export class Controller {
     this.say(this.host.__('toast.timeUp'));
     this.host.setTimeout(() => {
       if (!isLocked(this.state, Date.now(), this.config)) return;
-      this.tv?.turnOff().catch((err) => this.host.error('turnOff feilet:', err.message));
+      this.tv?.turnOff().catch((err) => this.host.error('turnOff failed:', err.message));
     }, TURN_OFF_DELAY_MS);
   }
 
   private say(message: string): void {
-    this.tv?.toast(message).catch((err) => this.host.error('toast feilet:', err.message));
+    this.tv?.toast(message).catch((err) => this.host.error('toast failed:', err.message));
   }
 
   private save(): void {

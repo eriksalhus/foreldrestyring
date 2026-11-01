@@ -1,13 +1,13 @@
 import Homey from 'homey';
 import { Controller, Status, TvSettings } from './lib/controller.ts';
 
-module.exports = class ForeldrestyringApp extends Homey.App {
+module.exports = class TvParentalControlApp extends Homey.App {
   private controller!: Controller;
 
   async onInit() {
     this.controller = new Controller(this.homey);
     await this.controller.start();
-    this.log('Foreldrestyring startet');
+    this.log('TV Parental Control started');
   }
 
   async onUninit() {

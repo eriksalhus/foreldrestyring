@@ -17,7 +17,7 @@ Node.js 22.18 or newer is needed for the tests: they run TypeScript directly. Fo
 
 ## Ground rules
 
-- **Language.** The domain words (Child mode, Quota, the Lock, …) are defined in [GLOSSARY.md](GLOSSARY.md), in Norwegian, with the English term in the app's texts. Use them as defined. Code comments are in English or Norwegian; either is fine. User-facing text must be in all nine languages in `locales/` (`en` is the reference), but for a first version of a driver `en` alone is enough.
+- **Language.** Code, comments, tests, documentation, commit messages and issues are in English. The domain words (Child mode, Quota, the Lock, …) are defined in [GLOSSARY.md](GLOSSARY.md); use them as defined. The app itself is multilingual: user-facing text lives in `locales/` (nine languages, `en` is the reference). A new text needs at least `en`; the other languages can follow. A driver's field labels and hints may be a plain string or a map from language code to text, with `en` required.
 - **Design decisions** live in [docs/adr](docs/adr). If your change contradicts one, say so in the pull request.
 - **Tests.** Logic changes come with a test. Driver code does not need a real TV in tests: fake the network.
 - **Small pull requests.** One driver or one fix per pull request.

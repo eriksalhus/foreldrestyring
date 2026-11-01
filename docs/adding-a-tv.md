@@ -1,6 +1,6 @@
 # Adding support for a new TV
 
-The app counts how long the TV has been on, and turns it off when the daily Quota is used up. Everything about *which brand* of TV that is lives in one small file, a **TV driver** (see [GLOSSARY.md](../GLOSSARY.md); the glossary is in Norwegian, so here is the short version: *Child mode* = the quota is active, *Quota* = minutes of TV per day, *the Lock* = the TV is turned off whenever it is on and the Quota is spent).
+The app counts how long the TV has been on, and turns it off when the daily Quota is used up. Everything about *which brand* of TV that is lives in one small file, a **TV driver** (see [GLOSSARY.md](../GLOSSARY.md) for the terms: *Child mode*, *Quota*, *the Lock*, …).
 
 A driver does four things: connects to the TV, tells the app whether the TV is on, shows a short message on screen, and turns the TV off. Everything else (quota, schedule, settings page, widget, Flows) works for every brand without changes.
 

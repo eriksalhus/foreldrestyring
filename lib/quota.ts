@@ -1,18 +1,18 @@
 export interface QuotaConfig {
   weekdayMinutes: number;
   weekendMinutes: number;
-  /** Klokkeslettet et Kvotedøgn begynner, i minutter etter midnatt lokal tid. */
+  /** When a Quota day begins, in minutes after local midnight. */
   dayStartMinute: number;
-  /** Ukedagen uka begynner på: 0 = søndag, 1 = mandag, … 6 = lørdag. */
+  /** The weekday the week starts on: 0 = Sunday, 1 = Monday, … 6 = Saturday. */
   weekStartDay: number;
-  /** Slår Barnemodus av når et nytt Kvotedøgn begynner. */
+  /** Turn Child mode off when a new Quota day begins. */
   autoOffAtRollover: boolean;
-  /** Slår Barnemodus på av seg selv hver dag. */
+  /** Turn Child mode on by itself every day. */
   autoOnEnabled: boolean;
-  /** Klokkeslettet Barnemodus slås på, i minutter etter midnatt lokal tid. */
+  /** When Child mode is turned on, in minutes after local midnight. */
   autoOnMinute: number;
   timeZone: string;
-  /** Lengre hull mellom to observasjoner enn dette telles ikke som TV-tid. */
+  /** A gap between two observations longer than this does not count as TV time. */
   maxGapMs: number;
 }
 
@@ -35,17 +35,17 @@ export interface DayRecord {
 
 export interface QuotaState {
   childMode: boolean;
-  /** Tidspunktet TV-en sist ble observert på, eller null hvis den ikke er det. */
+  /** When the TV was last observed on, or null if it was not. */
   lastOnObservedMs: number | null;
-  /** Kvotedøgnet Barnemodus sist ble sjekket mot, for å se når et nytt begynner. */
+  /** The Quota day Child mode was last checked against, to notice when a new one begins. */
   lastDayKey: string | null;
-  /** Den lokale datoen (YYYY-MM-DD) automatisk påslåing sist ble utført eller hoppet over. */
+  /** The local date (YYYY-MM-DD) automatic turn-on last ran or was skipped. */
   lastAutoOnDate: string | null;
-  /** Nøkkel: Kvotedøgnets startdato, YYYY-MM-DD. */
+  /** Key: the start date of the Quota day, YYYY-MM-DD. */
   days: Record<string, DayRecord>;
 }
 
-/** Minutter igjen som utløser en varsling på TV-en. */
+/** Minutes left that trigger a warning on the TV. */
 export const WARN_THRESHOLDS_MIN = [5, 1];
 
 const DAY_MS = 86_400_000;
@@ -69,7 +69,7 @@ function localParts(ms: number, timeZone: string) {
   return { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
 }
 
-/** Kvotedøgnet `nowMs` tilhører, som startdato YYYY-MM-DD. */
+/** The Quota day `nowMs` belongs to, as its start date YYYY-MM-DD. */
 export function dayKey(nowMs: number, config: QuotaConfig): string {
   const { year, month, day, hour, minute } = localParts(nowMs, config.timeZone);
   let date = Date.UTC(year, month - 1, day);
@@ -78,9 +78,9 @@ export function dayKey(nowMs: number, config: QuotaConfig): string {
 }
 
 /**
- * Slår Barnemodus av når et nytt Kvotedøgn har begynt siden forrige sjekk (ved `dayStartMinute`),
- * hvis `autoOffAtRollover` er på. Fanger også skiftet hvis det passerte mens appen var nede.
- * Returnerer true hvis Barnemodus ble slått av.
+ * Turns Child mode off when a new Quota day has begun since the last check (at `dayStartMinute`),
+ * if `autoOffAtRollover` is on. Also catches the rollover if it passed while the app was down.
+ * Returns true if Child mode was turned off.
  */
 export function applyDayRolloverOff(state: QuotaState, nowMs: number, config: QuotaConfig): boolean {
   const today = dayKey(nowMs, config);
@@ -91,7 +91,7 @@ export function applyDayRolloverOff(state: QuotaState, nowMs: number, config: Qu
   return true;
 }
 
-/** Lokal dato (YYYY-MM-DD) og minutter etter midnatt for `nowMs`. */
+/** Local date (YYYY-MM-DD) and minutes after midnight for `nowMs`. */
 function localDateAndMinute(nowMs: number, config: QuotaConfig): { date: string; minute: number } {
   const { year, month, day, hour, minute } = localParts(nowMs, config.timeZone);
   const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -99,9 +99,9 @@ function localDateAndMinute(nowMs: number, config: QuotaConfig): { date: string;
 }
 
 /**
- * Slår Barnemodus på første gang etter at klokkeslettet `autoOnMinute` er passert hver lokale dag, hvis
- * `autoOnEnabled` er på. En Forelder som slår Barnemodus av igjen samme dag blir ikke overstyrt.
- * Fanger også klokkeslettet hvis det passerte mens appen var nede. Returnerer true hvis Barnemodus ble slått på.
+ * Turns Child mode on the first time `autoOnMinute` has passed each local day, if `autoOnEnabled` is on.
+ * A Parent who turns Child mode off again the same day is not overridden. Also catches the time if it
+ * passed while the app was down. Returns true if Child mode was turned on.
  */
 export function applyAutoOn(state: QuotaState, nowMs: number, config: QuotaConfig): boolean {
   if (!config.autoOnEnabled) return false;
@@ -114,8 +114,8 @@ export function applyAutoOn(state: QuotaState, nowMs: number, config: QuotaConfi
 }
 
 /**
- * Kalles når innstillingene for automatisk påslåing er endret. Har klokkeslettet allerede passert i dag,
- * regnes i dag som utført, så Barnemodus ikke slås på i det øyeblikket en Forelder lagrer innstillingen.
+ * Call when the automatic turn-on settings have changed. If the time has already passed today,
+ * today counts as done, so Child mode is not turned on the moment a Parent saves the setting.
  */
 export function rearmAutoOn(state: QuotaState, nowMs: number, config: QuotaConfig): void {
   const { date, minute } = localDateAndMinute(nowMs, config);
@@ -153,7 +153,7 @@ export function isLocked(state: QuotaState, nowMs: number, config: QuotaConfig):
   return state.childMode && remainingMs(state, nowMs, config) <= 0;
 }
 
-/** TV-tid brukt i uka (fra `weekStartDay`) som Kvotedøgnet `nowMs` tilhører. */
+/** TV time used in the week (from `weekStartDay`) that the Quota day `nowMs` belongs to. */
 export function weekUsedMs(state: QuotaState, nowMs: number, config: QuotaConfig): number {
   const key = dayKey(nowMs, config);
   const date = new Date(`${key}T00:00:00Z`).getTime();
@@ -166,14 +166,14 @@ export function weekUsedMs(state: QuotaState, nowMs: number, config: QuotaConfig
 }
 
 export interface TickResult {
-  /** Terskler (minutter igjen) som ble krysset i dette tikket. */
+  /** Thresholds (minutes left) crossed in this tick. */
   crossed: number[];
   locked: boolean;
 }
 
 /**
- * Registrerer en observasjon av om TV-en er på. Tid mellom to påfølgende «på»-observasjoner
- * telles bare i Barnemodus, og bare hvis hullet er kortere enn `maxGapMs`.
+ * Records an observation of whether the TV is on. Time between two consecutive "on" observations
+ * only counts in Child mode, and only if the gap is shorter than `maxGapMs`.
  */
 export function tick(state: QuotaState, nowMs: number, tvOn: boolean, config: QuotaConfig): TickResult {
   const before = remainingMs(state, nowMs, config);
@@ -199,8 +199,8 @@ export function addExtra(state: QuotaState, minutes: number, nowMs: number, conf
 }
 
 /**
- * Trekker `minutes` fra dagens Kvote ved å gjøre Ekstra tid negativ. Det trekkes aldri mer enn det som er igjen,
- * så resten blir 0 og Låsen inntrer, men et senere tillegg starter fra 0. Returnerer minuttene som faktisk ble trukket.
+ * Removes `minutes` from today's Quota by making Extra time negative. Never removes more than what is left,
+ * so the remainder becomes 0 and the Lock engages, but a later addition starts from 0. Returns the minutes actually removed.
  */
 export function reduceTime(state: QuotaState, minutes: number, nowMs: number, config: QuotaConfig): number {
   const cutMs = Math.min(minutes * 60_000, Math.max(0, remainingMs(state, nowMs, config)));
@@ -208,7 +208,7 @@ export function reduceTime(state: QuotaState, minutes: number, nowMs: number, co
   return cutMs / 60_000;
 }
 
-/** Nullstiller brukt tid og Ekstra tid for Kvotedøgnet `nowMs` tilhører. */
+/** Resets used time and Extra time for the Quota day `nowMs` belongs to. */
 export function resetDay(state: QuotaState, nowMs: number, config: QuotaConfig): void {
   delete state.days[dayKey(nowMs, config)];
 }

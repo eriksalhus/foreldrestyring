@@ -11,37 +11,37 @@ const options = (config: Record<string, string> = {}) => ({
   log: () => {},
 });
 
-// Kontrakten alle drivere må oppfylle. Nye drivere legges i DRIVERS og testes her uten ekstra arbeid.
+// The contract every driver must meet. New drivers are added to DRIVERS and tested here at no extra cost.
 const all: TvDriver[] = [...DRIVERS, createSimulatedDriver().driver];
 
 for (const driver of all) {
-  test(`${driver.id}: beskrivelsen er gyldig`, () => {
-    assert.match(driver.id, /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, 'id må være kebab-case med små bokstaver');
-    assert.ok(driver.name.trim(), 'name må være satt');
-    assert.ok(driver.fields.length > 0, 'minst ett felt');
-    assert.ok(driver.fields.some((f) => f.required), 'minst ett påkrevd felt, ellers regnes TV-en som satt opp uten data');
+  test(`${driver.id}: the description is valid`, () => {
+    assert.match(driver.id, /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, 'id must be lowercase kebab-case');
+    assert.ok(driver.name.trim(), 'name must be set');
+    assert.ok(driver.fields.length > 0, 'at least one field');
+    assert.ok(driver.fields.some((f) => f.required), 'at least one required field, otherwise the TV counts as set up without any data');
     const keys = driver.fields.map((f) => f.key);
-    assert.equal(new Set(keys).size, keys.length, 'feltnøklene må være unike');
+    assert.equal(new Set(keys).size, keys.length, 'field keys must be unique');
     for (const f of driver.fields) {
-      assert.ok(resolveText(f.label, 'en'), `feltet ${f.key} trenger en etikett`);
-      if (typeof f.label === 'object') assert.ok(f.label.en, `feltet ${f.key} trenger en engelsk etikett`);
+      assert.ok(resolveText(f.label, 'en'), `field ${f.key} needs a label`);
+      if (typeof f.label === 'object') assert.ok(f.label.en, `field ${f.key} needs an English label`);
     }
-    if (driver.hint && typeof driver.hint === 'object') assert.ok(driver.hint.en, 'hint trenger en engelsk tekst');
+    if (driver.hint && typeof driver.hint === 'object') assert.ok(driver.hint.en, 'hint needs an English text');
   });
 
-  test(`${driver.id}: en ny tilkobling er koblet fra og TV-en regnes som av`, () => {
+  test(`${driver.id}: a new connection is not connected and the TV counts as off`, () => {
     const config = Object.fromEntries(driver.fields.map((f) => [f.key, 'x']));
     const tv = driver.createConnection(options(config));
     assert.equal(tv.connection, 'connecting');
     assert.equal(tv.isOn, false);
     for (const m of ['start', 'stop', 'toast', 'turnOff'] as const) assert.equal(typeof tv[m], 'function', m);
-    if (driver.canWake) assert.equal(typeof tv.wake, 'function', 'canWake krever wake()');
+    if (driver.canWake) assert.equal(typeof tv.wake, 'function', 'canWake requires wake()');
   });
 }
 
-test('en simulert TV følger kontrakten: hendelser, av-kommando og stopp', async () => {
+test('a simulated TV follows the contract: events, turn-off and stop', async () => {
   const { driver, connections } = createSimulatedDriver();
-  const tv = driver.createConnection(options({ name: 'Stue' }));
+  const tv = driver.createConnection(options({ name: 'Living room' }));
   const power: boolean[] = [];
   const conn: Connection[] = [];
   tv.on('power', (on) => power.push(on));
@@ -55,14 +55,14 @@ test('en simulert TV følger kontrakten: hendelser, av-kommando og stopp', async
   assert.equal(tv.isOn, false);
   connections[0].simulatePower(true);
   await tv.stop();
-  assert.equal(tv.isOn, false, 'stop() skal la isOn være false');
+  assert.equal(tv.isOn, false, 'stop() must leave isOn false');
   assert.deepEqual(power, [true, false, true, false]);
 });
 
-test('en TV uten kontakt regnes aldri som på', async () => {
+test('a TV without contact never counts as on', async () => {
   const { driver, connections } = createSimulatedDriver();
-  const tv = driver.createConnection(options({ name: 'Stue' }));
-  connections[0].simulatePower(true); // før start: ikke koblet til
+  const tv = driver.createConnection(options({ name: 'Living room' }));
+  connections[0].simulatePower(true); // before start: not connected
   assert.equal(tv.isOn, false);
   await tv.start();
   connections[0].simulatePower(true);
@@ -70,21 +70,21 @@ test('en TV uten kontakt regnes aldri som på', async () => {
   assert.equal(tv.isOn, false);
 });
 
-test('sanitizeConfig beholder bare driverens felt, som trimmet tekst', () => {
+test('sanitizeConfig keeps only the driver\'s fields, as trimmed text', () => {
   const { driver } = createSimulatedDriver();
-  assert.deepEqual(sanitizeConfig(driver, { name: '  Stue ', evil: 'x' }), { name: 'Stue' });
+  assert.deepEqual(sanitizeConfig(driver, { name: '  Living room ', evil: 'x' }), { name: 'Living room' });
   assert.deepEqual(sanitizeConfig(driver, { name: 42 }), { name: '42' });
   assert.deepEqual(sanitizeConfig(driver, { name: { a: 1 } }), { name: '' });
   assert.deepEqual(sanitizeConfig(driver, null), { name: '' });
 });
 
-test('isConfigured krever alle påkrevde felt', () => {
+test('isConfigured requires all required fields', () => {
   const lg = DRIVERS[0];
   assert.equal(isConfigured(lg, { host: '', mac: 'AA' }), false);
   assert.equal(isConfigured(lg, { host: '192.168.1.5', mac: '' }), true);
 });
 
-test('resolveText faller tilbake til engelsk og deretter til første tekst', () => {
+test('resolveText falls back to English and then to the first text', () => {
   assert.equal(resolveText({ en: 'Hi', no: 'Hei' }, 'no'), 'Hei');
   assert.equal(resolveText({ en: 'Hi', no: 'Hei' }, 'fr'), 'Hi');
   assert.equal(resolveText({ no: 'Hei' }, 'fr'), 'Hei');
@@ -92,7 +92,7 @@ test('resolveText faller tilbake til engelsk og deretter til første tekst', () 
   assert.equal(resolveText(undefined, 'no'), '');
 });
 
-test('describeDrivers gir innstillingssiden tekst på brukerens språk', () => {
+test('describeDrivers gives the settings page text in the user\'s language', () => {
   const [lg] = describeDrivers('no');
   assert.equal(lg.id, 'lg-webos');
   assert.equal(lg.fields[0].label, 'TV-ens IP-adresse');

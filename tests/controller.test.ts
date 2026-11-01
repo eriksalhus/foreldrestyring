@@ -26,7 +26,7 @@ function fakeHost(initial: Record<string, unknown> = {}) {
 
 const settings = (over: Partial<TvSettings> = {}): TvSettings => ({
   driver: 'simulated',
-  driverConfig: { name: 'Stue' },
+  driverConfig: { name: 'Living room' },
   weekdayMinutes: 30,
   weekendMinutes: 30,
   weekStartDay: 1,
@@ -45,7 +45,7 @@ async function setup(initial: Record<string, unknown> = {}) {
   return { ...env, controller, connections, driver };
 }
 
-test('uten oppsett er TV-en ikke satt opp og ingen tilkobling opprettes', async () => {
+test('without setup the TV is not configured and no connection is created', async () => {
   const { controller, connections } = await setup();
   const status = controller.getStatus();
   assert.equal(status.configured, false);
@@ -53,40 +53,40 @@ test('uten oppsett er TV-en ikke satt opp og ingen tilkobling opprettes', async 
   assert.equal(connections.length, 0);
 });
 
-test('configure kobler til via driveren og renser feltene', async () => {
+test('configure connects through the driver and cleans the fields', async () => {
   const { controller, connections, store } = await setup();
-  await controller.configure(settings({ driverConfig: { name: '  Stue ', evil: 'x' } as any }));
+  await controller.configure(settings({ driverConfig: { name: '  Living room ', evil: 'x' } as any }));
   const status = controller.getStatus();
   assert.equal(status.configured, true);
   assert.equal(status.connection, 'connected');
-  assert.deepEqual(status.settings.driverConfig, { name: 'Stue' });
+  assert.deepEqual(status.settings.driverConfig, { name: 'Living room' });
   assert.equal(connections.length, 1);
-  assert.deepEqual((store.get('tvSettings') as TvSettings).driverConfig, { name: 'Stue' });
+  assert.deepEqual((store.get('tvSettings') as TvSettings).driverConfig, { name: 'Living room' });
 });
 
-test('manglende påkrevd felt gir ikke noen tilkobling', async () => {
+test('a missing required field gives no connection', async () => {
   const { controller, connections } = await setup();
   await controller.configure(settings({ driverConfig: { name: '' } }));
   assert.equal(controller.getStatus().configured, false);
   assert.equal(connections.length, 0);
 });
 
-test('en ukjent driver i configure beholder den gamle', async () => {
+test('an unknown driver in configure keeps the old one', async () => {
   const { controller } = await setup();
   await controller.configure(settings({ driver: 'finnes-ikke' }));
   assert.equal(controller.getStatus().settings.driver, 'simulated');
 });
 
-test('uendret TV-oppsett kobler ikke til på nytt, endret gjør det', async () => {
+test('unchanged TV setup does not reconnect, changed setup does', async () => {
   const { controller, connections } = await setup();
   await controller.configure(settings());
   await controller.configure(settings({ weekdayMinutes: 45 }));
   assert.equal(connections.length, 1);
-  await controller.configure(settings({ driverConfig: { name: 'Kjellerstua' } }));
+  await controller.configure(settings({ driverConfig: { name: 'Basement' } }));
   assert.equal(connections.length, 2);
 });
 
-test('Låsen slår av TV-en gjennom driveren og viser melding', async () => {
+test('the Lock turns the TV off through the driver and shows a message', async () => {
   const { controller, connections, timeouts } = await setup();
   await controller.configure(settings());
   controller.setChildMode(true);
@@ -101,7 +101,7 @@ test('Låsen slår av TV-en gjennom driveren og viser melding', async () => {
   assert.equal(connections[0].isOn, false);
 });
 
-test('uten Barnemodus røres ikke TV-en', async () => {
+test('without Child mode the TV is left alone', async () => {
   const { controller, connections, timeouts } = await setup();
   await controller.configure(settings());
   controller.reduceTime(1000);
@@ -110,23 +110,23 @@ test('uten Barnemodus røres ikke TV-en', async () => {
   assert.equal(connections[0].turnOffCalls, 0);
 });
 
-test('wakeTv går via driveren', async () => {
+test('wakeTv goes through the driver', async () => {
   const { controller, connections } = await setup();
   await controller.configure(settings());
   await controller.wakeTv();
   assert.equal(connections[0].wakeCalls, 1);
 });
 
-test('paringsdata lagres per driver', async () => {
+test('pairing data is stored per driver', async () => {
   const { controller, connections, store } = await setup();
   await controller.configure(settings());
-  connections[0].saveCredentials('hemmelig');
-  assert.deepEqual(store.get('tvCredentials'), { simulated: 'hemmelig' });
-  await controller.configure(settings({ driverConfig: { name: 'Annen' } }));
-  assert.equal(connections[1].credentials, 'hemmelig');
+  connections[0].saveCredentials('secret');
+  assert.deepEqual(store.get('tvCredentials'), { simulated: 'secret' });
+  await controller.configure(settings({ driverConfig: { name: 'Other' } }));
+  assert.equal(connections[1].credentials, 'secret');
 });
 
-test('gamle innstillinger med host og mac blir til LG-driveren', () => {
+test('old settings with host and mac become the LG driver', () => {
   assert.deepEqual(migrateSavedSettings({ host: '10.0.0.5', mac: 'AA:BB', weekdayMinutes: 20 }), {
     weekdayMinutes: 20,
     driver: 'lg-webos',
@@ -137,15 +137,15 @@ test('gamle innstillinger med host og mac blir til LG-driveren', () => {
   assert.deepEqual(migrateSavedSettings(undefined), {});
 });
 
-test('en oppgradering beholder LG-oppsettet og den gamle clientKey', async () => {
+test('an upgrade keeps the LG setup and the old clientKey', async () => {
   const { driver, connections } = createSimulatedDriver();
   const lg = { ...driver, id: 'lg-webos', fields: [{ key: 'host', label: 'IP', required: true }] };
-  const env = fakeHost({ tvSettings: { host: '10.0.0.5', mac: '', weekdayMinutes: 20 }, clientKey: 'gammel-nøkkel' });
+  const env = fakeHost({ tvSettings: { host: '10.0.0.5', mac: '', weekdayMinutes: 20 }, clientKey: 'old-key' });
   const controller = new Controller(env.host, [lg]);
   await controller.start();
   const status = controller.getStatus();
   assert.equal(status.configured, true);
   assert.equal(status.settings.driver, 'lg-webos');
   assert.equal(status.settings.weekdayMinutes, 20);
-  assert.equal(connections[0].credentials, 'gammel-nøkkel');
+  assert.equal(connections[0].credentials, 'old-key');
 });

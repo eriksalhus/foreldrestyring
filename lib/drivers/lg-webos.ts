@@ -4,12 +4,12 @@ import type { DriverOptions, TvDriver } from './types.ts';
 type LgModule = typeof import('lgtv2', { with: { 'resolution-mode': 'import' } });
 type LgClient = InstanceType<LgModule['default']>;
 
-/** Tilstander der TV-en regnes som på: bildet kan være av, men TV-en er ikke i standby. */
+/** States in which the TV counts as on: the picture may be off, but the TV is not in standby. */
 const ON_STATES = new Set(['on', 'screen_off', 'screen_saver']);
 
 /**
- * Tynt lag over lgtv2 (SSAP over wss): holder TV-ens påslåtthet og tilkoblingsstatus oppdatert.
- * Paringsnøkkelen (`clientKey`) lagres som driverens credentials.
+ * Thin layer over lgtv2 (SSAP over wss): keeps the TV's power state and connection status up to date.
+ * The pairing key (`clientKey`) is stored as the driver's credentials.
  */
 class LgWebosConnection extends BaseTvConnection {
   private lg: LgClient | null = null;
@@ -47,7 +47,7 @@ class LgWebosConnection extends BaseTvConnection {
       this.setConnection('offline');
       this.setOn(false);
     });
-    lg.on('error', (err) => log('TV-feil:', err.message));
+    lg.on('error', (err) => log('TV error:', err.message));
   }
 
   async stop(): Promise<void> {

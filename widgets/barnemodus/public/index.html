@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="/homey.js" data-origin="widget"></script>
   <style>
-    /* Mål tatt fra Homeys egne widgeter: tittel 17px fet, undertittel 14px dempet, verdier 20-24px fet. */
+    /* Sizes taken from Homey's own widgets: title 17px bold, subtitle 14px muted, values 20-24px bold. */
     :root {
       --text: var(--homey-text-color, #e4e4e7);
       --accent: #5399f4;
@@ -27,7 +27,7 @@
     .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .muted { opacity: var(--muted); }
 
-    /* Topp: ikon, tittel, undertittel og bryter */
+    /* Top: icon, title, subtitle and switch */
     .head { display: flex; align-items: center; gap: 12px; min-width: 0; }
     .icon { flex: none; width: 28px; height: 28px; color: var(--text); }
     .title { font-size: 17px; font-weight: 700; line-height: 1.25; }
@@ -42,7 +42,7 @@
     .switch[aria-checked="true"] { background: var(--accent); }
     .switch[aria-checked="true"]::after { transform: translateX(22px); }
 
-    /* Ring med tid igjen, og runde knapper på hver side */
+    /* Ring with time left, and round buttons on each side */
     .dial { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 20px; }
     .ring { position: relative; flex: none; width: 184px; height: 184px; transition: opacity .3s; }
     .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
@@ -65,7 +65,7 @@
     .round:active:not(:disabled) { filter: brightness(1.25); }
     .round:disabled { opacity: .35; cursor: default; }
 
-    /* Intervall: hvor mange minutter hvert trykk flytter */
+    /* Step: how many minutes each tap moves */
     .step { display: flex; justify-content: center; margin-top: 12px; }
     .step select { appearance: none; -webkit-appearance: none; min-height: 44px; padding: 0 36px 0 18px; border: 0; border-radius: 22px;
       background-color: rgba(127, 127, 127, .2); color: var(--text); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
@@ -73,7 +73,7 @@
       background-repeat: no-repeat; background-position: right 14px center; }
     .step select:disabled { opacity: .35; cursor: default; }
 
-    /* Statistikk */
+    /* Statistics */
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0 16px; }
     .tile { padding: 12px 14px; border-radius: 16px; background: var(--tile); }
     .tile .name { font-size: 14px; font-weight: 500; opacity: var(--muted); }
@@ -81,7 +81,7 @@
     .tile .unit { font-size: 14px; font-weight: 500; opacity: var(--muted); }
     .tile .sub { margin-top: 2px; font-size: 12px; opacity: var(--muted); }
 
-    /* Bunnlinje */
+    /* Bottom line */
     .status { display: flex; align-items: center; gap: 16px; }
     .conn { display: flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 14px; }
     .conn span:last-child { opacity: var(--muted); }
@@ -157,12 +157,12 @@
       var strings = {};
       var STEPS = [5, 10, 15, 30];
       var stepMin = 5;
-      try { var saved = Number(localStorage.getItem('stepMinutes')); if (STEPS.indexOf(saved) >= 0) stepMin = saved; } catch (e) { /* uten lagring brukes 5 */ }
+      try { var saved = Number(localStorage.getItem('stepMinutes')); if (STEPS.indexOf(saved) >= 0) stepMin = saved; } catch (e) { /* without storage, 5 is used */ }
       function step() { return stepMin; }
       var connKey = { unconfigured: 'connUnconfigured', connecting: 'connNotConnected', prompt: 'connPrompt',
         connected: 'connConnected', offline: 'connNotConnected' };
 
-      // Tekstene kommer fra appen, i Homeys språk. Variabler skrives som __navn__.
+      // The texts come from the app, in Homey's language. Variables are written as __name__.
       function t(key, vars) {
         var text = strings[key] || key;
         Object.keys(vars || {}).forEach(function (name) { text = text.split('__' + name + '__').join(vars[name]); });
@@ -201,11 +201,11 @@
         document.documentElement.classList.toggle('locked', s.locked);
         document.documentElement.classList.toggle('on', s.childMode && !s.locked);
 
-        // Ringen viser hvor mye av dagens tid som er igjen.
+        // The ring shows how much of today's time is left.
         var CIRC = 2 * Math.PI * 80;
         var left = total > 0 ? Math.max(0, Math.min(1, s.remainingMinutes / total)) : 0;
         $('arc').setAttribute('stroke-dasharray', (left * CIRC).toFixed(1) + ' ' + CIRC.toFixed(1));
-        $('arc').style.opacity = left > 0 ? '1' : '0'; // ellers tegner den runde linjeenden en prikk
+        $('arc').style.opacity = left > 0 ? '1' : '0'; // otherwise the round line end draws a dot
         $('remaining').textContent = s.locked ? t('locked') : s.remainingMinutes;
         $('ring').className = 'ring' + (s.locked ? ' locked' : low ? ' low' : '');
         $('today').textContent = s.usedMinutes;
@@ -227,7 +227,7 @@
       $('toggle').addEventListener('click', function () {
         if (!status) return;
         var on = !status.childMode;
-        $('toggle').setAttribute('aria-checked', String(on)); // umiddelbar respons
+        $('toggle').setAttribute('aria-checked', String(on)); // immediate feedback
         call('POST', '/child-mode', { on: on });
       });
       $('plus').addEventListener('click', function () { call('POST', '/extra-time', { minutes: step() }); });
@@ -235,7 +235,7 @@
       $('step').addEventListener('change', function () {
         stepMin = Number($('step').value);
         $('step').setAttribute('aria-label', t('perTap', { minutes: stepMin }));
-        try { localStorage.setItem('stepMinutes', String(stepMin)); } catch (e) { /* valget gjelder til widgeten lastes på nytt */ }
+        try { localStorage.setItem('stepMinutes', String(stepMin)); } catch (e) { /* the choice lasts until the widget is reloaded */ }
       });
 
       var resetTimer = null;
@@ -250,16 +250,16 @@
         }
       });
 
-      // Høyden måles etter første visning, så innholdet aldri trenger å skrolles.
+      // The height is measured after the first render, so the content never needs scrolling.
       Homey.api('GET', '/strings', {})
         .then(function (loaded) { strings = loaded; })
-        .catch(function () { /* uten tekster vises nøklene */ })
+        .catch(function () { /* without texts, the keys are shown */ })
         .then(function () {
           translateStatic();
           return refresh();
         })
         .then(function () {
-          Homey.ready({ height: Math.ceil($('app').offsetHeight) + 32 }); // innhold + 2 × 16 px luft
+          Homey.ready({ height: Math.ceil($('app').offsetHeight) + 32 }); // content + 2 × 16 px padding
         });
       setInterval(refresh, 10000);
     }
