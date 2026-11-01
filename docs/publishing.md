@@ -19,6 +19,7 @@ Maintainer checklist. Publishing is done by a person with a Homey developer acco
 | Store text | `README.txt` (English, required) and `README.<language>.txt`. Plain text, no Markdown. |
 | Images | `assets/images/{small,large,xlarge}.png` (250×175, 500×350, 1000×700), made from `docs/promo.svg` |
 | App icon | `assets/icon.svg` |
+| Widget previews | `widgets/barnemodus/preview-{light,dark}.png` (1024×1024, transparent corners), made from `docs/widget-preview-{light,dark}.svg` |
 | What's new | `.homeychangelog.json`, keyed by version |
 
 `README.md` is for GitHub only and is not shipped; `.homeyignore` keeps the repository files out of the app bundle.
@@ -46,3 +47,14 @@ Add an entry for the new version to `.homeychangelog.json`, commit, and run `hom
 - **Brand names.** The app name does not contain a TV brand, and the store text says it is not affiliated with LG Electronics. Keep it that way when adding drivers: the app name stays generic, and brands appear only in the description of what is supported.
 - **Privacy.** The app talks only to the TV on the local network and sends nothing elsewhere. Say so in the store text if that ever changes.
 - **Settings are not migrated by Homey.** If you change the stored settings shape, migrate it in `migrateSavedSettings` (see `lib/controller.ts`), as was done when drivers were introduced.
+
+## Regenerating images
+
+The PNGs are rendered from the SVG sources in `docs/` with headless Chrome. Redo them when the widget or the logo changes, for example:
+
+```sh
+chrome --headless=new --hide-scrollbars --default-background-color=00000000 --window-size=1024,1024 \
+  --screenshot=widgets/barnemodus/preview-light.png file:///path/to/page-showing-the-svg.html
+```
+
+Keep the corners transparent and the size at 1024×1024 for the widget previews; the store images are 250×175, 500×350 and 1000×700.

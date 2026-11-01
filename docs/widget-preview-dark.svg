@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Widget preview, dark theme. A schematic of the Child mode widget: texts are drawn as bars so the image is the same in every language. -->
+  <rect x="114" y="130" width="796" height="764" rx="72" fill="#2b2f36" stroke="#4a515c" stroke-width="4"/>
+
+  <!-- top: icon, title, status and switch -->
+  <circle cx="200" cy="232" r="28" fill="#7b8794"/>
+  <rect x="252" y="216" width="268" height="32" rx="16" fill="#7b8794"/>
+  <rect x="168" y="276" width="232" height="28" rx="14" fill="#e4e7eb"/>
+  <rect x="688" y="200" width="168" height="72" rx="36" fill="#4f8fd6"/>
+  <circle cx="820" cy="236" r="26" fill="#fff"/>
+
+  <!-- ring with time left, remove time (−) on the left and give time (+) on the right -->
+  <circle cx="512" cy="446" r="100" fill="none" stroke="#3a414c" stroke-width="26"/>
+  <circle cx="512" cy="446" r="100" fill="none" stroke="#4f8fd6" stroke-width="26" stroke-linecap="round"
+          stroke-dasharray="408 628" transform="rotate(-90 512 446)"/>
+  <rect x="456" y="424" width="112" height="40" rx="20" fill="#e4e7eb"/>
+  <rect x="470" y="478" width="84" height="16" rx="8" fill="#7b8794"/>
+  <circle cx="276" cy="446" r="52" fill="#f5a623" fill-opacity=".22"/>
+  <path d="M252 446 H300" stroke="#f5a623" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="748" cy="446" r="52" fill="#4f8fd6" fill-opacity=".22"/>
+  <path d="M724 446 H772 M748 422 V470" stroke="#4f8fd6" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- step picker: minutes per tap -->
+  <rect x="432" y="580" width="160" height="52" rx="26" fill="#3a414c"/>
+  <rect x="460" y="598" width="64" height="16" rx="8" fill="#e4e7eb"/>
+  <path d="M552 602 L562 612 L572 602" fill="none" stroke="#7b8794" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- statistics: today and this week -->
+  <rect x="168" y="676" width="336" height="112" rx="32" fill="#3a414c"/>
+  <rect x="520" y="676" width="336" height="112" rx="32" fill="#3a414c"/>
+  <rect x="200" y="706" width="128" height="24" rx="12" fill="#7b8794"/>
+  <rect x="200" y="744" width="100" height="28" rx="14" fill="#e4e7eb"/>
+  <rect x="552" y="706" width="128" height="24" rx="12" fill="#7b8794"/>
+  <rect x="552" y="744" width="100" height="28" rx="14" fill="#e4e7eb"/>
+
+  <!-- status: connection and TV power -->
+  <circle cx="180" cy="826" r="11" fill="#87d23f"/>
+  <rect x="204" y="817" width="108" height="18" rx="9" fill="#7b8794"/>
+  <circle cx="352" cy="826" r="11" fill="#87d23f"/>
+  <rect x="376" y="817" width="72" height="18" rx="9" fill="#7b8794"/>
+</svg>

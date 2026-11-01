@@ -2,5 +2,9 @@
   "0.1.0": {
     "en": "First release: daily TV time quota for LG webOS TVs, with a dashboard widget, automatic turn-on and turn-off of Child mode, and a settings page.",
     "no": "Første utgave: daglig TV-tid for LG webOS-TV, med dashbord-widget, automatisk av- og påslåing av Barnemodus og en innstillingsside."
+  },
+  "0.1.1": {
+    "en": "Settings are now saved automatically when you leave a field, so there is no Save button. The IP address field uses the normal keyboard. New widget preview images. Under the hood, support for more TV brands is prepared.",
+    "no": "Innstillingene lagres nå automatisk når du forlater et felt, så det er ingen Lagre-knapp. IP-feltet bruker vanlig tastatur. Nye forhåndsvisningsbilder av widgeten. Under panseret er det lagt til rette for flere TV-merker."
   }
 }
