@@ -2,4 +2,6 @@ Donnez à vos enfants un quota quotidien de télévision que vous gérez depuis 
 
 L’application communique directement avec votre téléviseur via votre réseau domestique. Un widget pour votre tableau de bord Homey affiche le temps restant et permet aux deux parents d’activer ou de désactiver le mode enfant, d’accorder du temps supplémentaire et de voir le temps utilisé aujourd’hui et cette semaine. Tout le monde peut encore allumer le téléviseur avec la télécommande, mais tant qu’il est verrouillé, il s’éteint de nouveau en quelques secondes. Le mode enfant peut se désactiver automatiquement lorsqu’une nouvelle journée commence, et s’activer automatiquement à l’heure de votre choix. Les deux se règlent sur la page des paramètres, où vous choisissez aussi l’heure de début de la journée (05:00 par défaut).
 
+Prend actuellement en charge les téléviseurs LG webOS. Testée sur un LG G2 (webOS 22) ; les autres modèles webOS devraient fonctionner, mais n’ont pas été testés.
+
 Sans lien avec LG Electronics, non approuvée ni sponsorisée par LG Electronics. LG et webOS sont des marques de LG Electronics. L’application fonctionne uniquement sur votre réseau domestique et n’envoie aucune donnée ailleurs.

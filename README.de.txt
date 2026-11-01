@@ -2,4 +2,6 @@ Gib deinen Kindern ein tägliches Fernsehkontingent, das du bequem vom Smartphon
 
 Die App kommuniziert direkt über dein Heimnetzwerk mit dem Fernseher. Ein Widget für dein Homey-Dashboard zeigt die verbleibende Zeit und lässt beide Elternteile den Kindermodus ein- oder ausschalten, zusätzliche Zeit geben und sehen, wie viel Zeit heute und in dieser Woche genutzt wurde. Mit der Fernbedienung lässt sich der Fernseher weiterhin einschalten, doch während der Sperre wird er innerhalb weniger Sekunden wieder ausgeschaltet. Der Kindermodus kann automatisch beendet werden, wenn ein neuer Tag beginnt, und zu einer von dir gewählten Uhrzeit automatisch eingeschaltet werden. Beides stellst du auf der Einstellungsseite ein, wo du auch festlegst, wann der Tag beginnt (standardmäßig 05:00 Uhr).
 
+Unterstützt derzeit LG-webOS-Fernseher. Getestet mit einem LG G2 (webOS 22); andere webOS-Modelle sollten funktionieren, wurden aber nicht getestet.
+
 Nicht mit LG Electronics verbunden und nicht von LG Electronics unterstützt oder gesponsert. LG und webOS sind Marken von LG Electronics. Die App arbeitet nur in deinem Heimnetzwerk und sendet keine Daten irgendwohin.
