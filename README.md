@@ -25,3 +25,7 @@ Hvert merke er én fil i `lib/drivers/`, som oppfyller kontrakten i `lib/drivers
 2. Gi TV-en fast IP i routeren, helst på kabel.
 3. Åpne appens innstillinger i Homey: fyll inn IP og MAC, trykk «Lagre og koble til», og trykk «Tillat» på TV-en.
 4. Legg widgeten «Barnemodus» på et Homey-dashbord.
+
+## Lisens
+
+[MIT](LICENSE).

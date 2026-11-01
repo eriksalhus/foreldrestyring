@@ -26,3 +26,7 @@ Node.js 22.18 or newer is needed for the tests: they run TypeScript directly. Fo
 ## Reporting a problem
 
 Open an issue with the TV brand, model and firmware, what you expected and what happened, and the app log (`homey app run` or the Homey developer tools).
+
+## License
+
+The project is under the [MIT License](LICENSE). By opening a pull request you agree that your contribution is released under the same license.
