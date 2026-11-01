@@ -7,6 +7,7 @@ import {
   dayKey,
   emptyState,
   isLocked,
+  reduceTime,
   remainingMs,
   resetDay,
   setChildMode,
@@ -173,4 +174,41 @@ test('skiftet som passerte mens appen var nede fanges ved neste sjekk', () => {
   applyDayRolloverOff(s, MON_16, cfg);
   assert.equal(applyDayRolloverOff(s, MON_16 + 24 * 60 * MIN, cfg), true);
   assert.equal(s.childMode, false);
+});
+
+test('Trekk av tid reduserer det som er igjen', () => {
+  const s = emptyState();
+  setChildMode(s, true);
+  assert.equal(reduceTime(s, 10, MON_16, cfg), 10);
+  assert.equal(remainingMs(s, MON_16, cfg), 20 * MIN);
+  assert.equal(isLocked(s, MON_16, cfg), false);
+});
+
+test('Trekk av tid til 0 inntrer Låsen', () => {
+  const s = emptyState();
+  setChildMode(s, true);
+  watch(s, MON_16, 5);
+  reduceTime(s, 25, MON_16 + 5 * MIN, cfg);
+  assert.equal(remainingMs(s, MON_16 + 5 * MIN, cfg), 0);
+  assert.equal(isLocked(s, MON_16 + 5 * MIN, cfg), true);
+});
+
+test('Trekk av tid går aldri under 0, så Ekstra tid etterpå gir riktig tid', () => {
+  const s = emptyState();
+  setChildMode(s, true);
+  watch(s, MON_16, 20); // 10 min igjen
+  const now = MON_16 + 20 * MIN;
+  assert.equal(reduceTime(s, 30, now, cfg), 10);
+  assert.equal(remainingMs(s, now, cfg), 0);
+  assert.equal(reduceTime(s, 15, now, cfg), 0);
+  addExtra(s, 10, now, cfg);
+  assert.equal(remainingMs(s, now, cfg), 10 * MIN);
+  assert.equal(isLocked(s, now, cfg), false);
+});
+
+test('Trekk av tid gjelder bare inneværende Kvotedøgn', () => {
+  const s = emptyState();
+  setChildMode(s, true);
+  reduceTime(s, 10, MON_16, cfg);
+  assert.equal(remainingMs(s, MON_16 + 24 * 60 * MIN, cfg), 30 * MIN);
 });

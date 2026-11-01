@@ -8,26 +8,26 @@
     "local"
   ],
   "name": {
-    "en": "Kids TV Time",
-    "no": "Barne-TV-tid",
-    "nl": "Tv-tijd voor kinderen",
-    "de": "Fernsehzeit für Kinder",
-    "sv": "TV-tid för barn",
-    "da": "TV-tid til børn",
-    "fr": "Temps TV des enfants",
-    "it": "Tempo TV dei bambini",
-    "es": "Tiempo de TV infantil"
+    "en": "TV Parental Control",
+    "no": "TV-foreldrestyring",
+    "nl": "Tv-tijdbeheer",
+    "de": "TV-Zeitkontrolle",
+    "sv": "TV-tidsstyrning",
+    "da": "TV-tidsstyring",
+    "fr": "Contrôle parental TV",
+    "it": "Controllo parentale TV",
+    "es": "Control parental TV"
   },
   "description": {
-    "en": "Set a daily TV time limit for your kids from your phone.",
-    "no": "Sett en daglig TV-grense for barna fra telefonen.",
-    "nl": "Stel vanaf je telefoon een dagelijkse tv-limiet voor je kinderen in.",
-    "de": "Lege vom Smartphone aus ein tägliches Fernsehlimit für deine Kinder fest.",
-    "sv": "Sätt en daglig TV-gräns för barnen från mobilen.",
-    "da": "Sæt en daglig tv-grænse for børnene fra din telefon.",
-    "fr": "Fixez depuis votre téléphone une limite quotidienne de télé pour vos enfants.",
-    "it": "Imposta dal telefono un limite giornaliero di TV per i tuoi figli.",
-    "es": "Fija desde tu móvil un límite diario de televisión para tus hijos."
+    "en": "Daily TV time limits for your kids, set from your phone.",
+    "no": "Daglig TV-tid for barna, styrt fra telefonen.",
+    "nl": "Ouderlijk toezicht op de tv-tijd van je kinderen, vanaf je telefoon.",
+    "de": "Kindersicherung für die Fernsehzeit deiner Kinder, per Smartphone gesteuert.",
+    "sv": "Föräldrakontroll för barnens TV-tid, styrd från mobilen.",
+    "da": "Forældrekontrol af børnenes tv-tid, styret fra din telefon.",
+    "fr": "Limitez le temps de télé de vos enfants depuis votre téléphone.",
+    "it": "Limita il tempo che i tuoi figli passano davanti alla TV, dal telefono.",
+    "es": "Limita el tiempo que tus hijos ven la tele, desde el móvil."
   },
   "category": [
     "tools"
@@ -38,7 +38,8 @@
   },
   "images": {
     "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png"
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
   },
   "api": {
     "getStatus": {
@@ -52,6 +53,10 @@
     "addExtraTime": {
       "method": "POST",
       "path": "/extra-time"
+    },
+    "reduceTime": {
+      "method": "POST",
+      "path": "/reduce-time"
     },
     "configure": {
       "method": "POST",
@@ -93,6 +98,10 @@
         "addExtraTime": {
           "method": "POST",
           "path": "/extra-time"
+        },
+        "reduceTime": {
+          "method": "POST",
+          "path": "/reduce-time"
         },
         "resetToday": {
           "method": "POST",

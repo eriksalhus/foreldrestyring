@@ -154,6 +154,16 @@ export function addExtra(state: QuotaState, minutes: number, nowMs: number, conf
   dayRecord(state, dayKey(nowMs, config)).extraMs += minutes * 60_000;
 }
 
+/**
+ * Trekker `minutes` fra dagens Kvote ved å gjøre Ekstra tid negativ. Det trekkes aldri mer enn det som er igjen,
+ * så resten blir 0 og Låsen inntrer, men et senere tillegg starter fra 0. Returnerer minuttene som faktisk ble trukket.
+ */
+export function reduceTime(state: QuotaState, minutes: number, nowMs: number, config: QuotaConfig): number {
+  const cutMs = Math.min(minutes * 60_000, Math.max(0, remainingMs(state, nowMs, config)));
+  dayRecord(state, dayKey(nowMs, config)).extraMs -= cutMs;
+  return cutMs / 60_000;
+}
+
 /** Nullstiller brukt tid og Ekstra tid for Kvotedøgnet `nowMs` tilhører. */
 export function resetDay(state: QuotaState, nowMs: number, config: QuotaConfig): void {
   delete state.days[dayKey(nowMs, config)];

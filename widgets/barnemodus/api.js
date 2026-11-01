@@ -27,4 +27,9 @@ module.exports = {
     if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 240) throw new Error(homey.__('error.invalidMinutes'));
     return homey.app.addExtraTime(minutes);
   },
+  async reduceTime({ homey, body }) {
+    const minutes = Number(body.minutes);
+    if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 240) throw new Error(homey.__('error.invalidMinutes'));
+    return homey.app.reduceTime(minutes);
+  },
 };

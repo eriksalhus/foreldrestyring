@@ -9,6 +9,7 @@ import {
   extraMs,
   isLocked,
   prune,
+  reduceTime,
   resetDay,
   quotaMs,
   remainingMs,
@@ -125,6 +126,14 @@ export class Controller {
   addExtraTime(extraMinutes: number): Status {
     addExtra(this.state, extraMinutes, Date.now(), this.config);
     this.save();
+    return this.getStatus();
+  }
+
+  /** Trekker minutter fra dagens Kvote. Når resten blir 0, vises «tiden er brukt opp» og TV-en slås av. */
+  reduceTime(reduceMinutes: number): Status {
+    reduceTime(this.state, reduceMinutes, Date.now(), this.config);
+    this.save();
+    this.enforce();
     return this.getStatus();
   }
 

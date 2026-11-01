@@ -26,6 +26,10 @@ module.exports = class ForeldrestyringApp extends Homey.App {
     return this.controller.addExtraTime(minutes);
   }
 
+  reduceTime(minutes: number): Status {
+    return this.controller.reduceTime(minutes);
+  }
+
   resetToday(): Status {
     return this.controller.resetToday();
   }

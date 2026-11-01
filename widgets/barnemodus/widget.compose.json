@@ -24,6 +24,10 @@
       "method": "POST",
       "path": "/extra-time"
     },
+    "reduceTime": {
+      "method": "POST",
+      "path": "/reduce-time"
+    },
     "resetToday": {
       "method": "POST",
       "path": "/reset-today"

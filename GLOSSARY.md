@@ -28,6 +28,10 @@ _Avoid_: Grense, budsjett, tidsgrense
 Minutter en Forelder legger til dagens Kvote. Den gjelder bare for inneværende Kvotedøgn.
 _Avoid_: Bonus, utsettelse
 
+**Trekk av tid**:
+Minutter en Forelder tar bort fra dagens Kvote. Det trekkes aldri mer enn det som er igjen, og når resten blir 0 inntrer Låsen, så TV-en viser «tiden er brukt opp» og slås av. Gjelder bare inneværende Kvotedøgn.
+_Avoid_: Straff, kutt
+
 **Låsen**:
 Tilstanden som inntrer når Kvoten er brukt opp mens Barnemodus er på. TV-en slås av så snart den er på, til en Forelder gir Ekstra tid eller slår av Barnemodus, eller til neste Kvotedøgn begynner.
 _Avoid_: Sperre, blokkering, stenging

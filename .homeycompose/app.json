@@ -53,6 +53,10 @@
       "method": "POST",
       "path": "/extra-time"
     },
+    "reduceTime": {
+      "method": "POST",
+      "path": "/reduce-time"
+    },
     "configure": {
       "method": "POST",
       "path": "/configure"
