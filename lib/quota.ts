@@ -1,8 +1,8 @@
 export interface QuotaConfig {
   weekdayMinutes: number;
   weekendMinutes: number;
-  /** Klokkeslettet et Kvotedøgn begynner, i hele timer. */
-  resetHour: number;
+  /** Klokkeslettet et Kvotedøgn begynner, i minutter etter midnatt lokal tid. */
+  dayStartMinute: number;
   /** Ukedagen uka begynner på: 0 = søndag, 1 = mandag, … 6 = lørdag. */
   weekStartDay: number;
   /** Slår Barnemodus av når et nytt Kvotedøgn begynner. */
@@ -19,7 +19,7 @@ export interface QuotaConfig {
 export const DEFAULT_CONFIG: QuotaConfig = {
   weekdayMinutes: 30,
   weekendMinutes: 60,
-  resetHour: 5,
+  dayStartMinute: 5 * 60,
   weekStartDay: 1,
   autoOffAtRollover: true,
   autoOnEnabled: false,
@@ -71,14 +71,14 @@ function localParts(ms: number, timeZone: string) {
 
 /** Kvotedøgnet `nowMs` tilhører, som startdato YYYY-MM-DD. */
 export function dayKey(nowMs: number, config: QuotaConfig): string {
-  const { year, month, day, hour } = localParts(nowMs, config.timeZone);
+  const { year, month, day, hour, minute } = localParts(nowMs, config.timeZone);
   let date = Date.UTC(year, month - 1, day);
-  if (hour < config.resetHour) date -= DAY_MS;
+  if (hour * 60 + minute < config.dayStartMinute) date -= DAY_MS;
   return new Date(date).toISOString().slice(0, 10);
 }
 
 /**
- * Slår Barnemodus av når et nytt Kvotedøgn har begynt siden forrige sjekk (kl. 05:00 lokal tid),
+ * Slår Barnemodus av når et nytt Kvotedøgn har begynt siden forrige sjekk (ved `dayStartMinute`),
  * hvis `autoOffAtRollover` er på. Fanger også skiftet hvis det passerte mens appen var nede.
  * Returnerer true hvis Barnemodus ble slått av.
  */

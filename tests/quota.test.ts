@@ -271,3 +271,22 @@ test('lagring før klokkeslettet har passert slår på Barnemodus ved klokkeslet
   rearmAutoOn(s, MON_1559, autoOn);
   assert.equal(applyAutoOn(s, MON_1600, autoOn), true);
 });
+
+test('Kvotedøgnet kan begynne på et annet klokkeslett, også med minutter', () => {
+  const late = { ...cfg, dayStartMinute: 7 * 60 + 30 }; // kl. 07:30
+  assert.equal(dayKey(Date.parse('2026-10-26T06:29:00Z'), late), '2026-10-25'); // 07:29 lokal
+  assert.equal(dayKey(Date.parse('2026-10-26T06:30:00Z'), late), '2026-10-26'); // 07:30 lokal
+  const early = { ...cfg, dayStartMinute: 0 }; // midnatt
+  assert.equal(dayKey(Date.parse('2026-10-25T23:00:00Z'), early), '2026-10-26'); // 00:00 lokal
+});
+
+test('Barnemodus slås av ved det valgte starttidspunktet for Kvotedøgnet', () => {
+  const late = { ...cfg, dayStartMinute: 7 * 60 };
+  const s = emptyState();
+  setChildMode(s, true);
+  applyDayRolloverOff(s, Date.parse('2026-10-26T05:00:00Z'), late); // 06:00 lokal, fortsatt gårsdagen
+  assert.equal(applyDayRolloverOff(s, Date.parse('2026-10-26T05:59:00Z'), late), false); // 06:59
+  assert.equal(s.childMode, true);
+  assert.equal(applyDayRolloverOff(s, Date.parse('2026-10-26T06:00:00Z'), late), true); // 07:00
+  assert.equal(s.childMode, false);
+});

@@ -39,7 +39,9 @@ export interface TvSettings {
   weekdayMinutes: number;
   weekendMinutes: number;
   weekStartDay: number;
-  /** Slå av Barnemodus når et nytt Kvotedøgn begynner (kl. 05:00). */
+  /** Klokkeslettet et Kvotedøgn begynner og Kvoten nullstilles, «HH:MM». */
+  dayStartTime: string;
+  /** Slå av Barnemodus når et nytt Kvotedøgn begynner. */
   autoOffAtRollover: boolean;
   /** Slå på Barnemodus automatisk hver dag. */
   autoOnEnabled: boolean;
@@ -69,10 +71,10 @@ const TURN_OFF_DELAY_MS = 3_000;
 
 const minutes = (ms: number) => Math.round(ms / 60_000);
 
-/** «HH:MM» → minutter etter midnatt. Ugyldig tekst gir standardtiden. */
-function parseTime(time: string): number {
+/** «HH:MM» → minutter etter midnatt. Ugyldig tekst gir `fallback`. */
+function parseTime(time: string, fallback: number): number {
   const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time);
-  return match ? Number(match[1]) * 60 + Number(match[2]) : DEFAULT_CONFIG.autoOnMinute;
+  return match ? Number(match[1]) * 60 + Number(match[2]) : fallback;
 }
 
 export class Controller {
@@ -83,6 +85,7 @@ export class Controller {
     weekdayMinutes: 30,
     weekendMinutes: 60,
     weekStartDay: 1,
+    dayStartTime: '05:00',
     autoOffAtRollover: true,
     autoOnEnabled: false,
     autoOnTime: '15:00',
@@ -119,13 +122,14 @@ export class Controller {
 
   async configure(settings: TvSettings): Promise<void> {
     const hostChanged = settings.host !== this.settings.host || settings.mac !== this.settings.mac;
+    const dayStartChanged = settings.dayStartTime !== this.settings.dayStartTime;
     const autoOnChanged =
       settings.autoOnEnabled !== this.settings.autoOnEnabled || settings.autoOnTime !== this.settings.autoOnTime;
     this.applySettings(settings);
-    if (autoOnChanged) {
-      rearmAutoOn(this.state, Date.now(), this.config);
-      this.save();
-    }
+    // Nytt starttidspunkt for Kvotedøgnet skal ikke telle som et døgnskifte som slår av Barnemodus.
+    if (dayStartChanged) this.state.lastDayKey = dayKey(Date.now(), this.config);
+    if (autoOnChanged) rearmAutoOn(this.state, Date.now(), this.config);
+    if (dayStartChanged || autoOnChanged) this.save();
     this.host.settings.set('tvSettings', this.settings);
     if (hostChanged) await this.connect();
   }
@@ -187,7 +191,8 @@ export class Controller {
       weekStartDay: this.settings.weekStartDay,
       autoOffAtRollover: this.settings.autoOffAtRollover,
       autoOnEnabled: this.settings.autoOnEnabled,
-      autoOnMinute: parseTime(this.settings.autoOnTime),
+      autoOnMinute: parseTime(this.settings.autoOnTime, DEFAULT_CONFIG.autoOnMinute),
+      dayStartMinute: parseTime(this.settings.dayStartTime, DEFAULT_CONFIG.dayStartMinute),
     };
   }
 

@@ -5,7 +5,7 @@ Telefonstyrt tidsgrense for barnas bruk av familiens LG-TV. Foreldre bestemmer n
 ## Language
 
 **Barnemodus**:
-Tilstanden der TV-tiden regnes mot dagens Kvote. Foreldre slår den på manuelt, eller automatisk til et klokkeslett de velger på innstillingssiden. Den gjelder for hele TV-en til en Forelder slår den av eller et nytt Kvotedøgn begynner (kl. 05:00), da slås den av automatisk hvis det er valgt på innstillingssiden. Både automatisk påslåing og automatisk avslåing er konfigurerbare.
+Tilstanden der TV-tiden regnes mot dagens Kvote. Foreldre slår den på manuelt, eller automatisk til et klokkeslett de velger på innstillingssiden. Den gjelder for hele TV-en til en Forelder slår den av eller et nytt Kvotedøgn begynner, da slås den av automatisk hvis det er valgt på innstillingssiden. Både automatisk påslåing og automatisk avslåing er konfigurerbare.
 _Avoid_: Barnesikring, begrenset modus, foreldrekontroll
 
 **Forelder**:
@@ -17,7 +17,7 @@ Tiden TV-en er påslått mens Barnemodus er på, uansett app eller inngang. Tid 
 _Avoid_: Skjermtid, brukstid
 
 **Kvotedøgn**:
-Døgnet som TV-tiden telles innenfor. Det starter kl. 05:00 og slutter neste dag kl. 05:00.
+Døgnet som TV-tiden telles innenfor. Det starter på et klokkeslett Foreldre velger på innstillingssiden (standard kl. 05:00) og slutter ved samme klokkeslett neste dag. Kvoten nullstilles da.
 _Avoid_: Dag, døgn
 
 **Kvote**:

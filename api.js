@@ -28,6 +28,7 @@ module.exports = {
       weekdayMinutes: num(body.weekdayMinutes, 30),
       weekendMinutes: num(body.weekendMinutes, 60),
       weekStartDay: Math.min(6, Math.floor(num(body.weekStartDay, 1))),
+      dayStartTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(body.dayStartTime) ? body.dayStartTime : '05:00',
       autoOffAtRollover: body.autoOffAtRollover !== false,
       autoOnEnabled: body.autoOnEnabled === true,
       autoOnTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(body.autoOnTime) ? body.autoOnTime : '15:00',
