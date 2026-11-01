@@ -120,16 +120,14 @@
           <div><h2 data-i18n="settings.sectionTv"></h2><p data-i18n="settings.sectionTvSub"></p></div>
         </div>
         <div class="fs-stack">
-          <div>
-            <label class="fs-label" for="host" data-i18n="settings.tvIp"></label>
-            <input class="fs-field" id="host" inputmode="decimal" autocomplete="off" placeholder="192.168.1.50">
+          <div id="drivergroup" hidden>
+            <label class="fs-label" for="driver" data-i18n="settings.tvBrand"></label>
+            <select class="fs-field" id="driver"></select>
           </div>
-          <div>
-            <label class="fs-label" for="mac" data-i18n="settings.tvMac"></label>
-            <input class="fs-field" id="mac" autocomplete="off" placeholder="AA:BB:CC:DD:EE:FF">
-          </div>
-          <button type="button" class="fs-btn fs-ghost" id="wake" data-i18n="settings.wake"></button>
-          <p class="fs-hint" style="margin:0" data-i18n="settings.hint"></p>
+          <!-- Feltene tegnes fra TV-driverens beskrivelse (GET /drivers), så hvert merke har sine egne. -->
+          <div class="fs-stack" id="driverfields"></div>
+          <div id="wakewrap"><button type="button" class="fs-btn fs-ghost" id="wake" data-i18n="settings.wake"></button></div>
+          <p class="fs-hint" style="margin:0" id="driverhint"></p>
         </div>
       </section>
 
@@ -203,6 +201,48 @@
       };
       var filled = false;
       var savedTimer = null;
+      var drivers = [];
+      var values = {}; // driver-id → { feltnøkkel → verdi }, så det man har skrevet overlever et bytte av merke
+      var currentDriver = null;
+
+      function driverById(id) {
+        for (var i = 0; i < drivers.length; i++) if (drivers[i].id === id) return drivers[i];
+        return null;
+      }
+      function el(tag, cls, text) {
+        var node = document.createElement(tag);
+        if (cls) node.className = cls;
+        if (text) node.textContent = text;
+        return node;
+      }
+      // Tegner feltene til valgt TV-driver. Tekst settes med textContent, aldri innerHTML.
+      function renderDriver(id) {
+        var d = driverById(id);
+        if (!d) return;
+        currentDriver = d.id;
+        var box = $('driverfields');
+        while (box.firstChild) box.removeChild(box.firstChild);
+        var mine = values[d.id] = values[d.id] || {};
+        d.fields.forEach(function (f) {
+          var wrap = el('div');
+          var label = el('label', 'fs-label', f.label);
+          label.htmlFor = 'f_' + f.key;
+          var input = el('input', 'fs-field');
+          input.id = 'f_' + f.key;
+          input.autocomplete = 'off';
+          input.setAttribute('inputmode', f.inputMode);
+          input.placeholder = f.placeholder;
+          input.value = mine[f.key] || '';
+          input.addEventListener('input', function () { mine[f.key] = input.value; });
+          wrap.appendChild(label);
+          wrap.appendChild(input);
+          if (f.hint) wrap.appendChild(el('p', 'fs-hint', f.hint));
+          box.appendChild(wrap);
+        });
+        $('wakewrap').hidden = !d.canWake;
+        $('driverhint').textContent = d.hint;
+        $('driverhint').hidden = !d.hint;
+      }
 
       // Tekstene om nullstilling følger klokkeslettet brukeren har valgt for når døgnet begynner.
       function syncDayStart() {
@@ -218,12 +258,15 @@
         $('status').textContent = Homey.__('settings.status.' + c[1]);
         var parts = [];
         if (s.configured && s.connection === 'connected') parts.push(Homey.__(s.tvOn ? 'widget.tvOn' : 'widget.tvOff'));
-        if (s.settings.host) parts.push(s.settings.host);
-        $('substatus').textContent = parts.join(' · ');
+        var d = driverById(s.settings.driver);
+        if (d && drivers.length > 1) parts.push(d.name);
+        if (d && d.fields.length) parts.push(s.settings.driverConfig[d.fields[0].key]);
+        $('substatus').textContent = parts.filter(Boolean).join(' · ');
         if (filled) return; // ikke overskriv det brukeren holder på å skrive
         filled = true;
-        $('host').value = s.settings.host;
-        $('mac').value = s.settings.mac;
+        values[s.settings.driver] = s.settings.driverConfig;
+        $('driver').value = s.settings.driver;
+        renderDriver(s.settings.driver);
         $('weekday').value = s.settings.weekdayMinutes;
         $('weekend').value = s.settings.weekendMinutes;
         $('daystart').value = s.settings.dayStartTime;
@@ -242,6 +285,7 @@
         savedTimer = setTimeout(function () { $('saved').classList.remove('fs-show'); }, 3000);
       }
 
+      $('driver').addEventListener('change', function () { renderDriver($('driver').value); });
       $('autoon').addEventListener('change', syncAutoTime);
       $('daystart').addEventListener('input', syncDayStart);
       $('daystart').addEventListener('change', syncDayStart);
@@ -249,7 +293,7 @@
         e.preventDefault();
         $('save').disabled = true;
         Homey.api('POST', '/configure', {
-          host: $('host').value, mac: $('mac').value,
+          driver: currentDriver, driverConfig: values[currentDriver] || {},
           weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value,
           dayStartTime: $('daystart').value, weekStartDay: $('weekstart').value,
           autoOffAtRollover: $('autooff').checked, autoOnEnabled: $('autoon').checked, autoOnTime: $('autotime').value,
@@ -264,8 +308,20 @@
         Homey.api('POST', '/wake', null, function (err) { if (err) Homey.alert(err.message); });
       });
 
-      refresh();
-      setInterval(refresh, 3000);
+      // Merkene må være lastet før første status, for feltene tegnes fra dem.
+      Homey.api('GET', '/drivers', null, function (err, list) {
+        if (!err && list) {
+          drivers = list;
+          drivers.forEach(function (d) {
+            var option = el('option', '', d.name);
+            option.value = d.id;
+            $('driver').appendChild(option);
+          });
+          $('drivergroup').hidden = drivers.length < 2;
+        }
+        refresh();
+        setInterval(refresh, 3000);
+      });
       Homey.ready();
     }
   </script>

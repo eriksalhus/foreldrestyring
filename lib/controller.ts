@@ -1,7 +1,5 @@
 import {
   DEFAULT_CONFIG,
-  QuotaConfig,
-  QuotaState,
   addExtra,
   applyAutoOn,
   applyDayRolloverOff,
@@ -19,8 +17,13 @@ import {
   tick,
   usedMs,
   weekUsedMs,
-} from './quota';
-import { Connection, TvClient } from './tv';
+} from './quota.ts';
+import type { QuotaConfig, QuotaState } from './quota.ts';
+import { DEFAULT_DRIVER_ID, DRIVERS, describeDrivers, getDriver, isConfigured, sanitizeConfig } from './drivers/index.ts';
+import type { DriverDescription } from './drivers/index.ts';
+import type { Connection, TvConnection, TvDriver } from './drivers/types.ts';
+
+export type { Connection };
 
 export interface Host {
   settings: { get(key: string): any; set(key: string, value: any): unknown };
@@ -31,11 +34,14 @@ export interface Host {
   setTimeout(fn: () => void, ms: number): unknown;
   __(key: string, tokens?: Record<string, string | number>): string;
   clock: { getTimezone(): string };
+  i18n: { getLanguage(): string };
 }
 
 export interface TvSettings {
-  host: string;
-  mac: string;
+  /** Id for the TV driver, e.g. `lg-webos`. */
+  driver: string;
+  /** Verdiene i driverens felt (IP-adresse og lignende). */
+  driverConfig: Record<string, string>;
   weekdayMinutes: number;
   weekendMinutes: number;
   weekStartDay: number;
@@ -71,6 +77,14 @@ const TURN_OFF_DELAY_MS = 3_000;
 
 const minutes = (ms: number) => Math.round(ms / 60_000);
 
+/** Innstillinger fra før TV-driverne kom hadde `host` og `mac` på toppnivå, og alltid LG. */
+export function migrateSavedSettings(saved: any): Partial<TvSettings> {
+  if (!saved || typeof saved !== 'object') return {};
+  const { host, mac, ...rest } = saved;
+  if (rest.driver || (host === undefined && mac === undefined)) return rest;
+  return { ...rest, driver: 'lg-webos', driverConfig: { host: String(host ?? ''), mac: String(mac ?? '') } };
+}
+
 /** «HH:MM» → minutter etter midnatt. Ugyldig tekst gir `fallback`. */
 function parseTime(time: string, fallback: number): number {
   const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time);
@@ -80,8 +94,8 @@ function parseTime(time: string, fallback: number): number {
 export class Controller {
   private config: QuotaConfig = { ...DEFAULT_CONFIG };
   private settings: TvSettings = {
-    host: '',
-    mac: '',
+    driver: DEFAULT_DRIVER_ID,
+    driverConfig: {},
     weekdayMinutes: 30,
     weekendMinutes: 60,
     weekStartDay: 1,
@@ -91,15 +105,21 @@ export class Controller {
     autoOnTime: '15:00',
   };
   private state: QuotaState = emptyState();
-  private tv: TvClient | null = null;
+  private tv: TvConnection | null = null;
   private timers: unknown[] = [];
   private lastEnforceMs = 0;
 
-  constructor(private readonly host: Host) {}
+  private readonly host: Host;
+  private readonly drivers: readonly TvDriver[];
+
+  constructor(host: Host, drivers: readonly TvDriver[] = DRIVERS) {
+    this.host = host;
+    this.drivers = drivers;
+  }
 
   async start(): Promise<void> {
     const saved = this.host.settings.get('tvSettings');
-    if (saved) this.applySettings(saved);
+    if (saved) this.applySettings(migrateSavedSettings(saved));
     const timeZone = this.host.clock.getTimezone();
     if (timeZone) this.config.timeZone = timeZone;
     this.state = { ...emptyState(), ...(this.host.settings.get('state') ?? {}) };
@@ -121,7 +141,11 @@ export class Controller {
   }
 
   async configure(settings: TvSettings): Promise<void> {
-    const hostChanged = settings.host !== this.settings.host || settings.mac !== this.settings.mac;
+    const driver = getDriver(settings.driver, this.drivers) ?? this.currentDriver();
+    settings = { ...settings, driver: driver.id, driverConfig: sanitizeConfig(driver, settings.driverConfig) };
+    const tvChanged =
+      settings.driver !== this.settings.driver ||
+      JSON.stringify(settings.driverConfig) !== JSON.stringify(this.settings.driverConfig);
     const dayStartChanged = settings.dayStartTime !== this.settings.dayStartTime;
     const autoOnChanged =
       settings.autoOnEnabled !== this.settings.autoOnEnabled || settings.autoOnTime !== this.settings.autoOnTime;
@@ -131,13 +155,13 @@ export class Controller {
     if (autoOnChanged) rearmAutoOn(this.state, Date.now(), this.config);
     if (dayStartChanged || autoOnChanged) this.save();
     this.host.settings.set('tvSettings', this.settings);
-    if (hostChanged) await this.connect();
+    if (tvChanged) await this.connect();
   }
 
   getStatus(now = Date.now()): Status {
     const quota = quotaMs(dayKey(now, this.config), this.config);
     return {
-      configured: Boolean(this.settings.host),
+      configured: this.isTvConfigured(),
       connection: this.tv?.connection ?? 'unconfigured',
       tvOn: this.tv?.isOn ?? false,
       childMode: this.state.childMode,
@@ -179,7 +203,12 @@ export class Controller {
   }
 
   async wakeTv(): Promise<void> {
-    await this.tv?.wake();
+    await this.tv?.wake?.();
+  }
+
+  /** TV-merkene appen kan styre, med feltene innstillingssiden skal tegne, på brukerens språk. */
+  getDrivers(): DriverDescription[] {
+    return describeDrivers(this.host.i18n.getLanguage(), this.drivers);
   }
 
   private applySettings(settings: Partial<TvSettings>): void {
@@ -196,18 +225,38 @@ export class Controller {
     };
   }
 
+  private currentDriver(): TvDriver {
+    return getDriver(this.settings.driver, this.drivers) ?? getDriver(DEFAULT_DRIVER_ID, this.drivers) ?? this.drivers[0];
+  }
+
+  private isTvConfigured(): boolean {
+    const driver = getDriver(this.settings.driver, this.drivers);
+    return Boolean(driver && isConfigured(driver, this.settings.driverConfig));
+  }
+
+  /** Paringsdata per driver. LG lagret tidligere nøkkelen som `clientKey`, den leses fortsatt. */
+  private loadCredentials(driverId: string): unknown {
+    const all = this.host.settings.get('tvCredentials') ?? {};
+    if (driverId in all) return all[driverId];
+    return driverId === 'lg-webos' ? this.host.settings.get('clientKey') || undefined : undefined;
+  }
+
+  private saveCredentials(driverId: string, credentials: unknown): void {
+    this.host.settings.set('tvCredentials', { ...(this.host.settings.get('tvCredentials') ?? {}), [driverId]: credentials });
+  }
+
   private async connect(): Promise<void> {
     await this.tv?.stop();
     this.tv = null;
-    if (!this.settings.host) return;
-    const tv = new TvClient({
-      host: this.settings.host,
-      mac: this.settings.mac,
-      clientKey: this.host.settings.get('clientKey') || undefined,
-      saveKey: (key) => this.host.settings.set('clientKey', key),
+    const driver = getDriver(this.settings.driver, this.drivers);
+    if (!driver || !isConfigured(driver, this.settings.driverConfig)) return;
+    const tv = driver.createConnection({
+      config: this.settings.driverConfig,
+      credentials: this.loadCredentials(driver.id),
+      saveCredentials: (credentials) => this.saveCredentials(driver.id, credentials),
       log: (...args) => this.host.log(...args),
     });
-    tv.on('power', (on: boolean) => this.onPower(on));
+    tv.on('power', (on) => this.onPower(on));
     this.tv = tv;
     await tv.start();
   }

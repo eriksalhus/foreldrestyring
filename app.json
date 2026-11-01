@@ -46,6 +46,10 @@
       "method": "GET",
       "path": "/status"
     },
+    "getDrivers": {
+      "method": "GET",
+      "path": "/drivers"
+    },
     "setChildMode": {
       "method": "POST",
       "path": "/child-mode"

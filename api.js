@@ -4,6 +4,9 @@ module.exports = {
   async getStatus({ homey }) {
     return homey.app.getStatus();
   },
+  async getDrivers({ homey }) {
+    return homey.app.getDrivers();
+  },
   async setChildMode({ homey, body }) {
     return homey.app.setChildMode(Boolean(body.on));
   },
@@ -23,8 +26,8 @@ module.exports = {
   async configure({ homey, body }) {
     const num = (v, fallback) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Number(v) : fallback);
     await homey.app.configure({
-      host: String(body.host || '').trim(),
-      mac: String(body.mac || '').trim(),
+      driver: String(body.driver || ''),
+      driverConfig: body.driverConfig,
       weekdayMinutes: num(body.weekdayMinutes, 30),
       weekendMinutes: num(body.weekendMinutes, 60),
       weekStartDay: Math.min(6, Math.floor(num(body.weekStartDay, 1))),

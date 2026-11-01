@@ -1,6 +1,6 @@
 # Foreldrestyring
 
-Telefonstyrt tidsgrense for barnas bruk av familiens LG-TV. Foreldre bestemmer når grensen gjelder og kan åpne TV-en igjen.
+Telefonstyrt tidsgrense for barnas bruk av familiens TV (i dag LG webOS, flere merker kan legges til som TV-drivere). Foreldre bestemmer når grensen gjelder og kan åpne TV-en igjen.
 
 ## Language
 
@@ -31,6 +31,10 @@ _Avoid_: Bonus, utsettelse
 **Trekk av tid**:
 Minutter en Forelder tar bort fra dagens Kvote. Det trekkes aldri mer enn det som er igjen, og når resten blir 0 inntrer Låsen, så TV-en viser «tiden er brukt opp» og slås av. Gjelder bare inneværende Kvotedøgn.
 _Avoid_: Straff, kutt
+
+**TV-driver**:
+Koden som kobler appen til ett TV-merke. Den vet hvordan TV-en kobles til, om den er på, og hvordan den får melding og slås av. Alt annet i appen er likt for alle merker.
+_Avoid_: Plugin, adapter, integrasjon
 
 **Låsen**:
 Tilstanden som inntrer når Kvoten er brukt opp mens Barnemodus er på. TV-en slås av så snart den er på, til en Forelder gir Ekstra tid eller slår av Barnemodus, eller til neste Kvotedøgn begynner.

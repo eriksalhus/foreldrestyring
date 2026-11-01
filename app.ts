@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { Controller, Status, TvSettings } from './lib/controller';
+import { Controller, Status, TvSettings } from './lib/controller.ts';
 
 module.exports = class ForeldrestyringApp extends Homey.App {
   private controller!: Controller;
@@ -36,6 +36,10 @@ module.exports = class ForeldrestyringApp extends Homey.App {
 
   async configure(settings: TvSettings): Promise<void> {
     await this.controller.configure(settings);
+  }
+
+  getDrivers() {
+    return this.controller.getDrivers();
   }
 
   async wakeTv(): Promise<void> {

@@ -5,6 +5,8 @@
     "moduleResolution": "node16",
     "outDir": ".homeybuild",
     "strict": true,
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "types": ["node", "homey"]
