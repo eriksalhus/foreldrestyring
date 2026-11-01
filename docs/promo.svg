@@ -77,37 +77,44 @@
   <rect x="-60" y="548" width="580" height="30" rx="15" fill="#fff" opacity=".07"/>
   <rect x="-10" y="590" width="470" height="150" rx="40" fill="#6b4864"/>
 
-  <!-- Telefon med widgeten -->
+  <!-- Telefon med widgeten: ring med tid igjen, − og + på hver side, intervallvelger og statistikk -->
   <g transform="translate(690 300) rotate(-6)" filter="url(#shadow)">
     <rect x="0" y="0" width="230" height="420" rx="38" fill="#10121b" stroke="#444a63" stroke-width="4"/>
     <rect x="12" y="12" width="206" height="396" rx="28" fill="#1f2028"/>
-    <!-- topp -->
+    <!-- topp: ikon, tittel, status og bryter -->
     <rect x="30" y="38" width="26" height="20" rx="4" fill="none" stroke="#e4e4e7" stroke-width="3"/>
     <circle cx="43" cy="48" r="5" fill="none" stroke="#e4e4e7" stroke-width="2.5"/>
     <rect x="66" y="36" width="64" height="10" rx="5" fill="#e4e4e7"/>
     <rect x="66" y="54" width="44" height="8" rx="4" fill="#87d23f"/>
     <rect x="156" y="36" width="48" height="28" rx="14" fill="#5399f4"/>
     <circle cx="190" cy="50" r="11" fill="#fff"/>
-    <!-- tid igjen -->
-    <rect x="30" y="98" width="112" height="22" rx="11" fill="#e4e4e7"/>
-    <rect x="30" y="134" width="170" height="10" rx="5" fill="#fff" fill-opacity=".2"/>
-    <rect x="30" y="134" width="112" height="10" rx="5" fill="#e4e4e7"/>
-    <!-- ekstra tid -->
-    <rect x="30" y="170" width="54" height="40" rx="11" fill="#fff" fill-opacity=".16"/>
-    <rect x="88" y="170" width="54" height="40" rx="11" fill="#fff" fill-opacity=".16"/>
-    <rect x="146" y="170" width="54" height="40" rx="11" fill="#fff" fill-opacity=".16"/>
-    <!-- statistikk -->
-    <rect x="30" y="228" width="82" height="86" rx="16" fill="#fff" fill-opacity=".09"/>
-    <rect x="118" y="228" width="82" height="86" rx="16" fill="#fff" fill-opacity=".09"/>
-    <rect x="42" y="244" width="40" height="8" rx="4" fill="#fff" fill-opacity=".45"/>
-    <rect x="42" y="262" width="52" height="16" rx="8" fill="#e4e4e7"/>
-    <rect x="130" y="244" width="40" height="8" rx="4" fill="#fff" fill-opacity=".45"/>
-    <rect x="130" y="262" width="52" height="16" rx="8" fill="#e4e4e7"/>
+    <!-- ring med tid igjen -->
+    <circle cx="115" cy="150" r="40" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="9"/>
+    <circle cx="115" cy="150" r="40" fill="none" stroke="#5399f4" stroke-width="9" stroke-linecap="round"
+            stroke-dasharray="156 251" transform="rotate(-90 115 150)"/>
+    <rect x="95" y="140" width="40" height="17" rx="8.5" fill="#e4e4e7"/>
+    <rect x="103" y="164" width="24" height="6" rx="3" fill="#fff" fill-opacity=".45"/>
+    <!-- trekk fra tid (−) og gi tid (+) -->
+    <circle cx="44" cy="150" r="19" fill="#f5a623" fill-opacity=".2"/>
+    <path d="M37 150 H51" stroke="#f5a623" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="186" cy="150" r="19" fill="#5399f4" fill-opacity=".2"/>
+    <path d="M179 150 H193 M186 143 V157" stroke="#5399f4" stroke-width="3.2" stroke-linecap="round"/>
+    <!-- intervall -->
+    <rect x="85" y="206" width="60" height="22" rx="11" fill="#fff" fill-opacity=".16"/>
+    <rect x="95" y="214" width="26" height="6" rx="3" fill="#fff" fill-opacity=".55"/>
+    <path d="M129 215.5 L132 218.5 L135 215.5" fill="none" stroke="#9aa3b2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- statistikk: i dag og denne uka -->
+    <rect x="30" y="246" width="82" height="62" rx="16" fill="#fff" fill-opacity=".09"/>
+    <rect x="118" y="246" width="82" height="62" rx="16" fill="#fff" fill-opacity=".09"/>
+    <rect x="42" y="260" width="34" height="7" rx="3.5" fill="#fff" fill-opacity=".45"/>
+    <rect x="42" y="275" width="52" height="15" rx="7.5" fill="#e4e4e7"/>
+    <rect x="130" y="260" width="34" height="7" rx="3.5" fill="#fff" fill-opacity=".45"/>
+    <rect x="130" y="275" width="52" height="15" rx="7.5" fill="#e4e4e7"/>
     <!-- status -->
-    <circle cx="36" cy="346" r="5" fill="#87d23f"/>
-    <rect x="48" y="342" width="44" height="8" rx="4" fill="#fff" fill-opacity=".45"/>
-    <circle cx="112" cy="346" r="5" fill="#87d23f"/>
-    <rect x="124" y="342" width="30" height="8" rx="4" fill="#fff" fill-opacity=".45"/>
+    <circle cx="36" cy="338" r="5" fill="#87d23f"/>
+    <rect x="48" y="334" width="44" height="8" rx="4" fill="#fff" fill-opacity=".45"/>
+    <circle cx="112" cy="338" r="5" fill="#87d23f"/>
+    <rect x="124" y="334" width="30" height="8" rx="4" fill="#fff" fill-opacity=".45"/>
   </g>
 
   <rect width="1000" height="700" fill="url(#vignette)"/>
