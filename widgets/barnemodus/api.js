@@ -1,7 +1,7 @@
 'use strict';
 
 const STRING_KEYS = [
-  'title', 'stateOn', 'stateLocked', 'stateOff', 'minutesLeft', 'locked', 'extraTime', 'reduceTime', 'perTap', 'minLeft', 'today', 'thisWeek',
+  'title', 'stateOn', 'stateLocked', 'stateOff', 'minutesLeft', 'locked', 'extraTime', 'reduceTime', 'perTap', 'applyAdd', 'applyReduce', 'cancel', 'minLeft', 'today', 'thisWeek',
   'minUsed', 'ofTotal', 'inclExtra', 'connUnconfigured', 'connNotConnected', 'connPrompt', 'connConnected',
   'tvOn', 'tvOff', 'reset', 'resetTitle', 'tapAgain', 'error',
 ];
