@@ -4,7 +4,8 @@
     "timeUp": "Il tempo davanti alla TV è finito"
   },
   "error": {
-    "invalidMinutes": "Numero di minuti non valido"
+    "invalidMinutes": "Numero di minuti non valido",
+    "cannotLink": "Inserisci prima l’indirizzo IP del televisore"
   },
   "settings": {
     "title": "Controllo parentale TV",
@@ -14,6 +15,17 @@
     "byIpAddress": "Tramite indirizzo IP (__name__)",
     "noHomeyTvs": "Nessun televisore trovato in Homey. I televisori che aggiungi a Homey compariranno nell’elenco.",
     "tvGone": "Non trovato in Homey",
+    "messages": "Mostra messaggi sul televisore",
+    "messagesHint": "“Minuti rimasti” e “tempo scaduto” compaiono sullo schermo del televisore.",
+    "linkPreface": "I messaggi richiedono un collegamento una tantum tra questa app e il televisore.",
+    "link": "Collega al televisore",
+    "unlink": "Scollega",
+    "linkState": {
+      "connecting": "Connessione …",
+      "prompt": "Premi “Consenti” sul televisore",
+      "linked": "Collegata al televisore",
+      "unreachable": "Impossibile raggiungere il televisore. Accendilo e controlla l’indirizzo IP."
+    },
     "wake": "Accendi il televisore",
     "sectionQuota": "Quota di tempo",
     "sectionQuotaSub": "Minuti di televisione al giorno",

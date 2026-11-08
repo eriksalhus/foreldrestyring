@@ -4,7 +4,8 @@
     "timeUp": "TV time is up"
   },
   "error": {
-    "invalidMinutes": "Invalid number of minutes"
+    "invalidMinutes": "Invalid number of minutes",
+    "cannotLink": "Enter the TV’s IP address first"
   },
   "settings": {
     "title": "TV Parental Control",
@@ -14,6 +15,17 @@
     "byIpAddress": "By IP address (__name__)",
     "noHomeyTvs": "No TVs found in Homey. TVs you add to Homey will appear in the list.",
     "tvGone": "Not found in Homey",
+    "messages": "Show messages on the TV",
+    "messagesHint": "“Minutes left” and “time is up” appear on the TV screen.",
+    "linkPreface": "Messages need a one-time link between this app and the TV.",
+    "link": "Link to TV",
+    "unlink": "Unlink",
+    "linkState": {
+      "connecting": "Connecting …",
+      "prompt": "Press “Allow” on the TV",
+      "linked": "Linked to the TV",
+      "unreachable": "Can’t reach the TV. Switch it on and check the IP address."
+    },
     "wake": "Turn on TV",
     "sectionQuota": "Time quota",
     "sectionQuotaSub": "Minutes of TV time per day",

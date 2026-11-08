@@ -89,6 +89,8 @@
     .fs-switch input:checked + i { background: var(--accent); }
     .fs-switch input:checked + i::after { transform: translateX(22px); }
     .fs-switch input:focus-visible + i { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .fs-toggle-row.fs-disabled { opacity: .55; cursor: default; }
+    .fs-switch input:disabled { cursor: default; }
 
     /* Own class names and resets, so Homey's global button styles do not leak through. */
     button.fs-btn.fs-btn { -webkit-appearance: none !important; appearance: none !important; box-sizing: border-box !important;
@@ -132,6 +134,20 @@
           <div class="fs-stack" id="driverfields"></div>
           <div id="wakewrap"><button type="button" class="fs-btn fs-ghost" id="wake" data-i18n="settings.wake"></button></div>
           <p class="fs-hint" style="margin:0" id="driverhint"></p>
+          <!-- On-screen messages. The switch is offered whenever messages are available; the link steps only for a Homey TV. -->
+          <div class="fs-stack" id="msgbox" hidden>
+            <div class="fs-stack" id="linkbox" hidden>
+              <p class="fs-hint" style="margin:0" id="linkpreface" data-i18n="settings.linkPreface"></p>
+              <div class="fs-stack" id="msgfields"></div>
+              <p class="fs-hint" style="margin:0" id="msghint"></p>
+              <button type="button" class="fs-btn fs-ghost" id="linkbtn"></button>
+              <p class="fs-hint" style="margin:0" id="linkstate" role="status"></p>
+            </div>
+            <label class="fs-toggle-row" for="msgon" id="msgrow">
+              <div><b data-i18n="settings.messages"></b><span class="fs-d" data-i18n="settings.messagesHint"></span></div>
+              <span class="fs-switch"><input id="msgon" type="checkbox" role="switch"><i></i></span>
+            </label>
+          </div>
         </div>
       </section>
 
@@ -206,6 +222,9 @@
       var savedTimer = null;
       var drivers = [];
       var tvDevices = []; // the TVs in Homey, from GET /tv-devices
+      var msgStore = {}; // values of the message provider's fields (the TV's IP address)
+      var msgKey = null; // which TV and provider msgStore belongs to
+      var msgState = null; // the messages part of the last status
       var values = {}; // driver id → { field key → value }, so what was typed survives switching brand
       var currentDriver = null;
       var lastSettings = null; // what the app has stored
@@ -279,36 +298,75 @@
         return node;
       }
       // Draws the fields of the selected TV driver. Text is set with textContent, never innerHTML.
-      function renderDriver(id) {
-        var d = driverById(id);
-        if (!d) return;
-        currentDriver = d.id;
-        var box = $('driverfields');
+      // Draws a text box per field. Values go to `store` and are saved when the user leaves the field.
+      function drawFields(box, fields, store, prefix) {
         while (box.firstChild) box.removeChild(box.firstChild);
-        var mine = values[d.id] = values[d.id] || {};
-        d.fields.forEach(function (f) {
+        fields.forEach(function (f) {
           if (f.kind === 'device') return; // chosen in the Connected TV list
           var wrap = el('div');
           var label = el('label', 'fs-label', f.label);
-          label.htmlFor = 'f_' + f.key;
+          label.htmlFor = prefix + f.key;
           var input = el('input', 'fs-field');
-          input.id = 'f_' + f.key;
+          input.id = prefix + f.key;
           input.autocomplete = 'off';
           input.setAttribute('inputmode', f.inputMode);
           input.placeholder = f.placeholder;
-          input.value = mine[f.key] || '';
+          input.value = store[f.key] || '';
           input.autocapitalize = 'off';
           input.spellcheck = false;
-          input.addEventListener('input', function () { mine[f.key] = input.value; unsaved = true; });
+          input.addEventListener('input', function () { store[f.key] = input.value; unsaved = true; });
           input.addEventListener('change', saveNow);
           wrap.appendChild(label);
           wrap.appendChild(input);
           if (f.hint) wrap.appendChild(el('p', 'fs-hint', f.hint));
           box.appendChild(wrap);
         });
+      }
+      function renderDriver(id) {
+        var d = driverById(id);
+        if (!d) return;
+        currentDriver = d.id;
+        var mine = values[d.id] = values[d.id] || {};
+        drawFields($('driverfields'), d.fields, mine, 'f_');
         $('wakewrap').hidden = !d.canWake;
         $('driverhint').textContent = d.hint;
         $('driverhint').hidden = !d.hint;
+      }
+
+      // What the page sends about messages: the switch always, and the provider's fields for a Homey TV.
+      function messagesBody() {
+        if (!msgState || msgState.mode === 'none') return undefined;
+        var body = { enabled: $('msgon').checked };
+        if (msgState.mode === 'provider') body.config = msgStore;
+        return body;
+      }
+      // Messages need a one-time link for a Homey TV. Until then the switch is greyed out and the explanation is shown.
+      function renderMessages(s) {
+        var m = msgState = s.messages;
+        $('msgbox').hidden = m.mode === 'none';
+        $('linkbox').hidden = m.mode !== 'provider';
+        if (m.mode === 'none') return;
+        var locked = false;
+        if (m.mode === 'provider') {
+          var key = s.settings.driver + '|' + JSON.stringify(s.settings.driverConfig) + '|' + m.provider.id;
+          if (key !== msgKey) { // another TV: start from what is saved, else from what the device knows
+            msgKey = key;
+            msgStore = {};
+            m.provider.fields.forEach(function (f) { msgStore[f.key] = m.config[f.key] || m.suggested[f.key] || ''; });
+            drawFields($('msgfields'), m.provider.fields, msgStore, 'm_');
+            $('msghint').textContent = m.provider.hint;
+            $('msghint').hidden = !m.provider.hint;
+          }
+          locked = !m.linked;
+          $('linkpreface').hidden = m.linked;
+          $('linkbtn').textContent = Homey.__(m.linked ? 'settings.unlink' : 'settings.link');
+          var state = m.linked ? 'linked' : { connecting: 'connecting', prompt: 'prompt', offline: 'unreachable' }[m.connection];
+          $('linkstate').textContent = state ? Homey.__('settings.linkState.' + state) : '';
+          $('linkstate').hidden = !state;
+        }
+        if (!saving) $('msgon').checked = m.enabled;
+        $('msgon').disabled = locked;
+        $('msgrow').classList.toggle('fs-disabled', locked);
       }
 
       // The reset texts follow the time the user chose for when the day begins.
@@ -337,6 +395,7 @@
           if (d.fields.length) parts.push(s.settings.driverConfig[d.fields[0].key]);
         }
         $('substatus').textContent = parts.filter(Boolean).join(' · ');
+        renderMessages(s);
         if (filled) return; // do not overwrite what the user is typing
         filled = true;
         values[s.settings.driver] = s.settings.driverConfig;
@@ -384,6 +443,7 @@
           weekdayMinutes: $('weekday').value, weekendMinutes: $('weekend').value,
           dayStartTime: $('daystart').value, weekStartDay: $('weekstart').value,
           autoOffAtRollover: $('autooff').checked, autoOnEnabled: $('autoon').checked, autoOnTime: $('autotime').value,
+          messages: messagesBody(),
         }, function (err, s) {
           saving = false;
           if (err) { unsaved = true; Homey.alert(err.message); return; }
@@ -412,6 +472,17 @@
       $('driver').addEventListener('change', function () { applyChoice($('driver').value); saveNow(); });
       $('autoon').addEventListener('change', function () { syncAutoTime(); saveNow(); });
       $('autooff').addEventListener('change', saveNow);
+      $('msgon').addEventListener('change', saveNow);
+      // Link starts the connection so the user can press "Allow" on the TV; nothing contacts the TV before this.
+      $('linkbtn').addEventListener('click', function () {
+        var linked = msgState && msgState.linked;
+        $('linkbtn').disabled = true;
+        Homey.api('POST', linked ? '/messages/unlink' : '/messages/link', linked ? null : { config: msgStore }, function (err, s) {
+          $('linkbtn').disabled = false;
+          if (err) { Homey.alert(err.message); return; }
+          render(s);
+        });
+      });
       $('weekstart').addEventListener('change', saveNow);
       ['weekday', 'weekend', 'daystart', 'autotime'].forEach(autosave);
       restoreOnBlur('weekday', validQuota, function (st) { return st.weekdayMinutes; });

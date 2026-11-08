@@ -4,7 +4,8 @@
     "timeUp": "Die Fernsehzeit ist abgelaufen"
   },
   "error": {
-    "invalidMinutes": "Ungültige Minutenzahl"
+    "invalidMinutes": "Ungültige Minutenzahl",
+    "cannotLink": "Gib zuerst die IP-Adresse des Fernsehers ein"
   },
   "settings": {
     "title": "TV-Zeitkontrolle",
@@ -14,6 +15,17 @@
     "byIpAddress": "Per IP-Adresse (__name__)",
     "noHomeyTvs": "Keine Fernseher in Homey gefunden. Fernseher, die du zu Homey hinzufügst, erscheinen in der Liste.",
     "tvGone": "In Homey nicht gefunden",
+    "messages": "Meldungen auf dem Fernseher anzeigen",
+    "messagesHint": "„Minuten übrig“ und „Fernsehzeit ist vorbei“ erscheinen auf dem Fernsehbildschirm.",
+    "linkPreface": "Für Meldungen muss diese App einmalig mit dem Fernseher verknüpft werden.",
+    "link": "Mit Fernseher verknüpfen",
+    "unlink": "Verknüpfung aufheben",
+    "linkState": {
+      "connecting": "Verbinde …",
+      "prompt": "Drücke „Zulassen“ am Fernseher",
+      "linked": "Mit dem Fernseher verknüpft",
+      "unreachable": "Der Fernseher ist nicht erreichbar. Schalte ihn ein und prüfe die IP-Adresse."
+    },
     "wake": "Fernseher einschalten",
     "sectionQuota": "Zeitkontingent",
     "sectionQuotaSub": "Minuten Fernsehzeit pro Tag",

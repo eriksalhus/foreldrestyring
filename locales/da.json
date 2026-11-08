@@ -4,7 +4,8 @@
     "timeUp": "TV-tiden er brugt op"
   },
   "error": {
-    "invalidMinutes": "Ugyldigt antal minutter"
+    "invalidMinutes": "Ugyldigt antal minutter",
+    "cannotLink": "Indtast tv'ets IP-adresse først"
   },
   "settings": {
     "title": "TV-tidsstyring",
@@ -14,6 +15,17 @@
     "byIpAddress": "Via IP-adresse (__name__)",
     "noHomeyTvs": "Ingen tv fundet i Homey. Tv, du føjer til Homey, vises på listen.",
     "tvGone": "Ikke fundet i Homey",
+    "messages": "Vis beskeder på tv'et",
+    "messagesHint": "”Minutter tilbage” og ”tv-tiden er slut” vises på tv-skærmen.",
+    "linkPreface": "Beskeder kræver en engangsforbindelse mellem appen og tv'et.",
+    "link": "Forbind med tv",
+    "unlink": "Fjern forbindelsen",
+    "linkState": {
+      "connecting": "Forbinder …",
+      "prompt": "Tryk på ”Tillad” på tv'et",
+      "linked": "Forbundet med tv'et",
+      "unreachable": "Kan ikke komme i kontakt med tv'et. Tænd det, og tjek IP-adressen."
+    },
     "wake": "Tænd tv'et",
     "sectionQuota": "Tidskvote",
     "sectionQuotaSub": "Minutters tv-tid pr. døgn",

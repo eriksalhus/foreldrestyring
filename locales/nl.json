@@ -4,7 +4,8 @@
     "timeUp": "De tv-tijd is op"
   },
   "error": {
-    "invalidMinutes": "Ongeldig aantal minuten"
+    "invalidMinutes": "Ongeldig aantal minuten",
+    "cannotLink": "Vul eerst het IP-adres van de tv in"
   },
   "settings": {
     "title": "Tv-tijdbeheer",
@@ -14,6 +15,17 @@
     "byIpAddress": "Via IP-adres (__name__)",
     "noHomeyTvs": "Geen tv's gevonden in Homey. Tv's die je aan Homey toevoegt, verschijnen in de lijst.",
     "tvGone": "Niet gevonden in Homey",
+    "messages": "Berichten op de tv tonen",
+    "messagesHint": "“Minuten over” en “tv-tijd is om” verschijnen op het tv-scherm.",
+    "linkPreface": "Voor berichten is eenmalig een koppeling tussen deze app en de tv nodig.",
+    "link": "Koppelen met tv",
+    "unlink": "Ontkoppelen",
+    "linkState": {
+      "connecting": "Verbinden …",
+      "prompt": "Druk op “Toestaan” op de tv",
+      "linked": "Gekoppeld met de tv",
+      "unreachable": "Kan de tv niet bereiken. Zet hem aan en controleer het IP-adres."
+    },
     "wake": "Tv inschakelen",
     "sectionQuota": "Tijdlimiet",
     "sectionQuotaSub": "Minuten tv-tijd per dag",

@@ -10,5 +10,9 @@
   "0.2.0": {
     "en": "You can now pick a TV that is already added to Homey, of any brand, instead of typing an IP address. The app switches it off and on through that device. The direct LG webOS connection by IP address is still there and works as before. The app now asks for full access to Homey so that it can list your TVs and switch the one you choose.",
     "no": "Du kan nå velge en TV som allerede er lagt til i Homey, av hvilket som helst merke, i stedet for å skrive inn en IP-adresse. Appen slår den av og på via den enheten. Den direkte LG webOS-tilkoblingen via IP-adresse finnes fortsatt og virker som før. Appen ber nå om full tilgang til Homey for å kunne liste TV-ene dine og slå den du velger av og på."
+  },
+  "0.3.0": {
+    "en": "A TV that is added to Homey through a supported LG app can now show messages on the screen (minutes left and “time is up”). Open the settings, enter the TV’s IP address, press “Link to TV” and then “Allow” on the TV. Messages can be switched off, and nothing contacts the TV until you press the button.",
+    "no": "En TV som er lagt til i Homey via en støttet LG-app kan nå vise meldinger på skjermen (minutter igjen og «TV-tiden er over»). Åpne innstillingene, skriv inn TV-ens IP-adresse, trykk «Koble til TV» og deretter «Tillat» på TV-en. Meldinger kan slås av, og ingenting kontakter TV-en før du trykker på knappen."
   }
 }
