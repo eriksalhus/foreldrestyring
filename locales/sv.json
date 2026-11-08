@@ -8,9 +8,12 @@
   },
   "settings": {
     "title": "TV-tidsstyrning",
-    "sectionTv": "TV-anslutning",
-    "sectionTvSub": "Så hittar appen din TV",
-    "tvBrand": "TV-märke",
+    "sectionTv": "Ansluten TV",
+    "sectionTvSub": "Vilken TV appen styr",
+    "tvChoose": "TV",
+    "otherTv": "Annan TV, via IP-adress (__name__)",
+    "noHomeyTvs": "Inga TV-apparater hittades i Homey. TV-apparater du lägger till i Homey visas i listan.",
+    "tvGone": "Hittades inte i Homey",
     "wake": "Slå på TV:n",
     "sectionQuota": "Tidskvot",
     "sectionQuotaSub": "Minuter TV-tid per dygn",
@@ -41,7 +44,8 @@
       "connecting": "Ansluter …",
       "prompt": "Tryck på ”Tillåt” på TV:n",
       "connected": "Ansluten",
-      "offline": "TV:n är inte tillgänglig"
+      "offline": "TV:n är inte tillgänglig",
+      "missing": "Den valda TV:n finns inte längre i Homey"
     }
   },
   "widget": {

@@ -8,9 +8,12 @@
   },
   "settings": {
     "title": "TV-Zeitkontrolle",
-    "sectionTv": "Verbindung zum Fernseher",
-    "sectionTvSub": "So findet die App deinen Fernseher",
-    "tvBrand": "TV-Marke",
+    "sectionTv": "Verbundener Fernseher",
+    "sectionTvSub": "Welchen Fernseher die App steuert",
+    "tvChoose": "Fernseher",
+    "otherTv": "Anderer Fernseher, per IP-Adresse (__name__)",
+    "noHomeyTvs": "Keine Fernseher in Homey gefunden. Fernseher, die du zu Homey hinzufügst, erscheinen in der Liste.",
+    "tvGone": "In Homey nicht gefunden",
     "wake": "Fernseher einschalten",
     "sectionQuota": "Zeitkontingent",
     "sectionQuotaSub": "Minuten Fernsehzeit pro Tag",
@@ -41,7 +44,8 @@
       "connecting": "Verbindung wird hergestellt …",
       "prompt": "„Zulassen“ am Fernseher bestätigen",
       "connected": "Verbunden",
-      "offline": "Fernseher nicht erreichbar"
+      "offline": "Fernseher nicht erreichbar",
+      "missing": "Der gewählte Fernseher existiert in Homey nicht mehr"
     }
   },
   "widget": {

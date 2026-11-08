@@ -122,11 +122,13 @@
           <div><h2 data-i18n="settings.sectionTv"></h2><p data-i18n="settings.sectionTvSub"></p></div>
         </div>
         <div class="fs-stack">
-          <div id="drivergroup" hidden>
-            <label class="fs-label" for="driver" data-i18n="settings.tvBrand"></label>
+          <!-- One list: the TVs in Homey first, then each TV driver that talks to a TV by IP address. -->
+          <div id="drivergroup">
+            <label class="fs-label" for="driver" data-i18n="settings.tvChoose"></label>
             <select class="fs-field" id="driver"></select>
+            <p class="fs-hint" id="tvhint" hidden></p>
           </div>
-          <!-- The fields are drawn from the TV driver's description (GET /drivers), so each brand has its own. -->
+          <!-- The other fields are drawn from the TV driver's description (GET /drivers), so each driver has its own. -->
           <div class="fs-stack" id="driverfields"></div>
           <div id="wakewrap"><button type="button" class="fs-btn fs-ghost" id="wake" data-i18n="settings.wake"></button></div>
           <p class="fs-hint" style="margin:0" id="driverhint"></p>
@@ -203,6 +205,7 @@
       var filled = false;
       var savedTimer = null;
       var drivers = [];
+      var tvDevices = []; // the TVs in Homey, from GET /tv-devices
       var values = {}; // driver id → { field key → value }, so what was typed survives switching brand
       var currentDriver = null;
       var lastSettings = null; // what the app has stored
@@ -213,6 +216,61 @@
       function driverById(id) {
         for (var i = 0; i < drivers.length; i++) if (drivers[i].id === id) return drivers[i];
         return null;
+      }
+      // A driver with a `device` field is chosen by picking one of the TVs in Homey; its other fields are drawn as usual.
+      function deviceField(d) {
+        for (var i = 0; i < d.fields.length; i++) if (d.fields[i].kind === 'device') return d.fields[i];
+        return null;
+      }
+      function tvById(id) {
+        for (var i = 0; i < tvDevices.length; i++) if (tvDevices[i].id === id) return tvDevices[i];
+        return null;
+      }
+      function tvLabel(tv) { return tv.zone ? tv.name + ' · ' + tv.zone : tv.name; }
+      // The options of the Connected TV list. A value is "driverId" or "driverId|deviceId". Returns the value to select.
+      function renderChoices(settings) {
+        var select = $('driver');
+        while (select.firstChild) select.removeChild(select.firstChild);
+        var wanted = settings.driver;
+        var chosen = null;
+        var add = function (value, label) {
+          var option = el('option', '', label);
+          option.value = value;
+          select.appendChild(option);
+        };
+        drivers.forEach(function (d) {
+          var field = deviceField(d);
+          if (!field) {
+            add(d.id, Homey.__('settings.otherTv', { name: d.name }));
+            if (d.id === wanted) chosen = d.id;
+            return;
+          }
+          var saved = d.id === wanted ? (settings.driverConfig[field.key] || '') : '';
+          tvDevices.forEach(function (tv) {
+            add(d.id + '|' + tv.id, tvLabel(tv));
+            if (saved === tv.id) chosen = d.id + '|' + tv.id;
+          });
+          // The saved TV is gone from Homey: keep showing it, so the choice is never silently changed.
+          if (saved && !tvById(saved)) {
+            add(d.id + '|' + saved, Homey.__('settings.tvGone'));
+            chosen = d.id + '|' + saved;
+          }
+        });
+        $('tvhint').hidden = tvDevices.length > 0 || !drivers.some(deviceField);
+        $('tvhint').textContent = Homey.__('settings.noHomeyTvs');
+        // Nothing saved for this driver yet (a new installation): the first TV in Homey, else the first entry.
+        if (!chosen && select.firstChild) chosen = select.firstChild.value;
+        select.value = chosen;
+        return chosen;
+      }
+      function applyChoice(value) {
+        var parts = value.split('|');
+        var d = driverById(parts[0]);
+        if (!d) return;
+        var field = deviceField(d);
+        values[d.id] = values[d.id] || {};
+        if (field) values[d.id][field.key] = parts[1] || '';
+        renderDriver(d.id);
       }
       function el(tag, cls, text) {
         var node = document.createElement(tag);
@@ -229,6 +287,7 @@
         while (box.firstChild) box.removeChild(box.firstChild);
         var mine = values[d.id] = values[d.id] || {};
         d.fields.forEach(function (f) {
+          if (f.kind === 'device') return; // chosen in the Connected TV list
           var wrap = el('div');
           var label = el('label', 'fs-label', f.label);
           label.htmlFor = 'f_' + f.key;
@@ -262,20 +321,26 @@
 
       function render(s) {
         lastSettings = s.settings;
-        var c = connection[s.connection];
+        var c = s.tvMissing ? ['fs-bad', 'missing'] : connection[s.connection];
         $('hero').className = 'fs-hero ' + c[0];
         $('status').textContent = Homey.__('settings.status.' + c[1]);
         var parts = [];
         if (s.configured && s.connection === 'connected') parts.push(Homey.__(s.tvOn ? 'widget.tvOn' : 'widget.tvOff'));
         var d = driverById(s.settings.driver);
-        if (d && drivers.length > 1) parts.push(d.name);
-        if (d && d.fields.length) parts.push(s.settings.driverConfig[d.fields[0].key]);
+        var dev = d && deviceField(d);
+        if (dev) {
+          var chosenId = s.settings.driverConfig[dev.key];
+          var tv = tvById(chosenId);
+          if (chosenId) parts.push(tv ? tv.name : Homey.__('settings.tvGone'));
+        } else if (d) {
+          if (drivers.length > 1) parts.push(d.name);
+          if (d.fields.length) parts.push(s.settings.driverConfig[d.fields[0].key]);
+        }
         $('substatus').textContent = parts.filter(Boolean).join(' · ');
         if (filled) return; // do not overwrite what the user is typing
         filled = true;
         values[s.settings.driver] = s.settings.driverConfig;
-        $('driver').value = s.settings.driver;
-        renderDriver(s.settings.driver);
+        applyChoice(renderChoices(s.settings));
         $('weekday').value = s.settings.weekdayMinutes;
         $('weekend').value = s.settings.weekendMinutes;
         $('daystart').value = s.settings.dayStartTime;
@@ -285,6 +350,8 @@
         $('autotime').value = s.settings.autoOnTime;
         syncAutoTime();
         syncDayStart();
+        // A new installation: the first TV in Homey is preselected, so it is also saved.
+        if (!s.configured && currentDriver) saveNow();
       }
       function refresh() { Homey.api('GET', '/status', null, function (err, s) { if (!err) render(s); }); }
 
@@ -342,7 +409,7 @@
         });
       }
 
-      $('driver').addEventListener('change', function () { renderDriver($('driver').value); saveNow(); });
+      $('driver').addEventListener('change', function () { applyChoice($('driver').value); saveNow(); });
       $('autoon').addEventListener('change', function () { syncAutoTime(); saveNow(); });
       $('autooff').addEventListener('change', saveNow);
       $('weekstart').addEventListener('change', saveNow);
@@ -361,19 +428,14 @@
         Homey.api('POST', '/wake', null, function (err) { if (err) Homey.alert(err.message); });
       });
 
-      // The brands must be loaded before the first status, because the fields are drawn from them.
+      // The drivers and the TVs in Homey must be loaded before the first status, because the list and fields are drawn from them.
       Homey.api('GET', '/drivers', null, function (err, list) {
-        if (!err && list) {
-          drivers = list;
-          drivers.forEach(function (d) {
-            var option = el('option', '', d.name);
-            option.value = d.id;
-            $('driver').appendChild(option);
-          });
-          $('drivergroup').hidden = drivers.length < 2;
-        }
-        refresh();
-        setInterval(refresh, 3000);
+        if (!err && list) drivers = list;
+        Homey.api('GET', '/tv-devices', null, function (err2, tvs) {
+          if (!err2 && tvs) tvDevices = tvs;
+          refresh();
+          setInterval(refresh, 3000);
+        });
       });
       Homey.ready();
     }

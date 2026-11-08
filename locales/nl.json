@@ -8,9 +8,12 @@
   },
   "settings": {
     "title": "Tv-tijdbeheer",
-    "sectionTv": "Tv-verbinding",
-    "sectionTvSub": "Zo vindt de app je tv",
-    "tvBrand": "Tv-merk",
+    "sectionTv": "Gekoppelde tv",
+    "sectionTvSub": "Welke tv de app bedient",
+    "tvChoose": "Tv",
+    "otherTv": "Andere tv, via IP-adres (__name__)",
+    "noHomeyTvs": "Geen tv's gevonden in Homey. Tv's die je aan Homey toevoegt, verschijnen in de lijst.",
+    "tvGone": "Niet gevonden in Homey",
     "wake": "Tv inschakelen",
     "sectionQuota": "Tijdlimiet",
     "sectionQuotaSub": "Minuten tv-tijd per dag",
@@ -41,7 +44,8 @@
       "connecting": "Verbinden …",
       "prompt": "Druk op “Toestaan” op de tv",
       "connected": "Verbonden",
-      "offline": "Tv niet beschikbaar"
+      "offline": "Tv niet beschikbaar",
+      "missing": "De gekozen tv bestaat niet meer in Homey"
     }
   },
   "widget": {
