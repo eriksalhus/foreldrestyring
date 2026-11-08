@@ -113,7 +113,7 @@ test('the LG channel links, shows messages and only ever shows messages', async 
   assert.equal(channel.connection, 'prompt');
   lg.emit('connect');
   assert.equal(channel.connection, 'connected');
-  assert.equal(lg.powerCallback, null, 'a message-only channel never follows the power state');
+  assert.ok(lg.powerCallback, 'like the direct driver, the channel subscribes to the power state');
 
   await channel.send('5 minutes left');
   assert.deepEqual(lg.requests, [{ uri: 'ssap://system.notifications/createToast', payload: { message: '5 minutes left' } }]);
@@ -132,4 +132,21 @@ test('the registry finds providers by id and describes them in the user\'s langu
   assert.equal(description.fields[0].required, true);
   assert.equal(description.fields[0].label, 'TV-ens IP-adresse');
   assert.match(description.hint, /Tillat/);
+});
+
+test('the LG channel logs the TV power state, so a toast without an answer can be explained', async () => {
+  const lg = new FakeLg();
+  const logs: string[] = [];
+  const provider = createLgMessageProvider(async () => lg as unknown as LgClientLike);
+  const channel = provider.createChannel({
+    config: { host: '10.0.0.5' },
+    credentials: undefined,
+    saveCredentials: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
+  });
+  await channel.start();
+  lg.emit('connect');
+  lg.power('on');
+  lg.power('active_standby');
+  assert.deepEqual(logs, ['TV power (message link): on', 'TV power (message link): off or standby']);
 });

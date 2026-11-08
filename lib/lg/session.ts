@@ -33,7 +33,7 @@ export interface LgSessionOptions {
   /** Called with the pairing key when the user has pressed "Allow" on the TV. */
   saveCredentials(credentials: unknown): void;
   log(...args: unknown[]): void;
-  /** Follow the TV's power state and emit `power`. A session that only shows messages does not need it. Default true. */
+  /** Follow the TV's power state and emit `power`. Default true; both the direct driver and the message link do. */
   followPower?: boolean;
   /** Makes the lgtv2 client. Tests pass a fake; the default connects for real. */
   createClient?: (options: LgClientOptions) => Promise<LgClientLike>;

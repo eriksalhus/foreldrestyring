@@ -38,7 +38,11 @@ function usableIp(value: unknown): string | null {
   return ip === '0.0.0.0' ? null : ip;
 }
 
-/** Messages only: the same SSAP link as the direct driver, without following the TV's power state. */
+/**
+ * Messages only, but the same SSAP link as the direct driver in every respect, including subscribing to the TV's power
+ * state: the direct driver is known to get toasts through on a real TV, so this one does not differ from it. The power
+ * state is only logged, so a toast that gets no answer can be explained (a TV in standby ignores it).
+ */
 class LgMessageChannel extends EventEmitter implements MessageChannel {
   connection: Connection = 'connecting';
   private readonly session: LgSession;
@@ -50,13 +54,14 @@ class LgMessageChannel extends EventEmitter implements MessageChannel {
       credentials: options.credentials,
       saveCredentials: options.saveCredentials,
       log: options.log,
-      followPower: false,
+      followPower: true,
       createClient,
     });
     this.session.on('connection', (connection: Connection) => {
       this.connection = connection;
       this.emit('connection', connection);
     });
+    this.session.on('power', (on: boolean) => options.log('TV power (message link):', on ? 'on' : 'off or standby'));
   }
 
   start(): Promise<void> {
