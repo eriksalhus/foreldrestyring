@@ -114,3 +114,46 @@ test('stop disconnects and leaves the session offline', async () => {
   await session.toast('late'); // after stop nothing is sent and nothing throws
   assert.equal(lg.requests.length, 0);
 });
+
+test('a toast that gets no answer logs the last frames from the TV, with the pairing key hidden', async () => {
+  const lg = new FakeLg();
+  const logs: string[] = [];
+  const session = new LgSession({
+    host: '10.0.0.5',
+    credentials: undefined,
+    saveCredentials: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
+    createClient: async () => lg as unknown as LgClientLike,
+  });
+  await session.start();
+  lg.emit('message', '{"type":"registered","id":"r1","payload":{"client-key":"SECRET-KEY-123"}}');
+  lg.emit('message', '{"type":"response","id":"s1","payload":{"state":"Active"}}');
+  lg.rejectWith = new Error('timeout');
+  await assert.rejects(session.toast('Hello'), /timeout/);
+  const line = logs.find((l) => l.startsWith('SSAP createToast failed: timeout'));
+  assert.ok(line, 'the failure is logged');
+  assert.ok(line.includes('"state":"Active"'), 'recent frames are included');
+  assert.ok(!line.includes('SECRET-KEY-123'), 'the pairing key is never logged');
+  assert.ok(line.includes('***'));
+});
+
+test('only the last few frames are kept, and long ones are cut', async () => {
+  const lg = new FakeLg();
+  const logs: string[] = [];
+  const session = new LgSession({
+    host: '10.0.0.5',
+    credentials: undefined,
+    saveCredentials: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
+    createClient: async () => lg as unknown as LgClientLike,
+  });
+  await session.start();
+  for (let i = 0; i < 20; i++) lg.emit('message', '{"n":' + i + '}');
+  lg.emit('message', 'x'.repeat(1000));
+  lg.rejectWith = new Error('timeout');
+  await assert.rejects(session.toast('Hello'));
+  const line = logs.find((l) => l.startsWith('SSAP createToast failed'))!;
+  assert.ok(!line.includes('{"n":0}'), 'old frames are dropped');
+  assert.ok(line.includes('{"n":19}'));
+  assert.ok(line.length < 2500, 'long frames are cut');
+});

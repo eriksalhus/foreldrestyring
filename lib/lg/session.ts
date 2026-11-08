@@ -5,6 +5,8 @@ import type { Connection } from '../drivers/types.ts';
 export interface LgClientLike {
   on(event: 'connecting' | 'prompt' | 'connect' | 'close', listener: () => void): unknown;
   on(event: 'error', listener: (err: Error) => void): unknown;
+  /** Every frame the TV sends, as text. */
+  on(event: 'message', listener: (text: string) => void): unknown;
   request(uri: string, payload?: object): unknown;
   subscribePowerState(callback: (err: Error | null, result?: { state: string }) => void): string;
   unsubscribe(id: string): void;
@@ -23,6 +25,15 @@ export interface LgClientOptions {
 
 /** States in which the TV counts as on: the picture may be off, but the TV is not in standby. */
 const ON_STATES = new Set(['on', 'screen_off', 'screen_saver']);
+
+/** How many of the TV's latest frames are kept to explain a request that got no answer, and how long each may be. */
+const FRAMES_KEPT = 8;
+const FRAME_MAX = 300;
+
+/** A frame for the log: cut short, and without the pairing key, which is a credential. */
+function frameForLog(text: string): string {
+  return text.replace(/("client-key"\s*:\s*")[^"]*(")/g, '$1***$2').slice(0, FRAME_MAX);
+}
 
 export interface LgSessionOptions {
   host: string;
@@ -54,6 +65,7 @@ export class LgSession extends EventEmitter {
 
   private lg: LgClientLike | null = null;
   private powerSubscription: string | undefined;
+  private readonly recentFrames: string[] = [];
   private readonly options: LgSessionOptions;
 
   constructor(options: LgSessionOptions) {
@@ -92,6 +104,10 @@ export class LgSession extends EventEmitter {
     });
     lg.on('close', () => this.setConnection('offline'));
     lg.on('error', (err) => log('TV error:', err.message));
+    lg.on('message', (text) => {
+      this.recentFrames.push(frameForLog(text));
+      if (this.recentFrames.length > FRAMES_KEPT) this.recentFrames.shift();
+    });
   }
 
   async stop(): Promise<void> {
@@ -102,7 +118,18 @@ export class LgSession extends EventEmitter {
   }
 
   async toast(message: string): Promise<void> {
-    await this.lg?.request('ssap://system.notifications/createToast', { message });
+    try {
+      await this.lg?.request('ssap://system.notifications/createToast', { message });
+    } catch (err) {
+      // The TV's latest frames show what it does answer when it stays silent on this request.
+      this.options.log(
+        'SSAP createToast failed:',
+        err instanceof Error ? err.message : err,
+        '| last frames from the TV:',
+        this.recentFrames.join(' | ') || 'none',
+      );
+      throw err;
+    }
   }
 
   async turnOff(): Promise<void> {

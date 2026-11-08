@@ -342,7 +342,8 @@ export class Controller {
     const provider = this.currentProvider();
     await this.stopMessageChannel();
     this.settings = { ...this.settings, messages: { ...this.settings.messages, linked: false } };
-    if (provider) this.saveCredentials(provider.id, undefined);
+    // An empty key, not undefined: Homey stores settings as JSON, which drops undefined, and the old key would come back.
+    if (provider) this.saveCredentials(provider.id, '');
     this.persistSettings();
     return this.getStatus();
   }

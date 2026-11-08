@@ -15,7 +15,8 @@ function fakeHost(initial: Record<string, unknown> = {}) {
   const timeouts: Array<() => void> = [];
   const logs: string[] = [];
   const host: Host = {
-    settings: { get: (k) => store.get(k), set: (k, v) => void store.set(k, v) },
+    // Like Homey's settings, values are stored as JSON: an `undefined` inside an object does not survive.
+    settings: { get: (k) => store.get(k), set: (k, v) => void store.set(k, JSON.parse(JSON.stringify(v))) },
     log: (...args) => void logs.push(args.join(' ')),
     error: () => {},
     setInterval: (fn) => fn,
@@ -236,7 +237,24 @@ test('Unlink stops the channel, forgets the key and keeps the on/off choice', as
   assert.equal(channels[0].stopped, true);
   assert.equal(status.messages.linked, false);
   assert.equal(status.messages.enabled, false);
-  assert.equal((store.get('tvCredentials') as Record<string, unknown>).simulated, undefined);
+  assert.equal((store.get('tvCredentials') as Record<string, unknown>).simulated, '', 'an empty key survives the settings store, undefined would not');
+});
+
+test('after Unlink a new Link starts without a key, even when the key was saved the old way (clientKey)', async () => {
+  const fake = new FakeDevices();
+  fake.add({ id: 'tv1', appId: APP, settings: {} });
+  const { provider, channels } = createSimulatedProvider(APP);
+  const asLg = { ...provider, id: 'lg-webos' }; // the id that has the legacy clientKey fallback
+  const env = fakeHost({ clientKey: 'legacy-key' });
+  const controller = new Controller(env.host, [homeyDevice], fake, [asLg]);
+  await controller.start();
+  await flush();
+  await controller.configure(homeySettings());
+  await controller.linkMessages({ host: '10.0.0.9' });
+  assert.equal(channels[0].options.credentials, 'legacy-key', 'before Unlink the old key is used');
+  await controller.unlinkMessages();
+  await controller.linkMessages({ host: '10.0.0.9' });
+  assert.ok(!channels[1].options.credentials, 'after Unlink there is no key, so the TV asks for Allow again');
 });
 
 test('the pairing key is stored by provider id and given back to the channel', async () => {
