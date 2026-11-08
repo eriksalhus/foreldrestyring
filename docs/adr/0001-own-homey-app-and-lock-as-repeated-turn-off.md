@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: accepted, partly superseded by [0003](0003-homey-device-as-power-source.md)
 ---
 
 # The Lock is repeated turn-off, in a separate Homey Pro app with its own SSAP client

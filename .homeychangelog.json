@@ -6,5 +6,9 @@
   "0.1.1": {
     "en": "Settings are now saved automatically when you leave a field, so there is no Save button. The IP address field uses the normal keyboard. New widget preview images. Under the hood, support for more TV brands is prepared.",
     "no": "Innstillingene lagres nå automatisk når du forlater et felt, så det er ingen Lagre-knapp. IP-feltet bruker vanlig tastatur. Nye forhåndsvisningsbilder av widgeten. Under panseret er det lagt til rette for flere TV-merker."
+  },
+  "0.2.0": {
+    "en": "You can now pick a TV that is already added to Homey, of any brand, instead of typing an IP address. The app switches it off and on through that device. The direct LG webOS connection by IP address is still there and works as before. The app now asks for full access to Homey so that it can list your TVs and switch the one you choose.",
+    "no": "Du kan nå velge en TV som allerede er lagt til i Homey, av hvilket som helst merke, i stedet for å skrive inn en IP-adresse. Appen slår den av og på via den enheten. Den direkte LG webOS-tilkoblingen via IP-adresse finnes fortsatt og virker som før. Appen ber nå om full tilgang til Homey for å kunne liste TV-ene dine og slå den du velger av og på."
   }
 }

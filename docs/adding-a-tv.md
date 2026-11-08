@@ -2,13 +2,15 @@
 
 The app counts how long the TV has been on, and turns it off when the daily Quota is used up. Everything about *which brand* of TV that is lives in one small file, a **TV driver** (see [GLOSSARY.md](../GLOSSARY.md) for the terms: *Child mode*, *Quota*, *the Lock*, …).
 
-A driver does four things: connects to the TV, tells the app whether the TV is on, shows a short message on screen, and turns the TV off. Everything else (quota, schedule, settings page, widget, Flows) works for every brand without changes.
+A driver does three things: connects to the TV, tells the app whether the TV is on, and turns the TV off. It can also turn the TV on and show a short message on screen, if the brand can do that. Everything else (quota, schedule, settings page, widget, Flows) works for every brand without changes.
+
+If the TV is already a device in Homey, you do not need a new driver: the built-in `homey-device` driver ([`lib/drivers/homey-device.ts`](../lib/drivers/homey-device.ts)) switches it through that device. Write a driver when the brand has a direct network protocol, for example to get a reliable power state or to show messages on screen.
 
 ## The 15-minute version
 
 1. Copy `lib/drivers/simulated.ts` to `lib/drivers/<brand>.ts` and rename things.
 2. Fill in `id`, `name`, `fields` and `hint` (see below).
-3. Implement `start`, `stop`, `toast`, `turnOff`, and `wake` if the brand supports it.
+3. Implement `start`, `stop` and `turnOff`, and `toast` and `wake` if the brand supports them.
 4. Add the driver to `DRIVERS` in `lib/drivers/index.ts`.
 5. `npm test` and `npm run typecheck`. The tests in `tests/drivers.test.ts` check every driver in `DRIVERS` automatically.
 6. Try it on a real TV with `homey app run`. Pick your brand in the app's settings.
@@ -30,7 +32,7 @@ class AcmeConnection extends BaseTvConnection {
     //   this.setOn(true | false);   // whenever the TV is switched on or off
   }
   async stop() { /* close sockets, stop timers */ this.setOn(false); }
-  async toast(message: string) { /* show message on screen */ }
+  async toast(message: string) { /* optional: show message on screen. Leave the method out if the TV cannot. */ }
   async turnOff() { /* standby */ }
   async wake() { /* optional: Wake-on-LAN or similar */ }
 }
@@ -51,6 +53,8 @@ export const acme: TvDriver = {
 ### Fields
 
 `fields` is all the settings page knows about your TV. It draws one text input per field, in the user's language, and the values arrive in `options.config` as trimmed strings. The TV counts as set up when every `required` field is filled in. If your TV needs more than text inputs, open an issue and we will extend the contract rather than work around it.
+
+A field is a text box by default. A field with `kind: 'device'` is a choice among the TVs in Homey instead: the settings page fills it in and the value is the Homey device id. Only the `homey-device` driver needs this, and it gets the TVs through `options.devices` (see `TvDevices` in `lib/drivers/types.ts`).
 
 Texts (`label`, `hint`, the driver `hint`) are either a plain string or a map from language code to text. Only `en` is required; the app falls back to it. The app ships in `en`, `no`, `nl`, `de`, `sv`, `da`, `fr`, `it` and `es`, and translations are welcome but not required for a first version.
 
