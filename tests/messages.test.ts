@@ -59,6 +59,7 @@ for (const provider of all) {
 test('the LG provider recognises a TV by the app that owns the device, never by its name', () => {
   const lg = getMessageProvider('lg-webos')!;
   assert.ok(LG_APP_IDS.has('com.maxvandelaar.webos-plus'));
+  assert.equal(lg.matches(device({ appId: 'com.lg.webos' })), true, 'the official LG WebOS TV app');
   assert.equal(lg.matches(device({ appId: 'com.maxvandelaar.webos-plus' })), true);
   assert.equal(lg.matches(device({ appId: 'com.example.other', name: 'LG OLED' })), false);
   assert.equal(lg.matches(device({ appId: '', name: 'LG webOS TV' })), false);
@@ -73,6 +74,16 @@ test('the LG provider suggests the IP address the device knows, and nothing it c
     assert.deepEqual(suggest(bad), {}, String(bad));
   }
   assert.deepEqual(lg.suggestConfig(device({ appId: 'com.maxvandelaar.webos-plus' })), {});
+});
+
+test('the LG provider looks under a few setting names, takes the first usable address, and ignores unknown names', () => {
+  const lg = getMessageProvider('lg-webos')!;
+  const suggest = (settings: Record<string, unknown>) => lg.suggestConfig(device({ appId: 'com.lg.webos', settings }));
+  assert.deepEqual(suggest({ ip: '192.168.1.60' }), { host: '192.168.1.60' });
+  assert.deepEqual(suggest({ host: '192.168.1.61' }), { host: '192.168.1.61' });
+  assert.deepEqual(suggest({ ipAddress: '0.0.0.0', ip: '192.168.1.62' }), { host: '192.168.1.62' }, 'an unusable value falls through');
+  assert.deepEqual(suggest({ ipAddress: '192.168.1.1', ip: '192.168.1.2' }), { host: '192.168.1.1' }, 'the first one wins');
+  assert.deepEqual(suggest({ macAddress: '10.0.0.5', name: 'x' }), {}, 'other names are never guessed');
 });
 
 test('the LG channel links, shows messages and only ever shows messages', async () => {

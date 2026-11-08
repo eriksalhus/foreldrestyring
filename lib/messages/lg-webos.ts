@@ -8,12 +8,19 @@ import type { MessageChannel, MessageOptions, MessageProvider } from './types.ts
 /**
  * Homey apps that add LG webOS TVs to Homey. A Homey TV owned by one of these can show messages through this
  * provider. To support another LG app, add its app id (the `id` in its app.json) here, and check which device
- * setting holds the TV's IP address (see `suggestConfig`).
+ * setting holds the TV's IP address (see `IP_SETTINGS`).
+ *
+ * - `com.lg.webos`: the official "LG WebOS TV" app.
+ * - `com.maxvandelaar.webos-plus`: the community app "WebOS Plus". Its `ipAddress` setting is verified.
  */
-export const LG_APP_IDS: ReadonlySet<string> = new Set(['com.maxvandelaar.webos-plus']);
+export const LG_APP_IDS: ReadonlySet<string> = new Set(['com.lg.webos', 'com.maxvandelaar.webos-plus']);
 
-/** The device setting of the LG apps above that holds the TV's IP address. */
-const IP_SETTING = 'ipAddress';
+/**
+ * The device settings that may hold the TV's IP address, in order. `ipAddress` is verified for WebOS Plus; the others
+ * are plausible names for the official app and are harmless if wrong, because only a usable IPv4 address is
+ * accepted and the user can always change what is suggested.
+ */
+const IP_SETTINGS = ['ipAddress', 'ip', 'host'];
 
 /** A usable IPv4 address: four numbers up to 255, and not the placeholder `0.0.0.0`. */
 function usableIp(value: unknown): string | null {
@@ -79,8 +86,11 @@ export function createLgMessageProvider(createClient?: LgSessionOptions['createC
     matches: (device: TvDeviceInfo) => LG_APP_IDS.has(device.appId),
     suggestConfig(device: TvDeviceInfo): Record<string, string> {
       if (!LG_APP_IDS.has(device.appId)) return {};
-      const ip = usableIp(device.settings[IP_SETTING]);
-      return ip ? { host: ip } : {};
+      for (const key of IP_SETTINGS) {
+        const ip = usableIp(device.settings[key]);
+        if (ip) return { host: ip };
+      }
+      return {};
     },
     createChannel: (options: MessageOptions) => new LgMessageChannel(options, createClient),
   };

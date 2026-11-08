@@ -38,7 +38,7 @@ The app reads the device's on/off state and switches it off (and on) through tha
 
 ### On-screen messages for an LG TV that is in Homey
 
-When the chosen TV was added through a supported LG app (today the community app `com.maxvandelaar.webos-plus`), the **Connected TV** section also offers messages on the TV screen. They need a one-time link between this app and the TV:
+When the chosen TV was added through a supported LG app (today the official "LG WebOS TV" app, `com.lg.webos`, and the community app "WebOS Plus", `com.maxvandelaar.webos-plus`), the **Connected TV** section also offers messages on the TV screen. They need a one-time link between this app and the TV:
 
 1. On the TV, turn on "LG Connect Apps" and give the TV a fixed IP address in your router.
 2. In the app's settings, check the TV's IP address. It is filled in from the Homey device when that knows it.

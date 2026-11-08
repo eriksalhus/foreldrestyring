@@ -158,6 +158,7 @@ export class Controller {
   private state: QuotaState = emptyState();
   private tv: TvConnection | null = null;
   private messageChannel: MessageChannel | null = null;
+  private lastTargetLog = '';
   /** What Homey says about the chosen TV: which provider fits it, and what the device already knows. */
   private target: { provider: MessageProvider; suggested: Record<string, string> } | null = null;
   private timers: unknown[] = [];
@@ -393,7 +394,18 @@ export class Controller {
     }
     const provider = info ? this.providers.find((p) => p.matches(info)) : undefined;
     this.target = provider && info ? { provider, suggested: provider.suggestConfig(info) } : null;
+    this.logTarget(info, provider);
     return this.adoptProvider(provider?.id ?? '');
+  }
+
+  /** Says in the log, once per change, why the settings page does or does not offer messages. Setting names only, never values. */
+  private logTarget(info: Awaited<ReturnType<TvDevices['get']>>, provider: MessageProvider | undefined): void {
+    const line = info
+      ? `Connected TV is from app "${info.appId}" (settings: ${Object.keys(info.settings).join(', ') || 'none'}); message provider: ${provider?.id ?? 'none'}`
+      : 'Connected TV was not found in Homey';
+    if (line === this.lastTargetLog) return;
+    this.lastTargetLog = line;
+    this.host.log(line);
   }
 
   /** Remembers which provider fits. A provider that stops fitting takes its IP address and its link with it. */
