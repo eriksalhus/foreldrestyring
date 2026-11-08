@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { Controller, migrateSavedSettings } from '../lib/controller.ts';
 import type { Host, TvSettings } from '../lib/controller.ts';
+import { homeyDevice } from '../lib/drivers/homey-device.ts';
 import { createSimulatedDriver } from '../lib/drivers/simulated.ts';
+import { FakeDevices } from './fake-devices.ts';
 
 function fakeHost(initial: Record<string, unknown> = {}) {
   const store = new Map<string, unknown>(Object.entries(initial));
@@ -174,4 +176,113 @@ test('removing all time while Child mode is off does not lock until it is turned
   assert.equal(off.remainingMinutes, 0);
   assert.equal(off.locked, false);
   assert.equal(controller.setChildMode(true).locked, true);
+});
+
+const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
+
+/** The real driver order (Homey device first), with LG replaced by a stub so no test opens a network connection. */
+function driversWithStubLg() {
+  const { driver, connections } = createSimulatedDriver();
+  const lg = { ...driver, id: 'lg-webos', fields: [{ key: 'host', label: 'IP', required: true }, { key: 'mac', label: 'MAC' }] };
+  return { drivers: [homeyDevice, lg], lgConnections: connections };
+}
+
+async function setupHomey(initial: Record<string, unknown> = {}) {
+  const fake = new FakeDevices();
+  fake.add({ id: 'tv1', on: false });
+  const env = fakeHost(initial);
+  const { drivers, lgConnections } = driversWithStubLg();
+  const controller = new Controller(env.host, drivers, fake);
+  await controller.start();
+  return { ...env, controller, fake, lgConnections };
+}
+
+const homeySettings = (over: Partial<TvSettings> = {}) =>
+  settings({ driver: 'homey-device', driverConfig: { deviceId: 'tv1' }, ...over });
+
+test('a Homey device is connected through the devices port and the Lock switches it off', async () => {
+  const { controller, fake, timeouts } = await setupHomey();
+  await controller.configure(homeySettings());
+  await flush();
+  const status = controller.getStatus();
+  assert.equal(status.configured, true);
+  assert.equal(status.connection, 'connected');
+  assert.equal(status.tvMissing, false);
+
+  controller.setChildMode(true);
+  controller.reduceTime(1000);
+  fake.press('tv1', true);
+  for (const run of timeouts.splice(0)) run();
+  await flush();
+
+  assert.deepEqual(fake.setCalls, [{ id: 'tv1', on: false }]);
+});
+
+test('without a message capability the Lock and the warnings still work, and nothing is shown', async () => {
+  const { controller, fake, timeouts } = await setupHomey();
+  await controller.configure(homeySettings());
+  await flush();
+  controller.setChildMode(true);
+  controller.reduceTime(1000);
+  fake.press('tv1', true);
+  assert.doesNotThrow(() => {
+    for (const run of timeouts.splice(0)) run();
+  });
+  await flush();
+  assert.equal(fake.setCalls.length, 1);
+});
+
+test('a Homey device that has been deleted shows as missing in the status', async () => {
+  const { controller } = await setupHomey();
+  await controller.configure(homeySettings({ driverConfig: { deviceId: 'gone' } }));
+  await flush();
+  const status = controller.getStatus();
+  assert.equal(status.connection, 'offline');
+  assert.equal(status.tvMissing, true);
+  assert.equal(status.settings.driverConfig.deviceId, 'gone', 'the choice is kept, never switched to another TV');
+});
+
+test('getTvDevices lists the TVs in Homey for the settings page, sorted by name', async () => {
+  const { controller, fake } = await setupHomey();
+  fake.add({ id: 'tv2', name: 'Bedroom TV', zone: 'Bedroom' });
+  assert.deepEqual(await controller.getTvDevices(), [
+    { id: 'tv2', name: 'Bedroom TV', zone: 'Bedroom' },
+    { id: 'tv1', name: 'Living room TV', zone: 'Living room' },
+  ]);
+});
+
+test('getTvDevices gives an empty list without access to Homey devices or when Homey fails', async () => {
+  const env = fakeHost();
+  const without = new Controller(env.host, driversWithStubLg().drivers);
+  await without.start();
+  assert.deepEqual(await without.getTvDevices(), []);
+
+  const failing = new FakeDevices();
+  failing.list = async () => {
+    throw new Error('no permission');
+  };
+  const withFailure = new Controller(fakeHost().host, driversWithStubLg().drivers, failing);
+  await withFailure.start();
+  assert.deepEqual(await withFailure.getTvDevices(), []);
+});
+
+test('a new installation defaults to the Homey device driver, an existing LG installation keeps LG', async () => {
+  const fresh = await setupHomey();
+  assert.equal(fresh.controller.getStatus().settings.driver, homeyDevice.id);
+
+  const upgraded = await setupHomey({
+    tvSettings: { driver: 'lg-webos', driverConfig: { host: '10.0.0.5', mac: '' } },
+  });
+  const status = upgraded.controller.getStatus();
+  assert.equal(status.settings.driver, 'lg-webos');
+  assert.equal(status.configured, true);
+  assert.equal(upgraded.lgConnections.length, 1);
+  assert.equal(upgraded.fake.getCalls.length, 0, 'the Homey devices are not touched for an LG setup');
+});
+
+test('settings from before TV drivers still become LG when the Homey device driver is listed first', async () => {
+  const { controller } = await setupHomey({ tvSettings: { host: '10.0.0.5', mac: 'AA:BB', weekdayMinutes: 20 } });
+  const status = controller.getStatus();
+  assert.equal(status.settings.driver, 'lg-webos');
+  assert.deepEqual(status.settings.driverConfig, { host: '10.0.0.5', mac: 'AA:BB' });
 });
