@@ -8,10 +8,13 @@ export class FakeLg extends EventEmitter {
   disconnected = false;
   /** When set, `request` fails with it, like the lgtv2 timeout does. */
   rejectWith: Error | null = null;
+  /** Answers by uri, taking precedence over `rejectWith`. */
+  responses: Record<string, unknown> = {};
   powerCallback: ((err: Error | null, result?: { state: string }) => void) | null = null;
 
   async request(uri: string, payload?: object) {
     this.requests.push({ uri, payload });
+    if (uri in this.responses) return this.responses[uri];
     if (this.rejectWith) throw this.rejectWith;
   }
   subscribePowerState(cb: (err: Error | null, result?: { state: string }) => void) {

@@ -30,6 +30,13 @@ const ON_STATES = new Set(['on', 'screen_off', 'screen_saver']);
 const FRAMES_KEPT = 8;
 const FRAME_MAX = 300;
 
+/** Read-only requests that tell whether the TV answers requests at all, used when a toast gets no answer. */
+const PROBES = [
+  'ssap://system/getSystemInfo',
+  'ssap://com.webos.applicationManager/getForegroundAppInfo',
+  'ssap://audio/getVolume',
+];
+
 /** A frame for the log: cut short, and without the pairing key, which is a credential. */
 function frameForLog(text: string): string {
   return text.replace(/("client-key"\s*:\s*")[^"]*(")/g, '$1***$2').slice(0, FRAME_MAX);
@@ -128,8 +135,25 @@ export class LgSession extends EventEmitter {
         '| last frames from the TV:',
         this.recentFrames.join(' | ') || 'none',
       );
+      void this.probe();
       throw err;
     }
+  }
+
+  /**
+   * Diagnostic, only after a toast got no answer: asks the TV a few harmless read-only questions and logs which ones
+   * it answers. Answers to those but not to the toast point at the toast; answers to none point at requests in general.
+   */
+  private async probe(): Promise<void> {
+    const lg = this.lg;
+    if (!lg) return;
+    const results = await Promise.allSettled(PROBES.map((uri) => Promise.resolve(lg.request(uri))));
+    const line = PROBES.map((uri, i) => {
+      const result = results[i];
+      const answer = result.status === 'fulfilled' ? JSON.stringify(result.value) : result.reason instanceof Error ? result.reason.message : String(result.reason);
+      return `${uri.split('/').pop()}: ${String(answer).slice(0, 120)}`;
+    }).join(' | ');
+    this.options.log('SSAP probe after the failed toast:', line);
   }
 
   async turnOff(): Promise<void> {

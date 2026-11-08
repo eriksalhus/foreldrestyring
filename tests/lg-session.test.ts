@@ -157,3 +157,28 @@ test('only the last few frames are kept, and long ones are cut', async () => {
   assert.ok(line.includes('{"n":19}'));
   assert.ok(line.length < 2500, 'long frames are cut');
 });
+
+test('after a toast that got no answer the session probes harmless requests and logs which ones the TV answers', async () => {
+  const lg = new FakeLg();
+  const logs: string[] = [];
+  const session = new LgSession({
+    host: '10.0.0.5',
+    credentials: undefined,
+    saveCredentials: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
+    createClient: async () => lg as unknown as LgClientLike,
+  });
+  await session.start();
+  lg.rejectWith = new Error('timeout');
+  lg.responses['ssap://system/getSystemInfo'] = { returnValue: true, modelName: 'OLED65G2' };
+  await assert.rejects(session.toast('Hello'), /timeout/);
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  const probe = logs.find((l) => l.startsWith('SSAP probe after the failed toast:'));
+  assert.ok(probe, 'the probe is logged');
+  assert.ok(probe.includes('getSystemInfo: {"returnValue":true,"modelName":"OLED65G2"}'), 'an answered request shows its answer');
+  assert.ok(probe.includes('getForegroundAppInfo: timeout'), 'an unanswered request shows the error');
+  const probed = lg.requests.map((r) => r.uri);
+  assert.ok(probed.includes('ssap://system/getSystemInfo') && probed.includes('ssap://audio/getVolume'));
+  assert.ok(!probed.some((u) => u.includes('turnOff')), 'only read-only requests are probed');
+});
