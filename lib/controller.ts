@@ -449,7 +449,11 @@ export class Controller {
     const messages = this.settings.messages;
     const provider = getMessageProvider(messages.provider, this.providers);
     if (!provider || this.currentDriver().canToast || !isConfigured(provider, messages.config)) return;
-    if (!linking && !(messages.linked && messages.enabled)) return;
+    if (!linking && !(messages.linked && messages.enabled)) {
+      this.host.log(`Message channel not started: ${messages.linked ? 'messages are off' : 'the TV is not linked yet'}`);
+      return;
+    }
+    this.host.log(`Message channel starting (${provider.id}, ${linking ? 'linking' : 'linked'})`);
     const channel = provider.createChannel({
       config: messages.config,
       credentials: this.loadCredentials(provider.id),
@@ -467,7 +471,10 @@ export class Controller {
 
   /** The first connection is the Link: from then on the TV counts as linked, even while it is in standby. */
   private onMessageConnection(channel: MessageChannel, connection: Connection): void {
-    if (channel !== this.messageChannel || connection !== 'connected' || this.settings.messages.linked) return;
+    if (channel !== this.messageChannel) return;
+    this.host.log('Message channel:', connection);
+    if (connection !== 'connected' || this.settings.messages.linked) return;
+    this.host.log('Message channel connected for the first time: the TV is now linked');
     this.settings = { ...this.settings, messages: { ...this.settings.messages, linked: true } };
     this.persistSettings();
     // Linking with messages switched off: the link is kept, but nothing is shown.
@@ -582,18 +589,25 @@ export class Controller {
    * Nothing here may affect counting or the Lock.
    */
   private say(message: string): void {
-    if (!this.settings.messages.enabled) return;
+    if (!this.settings.messages.enabled) {
+      this.host.log('Message not shown, messages are switched off:', message);
+      return;
+    }
     const toast = this.tv?.toast?.bind(this.tv);
     if (toast) {
       toast(message).catch((err) => this.host.error('toast failed:', err.message));
       return;
     }
     const channel = this.messageChannel;
-    if (!channel) return;
-    if (channel.connection !== 'connected') {
-      this.host.log('Message dropped, the TV is not reachable:', message);
+    if (!channel) {
+      this.host.log('Message not shown, the TV is not linked (no message channel):', message);
       return;
     }
+    if (channel.connection !== 'connected') {
+      this.host.log(`Message dropped, the message channel is ${channel.connection}:`, message);
+      return;
+    }
+    this.host.log('Showing message:', message);
     channel.send(message).catch((err) => this.host.error('message failed:', err.message));
   }
 

@@ -13,9 +13,10 @@ const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
 function fakeHost(initial: Record<string, unknown> = {}) {
   const store = new Map<string, unknown>(Object.entries(initial));
   const timeouts: Array<() => void> = [];
+  const logs: string[] = [];
   const host: Host = {
     settings: { get: (k) => store.get(k), set: (k, v) => void store.set(k, v) },
-    log: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
     error: () => {},
     setInterval: (fn) => fn,
     clearInterval: () => {},
@@ -27,7 +28,7 @@ function fakeHost(initial: Record<string, unknown> = {}) {
     clock: { getTimezone: () => 'Europe/Oslo' },
     i18n: { getLanguage: () => 'en' },
   };
-  return { store, timeouts, host };
+  return { store, timeouts, host, logs };
 }
 
 const base = {
@@ -315,4 +316,47 @@ test('settings saved before messages existed get the defaults', async () => {
   });
   const { messages } = controller.getStatus().settings;
   assert.deepEqual(messages, { enabled: true, provider: 'simulated', config: {}, linked: false });
+});
+
+async function lockWithTvOn(env: Awaited<ReturnType<typeof setup>>) {
+  env.controller.setChildMode(true);
+  env.controller.reduceTime(1000);
+  env.fake.press('tv1', true);
+  for (const run of env.timeouts.splice(0)) run();
+  await flush();
+}
+
+test('the log says when a message was not shown because the TV is not linked', async () => {
+  const env = await setup();
+  await env.controller.configure(homeySettings());
+  await lockWithTvOn(env);
+  assert.ok(env.logs.some((l) => /not shown, the TV is not linked/.test(l)));
+});
+
+test('the log says when a message was dropped because the channel is not connected', async () => {
+  const env = await linked();
+  env.channels[0].simulateOffline();
+  await lockWithTvOn(env);
+  assert.ok(env.logs.some((l) => /dropped, the message channel is offline/.test(l)));
+});
+
+test('the log says when a message is shown, and follows the Link states', async () => {
+  const env = await setup();
+  await env.controller.configure(homeySettings());
+  await env.controller.linkMessages({ host: '10.0.0.9' });
+  env.channels[0].simulatePrompt();
+  env.channels[0].simulateConnected();
+  assert.ok(env.logs.includes('Message channel: prompt'));
+  assert.ok(env.logs.includes('Message channel: connected'));
+  assert.ok(env.logs.some((l) => /now linked/.test(l)));
+  await lockWithTvOn(env);
+  assert.ok(env.logs.some((l) => l === 'Showing message: toast.timeUp'));
+  assert.deepEqual(env.channels[0].sent, ['toast.timeUp']);
+});
+
+test('the log says when a message was not shown because messages are switched off', async () => {
+  const env = await linked();
+  await env.controller.configure(homeySettings({ messages: { enabled: false } }));
+  await lockWithTvOn(env);
+  assert.ok(env.logs.some((l) => /not shown, messages are switched off/.test(l)));
 });
