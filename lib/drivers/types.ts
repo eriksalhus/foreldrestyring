@@ -111,5 +111,7 @@ export interface TvDriver {
   readonly fields: readonly DriverField[];
   /** True when connections from this driver implement `wake()`. Decides if the settings page shows a button for it. */
   readonly canWake?: boolean;
+  /** True when connections from this driver implement `toast()`. The settings page then offers the on-screen messages switch without a message provider. */
+  readonly canToast?: boolean;
   createConnection(options: DriverOptions): TvConnection & EventEmitter;
 }

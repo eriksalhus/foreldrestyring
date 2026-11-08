@@ -1,72 +1,43 @@
+import { LgSession } from '../lg/session.ts';
 import { BaseTvConnection } from './base.ts';
 import type { DriverOptions, TvDriver } from './types.ts';
 
-type LgModule = typeof import('lgtv2', { with: { 'resolution-mode': 'import' } });
-type LgClient = InstanceType<LgModule['default']>;
-
-/** States in which the TV counts as on: the picture may be off, but the TV is not in standby. */
-const ON_STATES = new Set(['on', 'screen_off', 'screen_saver']);
-
 /**
- * Thin layer over lgtv2 (SSAP over wss): keeps the TV's power state and connection status up to date.
- * The pairing key (`clientKey`) is stored as the driver's credentials.
+ * The direct connection to an LG webOS TV: the shared SSAP session keeps the TV's power state and connection
+ * status up to date. The pairing key (`clientKey`) is stored as the driver's credentials.
  */
 class LgWebosConnection extends BaseTvConnection {
-  private lg: LgClient | null = null;
-  private powerSubscription: string | undefined;
+  private session: LgSession | null = null;
 
   async start(): Promise<void> {
-    const { default: LG } = await import('lgtv2');
     const { config, credentials, saveCredentials, log } = this.options;
-    const lg = new LG({
-      host: config.host,
-      mac: config.mac || undefined,
-      clientKey: typeof credentials === 'string' && credentials ? credentials : undefined,
-      saveKey: (key, cb) => {
-        saveCredentials(key);
-        cb();
-      },
-      learnMac: false,
-      reconnect: 5000,
+    const session = new LgSession({ host: config.host, mac: config.mac, credentials, saveCredentials, log });
+    this.session = session;
+    session.on('connection', (connection) => {
+      this.setConnection(connection);
+      if (connection !== 'connected') this.setOn(false);
     });
-    this.lg = lg;
-
-    lg.on('connecting', () => {
-      if (this.connection !== 'prompt') this.setConnection('connecting');
-    });
-    lg.on('prompt', () => this.setConnection('prompt'));
-    lg.on('connect', () => {
-      this.setConnection('connected');
-      if (this.powerSubscription) lg.unsubscribe(this.powerSubscription);
-      this.powerSubscription = lg.subscribePowerState((err, result) => {
-        if (err || !result) return;
-        this.setOn(ON_STATES.has(result.state));
-      });
-    });
-    lg.on('close', () => {
-      this.setConnection('offline');
-      this.setOn(false);
-    });
-    lg.on('error', (err) => log('TV error:', err.message));
+    session.on('power', (on) => this.setOn(on));
+    await session.start();
   }
 
   async stop(): Promise<void> {
-    const lg = this.lg;
-    this.lg = null;
+    const session = this.session;
+    this.session = null;
     this.setOn(false);
-    await lg?.disconnect();
+    await session?.stop();
   }
 
   async toast(message: string): Promise<void> {
-    await this.lg?.request('ssap://system.notifications/createToast', { message });
+    await this.session?.toast(message);
   }
 
   async turnOff(): Promise<void> {
-    await this.lg?.request('ssap://system/turnOff');
+    await this.session?.turnOff();
   }
 
   async wake(): Promise<void> {
-    await this.lg?.wake(this.options.config.mac || undefined);
+    await this.session?.wake();
   }
 }
 
@@ -74,6 +45,7 @@ export const lgWebos: TvDriver = {
   id: 'lg-webos',
   name: 'LG webOS',
   canWake: true,
+  canToast: true,
   hint: {
     en: 'On the TV, turn on “LG Connect Apps” and “Turn on via Wi-Fi” (Wake-on-LAN). Give the TV a fixed IP address in your router. The first time you connect, press “Allow” on the TV with the remote.',
     no: 'På TV-en må «LG Connect Apps» og «Slå på via Wi-Fi/mobil» (Wake-on-LAN) være slått på. Gi TV-en fast IP-adresse i routeren. Trykk «Tillat» på TV-en med fjernkontrollen første gang du kobler til.',
