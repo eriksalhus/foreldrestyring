@@ -23,7 +23,7 @@ export function resolveText(text: LocalizedText | undefined, language: string): 
 }
 
 /** Keeps only the driver's own fields, as trimmed strings. Anything else the client sent is dropped. */
-export function sanitizeConfig(driver: TvDriver, raw: unknown): Record<string, string> {
+export function sanitizeConfig(driver: { fields: readonly DriverField[] }, raw: unknown): Record<string, string> {
   const source = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
   const config: Record<string, string> = {};
   for (const field of driver.fields) {
@@ -34,7 +34,7 @@ export function sanitizeConfig(driver: TvDriver, raw: unknown): Record<string, s
 }
 
 /** True when every required field has a value. */
-export function isConfigured(driver: TvDriver, config: Readonly<Record<string, string>>): boolean {
+export function isConfigured(driver: { fields: readonly DriverField[] }, config: Readonly<Record<string, string>>): boolean {
   return driver.fields.every((f) => !f.required || Boolean(config[f.key]));
 }
 
