@@ -17,6 +17,7 @@
     "tvGone": "Hittades inte i Homey",
     "messages": "Visa meddelanden på TV:n",
     "messagesHint": "”Minuter kvar” och ”TV-tiden är slut” visas på TV-skärmen.",
+    "messagesUnsupported": "Meddelanden på skärmen är inte tillgängliga för den här TV:n ännu. De kräver en LG-TV som lagts till i Homey via en LG-app som stöds (den här TV:n kommer från ”__app__”).",
     "linkPreface": "Meddelanden kräver en engångslänk mellan appen och TV:n.",
     "link": "Länka till TV",
     "unlink": "Ta bort länk",

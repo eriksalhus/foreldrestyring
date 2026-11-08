@@ -17,6 +17,7 @@
     "tvGone": "In Homey nicht gefunden",
     "messages": "Meldungen auf dem Fernseher anzeigen",
     "messagesHint": "„Minuten übrig“ und „Fernsehzeit ist vorbei“ erscheinen auf dem Fernsehbildschirm.",
+    "messagesUnsupported": "Meldungen auf dem Bildschirm sind für diesen Fernseher noch nicht verfügbar. Dafür muss ein LG-Fernseher über eine unterstützte LG-App zu Homey hinzugefügt sein (dieser Fernseher stammt von „__app__“).",
     "linkPreface": "Für Meldungen muss diese App einmalig mit dem Fernseher verknüpft werden.",
     "link": "Mit Fernseher verknüpfen",
     "unlink": "Verknüpfung aufheben",

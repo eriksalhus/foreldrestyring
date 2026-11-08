@@ -136,6 +136,7 @@
           <p class="fs-hint" style="margin:0" id="driverhint"></p>
           <!-- On-screen messages. The switch is offered whenever messages are available; the link steps only for a Homey TV. -->
           <div class="fs-stack" id="msgbox" hidden>
+            <p class="fs-hint" style="margin:0" id="msgnote" hidden></p>
             <div class="fs-stack" id="linkbox" hidden>
               <p class="fs-hint" style="margin:0" id="linkpreface" data-i18n="settings.linkPreface"></p>
               <div class="fs-stack" id="msgfields"></div>
@@ -335,7 +336,7 @@
 
       // What the page sends about messages: the switch always, and the provider's fields for a Homey TV.
       function messagesBody() {
-        if (!msgState || msgState.mode === 'none') return undefined;
+        if (!msgState || msgState.mode === 'none' || msgState.mode === 'unsupported') return undefined;
         var body = { enabled: $('msgon').checked };
         if (msgState.mode === 'provider') body.config = msgStore;
         return body;
@@ -343,9 +344,14 @@
       // Messages need a one-time link for a Homey TV. Until then the switch is greyed out and the explanation is shown.
       function renderMessages(s) {
         var m = msgState = s.messages;
+        // A Homey TV without message support gets a note saying why, so the missing section is never a mystery.
+        var unsupported = m.mode === 'unsupported';
         $('msgbox').hidden = m.mode === 'none';
+        $('msgnote').hidden = !unsupported;
+        $('msgnote').textContent = unsupported ? Homey.__('settings.messagesUnsupported', { app: m.appId || '?' }) : '';
         $('linkbox').hidden = m.mode !== 'provider';
-        if (m.mode === 'none') return;
+        $('msgrow').hidden = unsupported;
+        if (m.mode === 'none' || unsupported) return;
         var locked = false;
         if (m.mode === 'provider') {
           var key = s.settings.driver + '|' + JSON.stringify(s.settings.driverConfig) + '|' + m.provider.id;

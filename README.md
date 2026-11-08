@@ -38,14 +38,14 @@ The app reads the device's on/off state and switches it off (and on) through tha
 
 ### On-screen messages for an LG TV that is in Homey
 
-When the chosen TV was added through a supported LG app (today the official "LG WebOS TV" app, `com.lg.webos`, and the community app "WebOS Plus", `com.maxvandelaar.webos-plus`), the **Connected TV** section also offers messages on the TV screen. They need a one-time link between this app and the TV:
+When the chosen TV was added through a supported LG app (today the official "LG WebOS TV" app, `com.lg.webos`, the community app "WebOS Plus", `com.maxvandelaar.webos-plus`, and "LG ThinQ", `com.lge.thinq.appliance`), the **Connected TV** section also offers messages on the TV screen. They need a one-time link between this app and the TV:
 
 1. On the TV, turn on "LG Connect Apps" and give the TV a fixed IP address in your router.
-2. In the app's settings, check the TV's IP address. It is filled in from the Homey device when that knows it.
+2. In the app's settings, check the TV's IP address. It is filled in from the Homey device when that knows it (LG ThinQ does not, so type it).
 3. Press **Link to TV**, then press "Allow" on the TV with the remote.
 4. The switch **Show messages on the TV** is now active. It is on by default, and you can turn it off at any time.
 
-Nothing contacts the TV until you press **Link to TV**, so never pressing it is a way to opt out of messages. Messages are a supplement: they never affect counting or the Lock, and a message that cannot be shown right away because the TV is in standby or unreachable is skipped, not shown late. A TV that was added through another app gets no message section; use the direct connection below, or see [docs/adding-a-message-provider.md](docs/adding-a-message-provider.md) to add support for that app.
+Nothing contacts the TV until you press **Link to TV**, so never pressing it is a way to opt out of messages. Messages are a supplement: they never affect counting or the Lock, and a message that cannot be shown right away because the TV is in standby or unreachable is skipped, not shown late. A TV that was added through another app shows a note that messages are not available for it yet, with the name of the app; use the direct connection below, or see [docs/adding-a-message-provider.md](docs/adding-a-message-provider.md) to add support for that app.
 
 ### LG webOS directly, by IP address (tested on an LG G2, webOS 22)
 

@@ -17,6 +17,7 @@
     "tvGone": "Niet gevonden in Homey",
     "messages": "Berichten op de tv tonen",
     "messagesHint": "“Minuten over” en “tv-tijd is om” verschijnen op het tv-scherm.",
+    "messagesUnsupported": "Berichten op het scherm zijn nog niet beschikbaar voor deze tv. Daarvoor is een LG-tv nodig die via een ondersteunde LG-app aan Homey is toegevoegd (deze tv komt van “__app__”).",
     "linkPreface": "Voor berichten is eenmalig een koppeling tussen deze app en de tv nodig.",
     "link": "Koppelen met tv",
     "unlink": "Ontkoppelen",

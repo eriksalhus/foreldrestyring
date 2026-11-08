@@ -80,9 +80,10 @@ export interface MessagesStatus {
   /**
    * `direct`: the TV shows messages itself, so only the switch is offered.
    * `provider`: a message provider fits the chosen Homey TV, so the IP field, Link and the switch are offered.
-   * `none`: messages are not available for this TV.
+   * `unsupported`: a Homey TV is chosen but no provider fits it (see `appId`), so only a note is shown.
+   * `none`: no TV is chosen.
    */
-  mode: 'none' | 'direct' | 'provider';
+  mode: 'none' | 'direct' | 'provider' | 'unsupported';
   enabled: boolean;
   linked: boolean;
   /** The state of the message provider's link to the TV, or `off` when none is running. */
@@ -91,6 +92,8 @@ export interface MessagesStatus {
   config: Record<string, string>;
   /** Values the Homey device already knows (the TV's IP address), to prefill the fields with. */
   suggested: Record<string, string>;
+  /** The Homey app the TV comes from when `mode` is `unsupported`, otherwise an empty string. */
+  appId: string;
 }
 
 /** A TV in Homey, as the settings page lists it. */
@@ -159,6 +162,8 @@ export class Controller {
   private tv: TvConnection | null = null;
   private messageChannel: MessageChannel | null = null;
   private lastTargetLog = '';
+  /** The app of the chosen Homey TV when no provider fits it, so the settings page can say why. */
+  private unsupportedAppId: string | null = null;
   /** What Homey says about the chosen TV: which provider fits it, and what the device already knows. */
   private target: { provider: MessageProvider; suggested: Record<string, string> } | null = null;
   private timers: unknown[] = [];
@@ -357,7 +362,7 @@ export class Controller {
     const provider = this.currentProvider();
     const { enabled, linked, config } = this.settings.messages;
     const driver = getDriver(this.settings.driver, this.drivers);
-    const mode = driver?.canToast ? 'direct' : provider ? 'provider' : 'none';
+    const mode = driver?.canToast ? 'direct' : provider ? 'provider' : this.unsupportedAppId !== null ? 'unsupported' : 'none';
     return {
       mode,
       enabled,
@@ -366,6 +371,7 @@ export class Controller {
       provider: mode === 'provider' && provider ? describeMessageProvider(provider, this.host.i18n.getLanguage()) : null,
       config,
       suggested: mode === 'provider' ? (this.target?.suggested ?? {}) : {},
+      appId: mode === 'unsupported' ? (this.unsupportedAppId ?? '') : '',
     };
   }
 
@@ -383,6 +389,7 @@ export class Controller {
     const id = this.chosenDeviceId();
     if (!id || !this.devices) {
       this.target = null;
+      this.unsupportedAppId = null;
       return this.adoptProvider('');
     }
     let info;
@@ -394,6 +401,7 @@ export class Controller {
     }
     const provider = info ? this.providers.find((p) => p.matches(info)) : undefined;
     this.target = provider && info ? { provider, suggested: provider.suggestConfig(info) } : null;
+    this.unsupportedAppId = info && !provider ? info.appId : null;
     this.logTarget(info, provider);
     return this.adoptProvider(provider?.id ?? '');
   }

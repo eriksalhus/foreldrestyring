@@ -17,6 +17,7 @@
     "tvGone": "Not found in Homey",
     "messages": "Show messages on the TV",
     "messagesHint": "“Minutes left” and “time is up” appear on the TV screen.",
+    "messagesUnsupported": "On-screen messages aren’t available for this TV yet. They need an LG TV added to Homey through a supported LG app (this TV comes from “__app__”).",
     "linkPreface": "Messages need a one-time link between this app and the TV.",
     "link": "Link to TV",
     "unlink": "Unlink",

@@ -17,6 +17,7 @@
     "tvGone": "Introuvable dans Homey",
     "messages": "Afficher des messages sur la télévision",
     "messagesHint": "« Minutes restantes » et « temps écoulé » s’affichent sur l’écran de la télévision.",
+    "messagesUnsupported": "Les messages à l’écran ne sont pas encore disponibles pour cette télévision. Ils nécessitent une télévision LG ajoutée à Homey via une application LG prise en charge (cette télévision provient de « __app__ »).",
     "linkPreface": "Les messages nécessitent d’associer une fois cette application à la télévision.",
     "link": "Associer à la télévision",
     "unlink": "Dissocier",

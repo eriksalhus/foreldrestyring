@@ -77,11 +77,31 @@ test('a Homey TV from a recognised app offers messages, with the IP the device k
   assert.equal(messages.connection, 'off');
 });
 
-test('a Homey TV from another app offers no messages, and a direct connection that can show them needs no provider', async () => {
+test('a Homey TV from an unknown app is marked unsupported, with the app named so the page can say why', async () => {
   const { controller } = await setup();
   await controller.configure(homeySettings({ driverConfig: { deviceId: 'other' } }));
+  const { messages } = controller.getStatus();
+  assert.equal(messages.mode, 'unsupported');
+  assert.equal(messages.appId, 'com.example.unknown');
+  assert.equal(messages.provider, null);
+  assert.equal(messages.enabled, true);
+});
+
+test('without a chosen TV there is no message section and no note', async () => {
+  const { controller } = await setup();
+  const { messages } = controller.getStatus();
+  assert.equal(messages.mode, 'none');
+  assert.equal(messages.appId, '');
+});
+
+test('a TV that was deleted in Homey has no message section', async () => {
+  const { controller } = await setup();
+  await controller.configure(homeySettings({ driverConfig: { deviceId: 'gone' } }));
   assert.equal(controller.getStatus().messages.mode, 'none');
-  assert.equal(controller.getStatus().messages.provider, null);
+});
+
+test('a direct connection that can show messages needs no provider', async () => {
+  const { controller } = await setup();
 
   await controller.configure({ ...base, driver: 'simulated', driverConfig: { name: 'Living room' } });
   const { messages } = controller.getStatus();
@@ -250,7 +270,7 @@ test('choosing another TV starts messages over: a different app clears everythin
 
   await controller.configure(homeySettings({ driverConfig: { deviceId: 'other' } }));
   messages = controller.getStatus().messages;
-  assert.equal(messages.mode, 'none');
+  assert.equal(messages.mode, 'unsupported');
 });
 
 async function directLock(initial: Record<string, unknown> = {}) {

@@ -17,6 +17,7 @@
     "tvGone": "Non trovato in Homey",
     "messages": "Mostra messaggi sul televisore",
     "messagesHint": "“Minuti rimasti” e “tempo scaduto” compaiono sullo schermo del televisore.",
+    "messagesUnsupported": "I messaggi sullo schermo non sono ancora disponibili per questo televisore. Richiedono un televisore LG aggiunto a Homey tramite un’app LG supportata (questo televisore proviene da “__app__”).",
     "linkPreface": "I messaggi richiedono un collegamento una tantum tra questa app e il televisore.",
     "link": "Collega al televisore",
     "unlink": "Scollega",

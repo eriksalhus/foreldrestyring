@@ -12,8 +12,15 @@ import type { MessageChannel, MessageOptions, MessageProvider } from './types.ts
  *
  * - `com.lg.webos`: the official "LG WebOS TV" app.
  * - `com.maxvandelaar.webos-plus`: the community app "WebOS Plus". Its `ipAddress` setting is verified.
+ * - `com.lge.thinq.appliance`: LG ThinQ, which controls LG appliances through LG's cloud. A device of class `tv` from it
+ *   is an LG TV. It keeps no IP address (its device settings are only `energy_value_on` and `energy_value_off`), so the
+ *   user types the address. A TV without webOS or with "LG Connect Apps" off simply never links.
  */
-export const LG_APP_IDS: ReadonlySet<string> = new Set(['com.lg.webos', 'com.maxvandelaar.webos-plus']);
+export const LG_APP_IDS: ReadonlySet<string> = new Set([
+  'com.lg.webos',
+  'com.maxvandelaar.webos-plus',
+  'com.lge.thinq.appliance',
+]);
 
 /**
  * The device settings that may hold the TV's IP address, in order. `ipAddress` is verified for WebOS Plus; the others
