@@ -57,7 +57,7 @@
     .ring.low .num { color: var(--warn); }
     .ring.locked .num { font-size: 32px; color: var(--danger); letter-spacing: 0; }
     .ring.locked .unit { display: none; }
-    .off .ring { opacity: .45; }
+    .off .ring { opacity: .7; }
     .round { flex: none; width: 52px; height: 52px; padding: 0; display: flex; align-items: center; justify-content: center;
       border: 0; border-radius: 50%; cursor: pointer; }
     .round.minus { background: rgba(245, 166, 35, .2); color: var(--warn); }
@@ -195,9 +195,10 @@
         $('state').textContent = t(s.childMode ? (s.locked ? 'stateLocked' : 'stateOn') : 'stateOff');
         $('state').className = 'state' + (s.locked ? ' bad' : s.childMode ? ' good' : '');
         $('body').className = s.childMode ? '' : 'off';
-        $('plus').disabled = !s.childMode;
-        $('minus').disabled = !s.childMode || s.remainingMinutes <= 0;
-        $('step').disabled = !s.childMode;
+        // The time can be set before Child mode is turned on. Turning it on or off never changes the time left.
+        $('plus').disabled = false;
+        $('minus').disabled = s.remainingMinutes <= 0;
+        $('step').disabled = false;
         document.documentElement.classList.toggle('locked', s.locked);
         document.documentElement.classList.toggle('on', s.childMode && !s.locked);
 
