@@ -73,17 +73,6 @@
       background-repeat: no-repeat; background-position: right 14px center; }
     .step select:disabled { opacity: .35; cursor: default; }
 
-    /* Pending change: replaces the step picker until the parent applies or cancels it */
-    .pending { display: flex; gap: 8px; }
-    .pending[hidden] { display: none; }
-    .pill { min-height: 44px; padding: 0 20px; border: 0; border-radius: 22px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-    .pill:disabled { opacity: .5; cursor: default; }
-    .pill.cancel { background: rgba(127, 127, 127, .2); color: var(--text); }
-    .pill.apply { background: var(--accent); color: #fff; }
-    .pill.apply.cut { background: var(--warn); color: #1c1c1c; }
-    .ring.preview .num { color: var(--accent); }
-    .ring.preview.cut .num { color: var(--warn); }
-
     /* Statistics */
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0 16px; }
     .tile { padding: 12px 14px; border-radius: 16px; background: var(--tile); }
@@ -136,13 +125,7 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>
       </button>
     </div>
-    <div class="step">
-      <select id="step" disabled></select>
-      <div class="pending" id="pending" hidden>
-        <button class="pill cancel" id="cancel" type="button"></button>
-        <button class="pill apply" id="apply" type="button"></button>
-      </div>
-    </div>
+    <div class="step"><select id="step" disabled></select></div>
   </div>
 
   <div class="stats">
@@ -176,9 +159,6 @@
       var stepMin = 5;
       try { var saved = Number(localStorage.getItem('stepMinutes')); if (STEPS.indexOf(saved) >= 0) stepMin = saved; } catch (e) { /* without storage, 5 is used */ }
       function step() { return stepMin; }
-      // Taps only build up a change (+ adds, − removes). Nothing is sent until the parent applies it.
-      var MAX_EXTRA = 240; // the most the API accepts in one request
-      var pending = 0;
       var connKey = { unconfigured: 'connUnconfigured', connecting: 'connNotConnected', prompt: 'connPrompt',
         connected: 'connConnected', offline: 'connNotConnected' };
 
@@ -204,48 +184,30 @@
           return '<option value="' + m + '">' + t('perTap', { minutes: m }) + '</option>';
         }).join('');
         $('step').value = String(step());
-        $('cancel').textContent = t('cancel');
-        showPending();
-      }
-
-      function showPending() {
-        var apply = $('apply');
-        if (pending !== 0) {
-          apply.textContent = t(pending > 0 ? 'applyAdd' : 'applyReduce', { minutes: Math.abs(pending) });
-          apply.className = 'pill apply' + (pending < 0 ? ' cut' : '');
-        }
-        apply.disabled = false;
-        $('pending').hidden = pending === 0;
-        $('step').hidden = pending !== 0;
       }
 
       function render(s) {
         status = s;
-        if (!s.childMode) pending = 0;
-        pending = Math.max(-s.remainingMinutes, Math.min(MAX_EXTRA, pending)); // usage may have changed since the taps
         var total = s.quotaMinutes + s.extraMinutes;
-        var remaining = s.remainingMinutes + pending;
-        var showLocked = s.locked && pending <= 0; // extra time that is about to be given unlocks
-        var low = s.childMode && !showLocked && remaining <= 5;
+        var low = s.childMode && !s.locked && s.remainingMinutes <= 5;
 
         $('toggle').setAttribute('aria-checked', String(s.childMode));
         $('state').textContent = t(s.childMode ? (s.locked ? 'stateLocked' : 'stateOn') : 'stateOff');
         $('state').className = 'state' + (s.locked ? ' bad' : s.childMode ? ' good' : '');
         $('body').className = s.childMode ? '' : 'off';
-        $('plus').disabled = !s.childMode || pending >= MAX_EXTRA;
-        $('minus').disabled = !s.childMode || remaining <= 0;
+        $('plus').disabled = !s.childMode;
+        $('minus').disabled = !s.childMode || s.remainingMinutes <= 0;
         $('step').disabled = !s.childMode;
-        showPending();
         document.documentElement.classList.toggle('locked', s.locked);
         document.documentElement.classList.toggle('on', s.childMode && !s.locked);
 
         // The ring shows how much of today's time is left.
         var CIRC = 2 * Math.PI * 80;
-        var left = total + pending > 0 ? Math.max(0, Math.min(1, remaining / (total + pending))) : 0;
+        var left = total > 0 ? Math.max(0, Math.min(1, s.remainingMinutes / total)) : 0;
         $('arc').setAttribute('stroke-dasharray', (left * CIRC).toFixed(1) + ' ' + CIRC.toFixed(1));
         $('arc').style.opacity = left > 0 ? '1' : '0'; // otherwise the round line end draws a dot
-        $('remaining').textContent = showLocked ? t('locked') : remaining;
-        $('ring').className = 'ring' + (showLocked ? ' locked' : low ? ' low' : '') + (pending !== 0 ? ' preview' + (pending < 0 ? ' cut' : '') : '');
+        $('remaining').textContent = s.locked ? t('locked') : s.remainingMinutes;
+        $('ring').className = 'ring' + (s.locked ? ' locked' : low ? ' low' : '');
         $('today').textContent = s.usedMinutes;
         $('todaySub').textContent = t('ofTotal', { total: total }) + (s.extraMinutes > 0 ? ' (' + t('inclExtra', { extra: s.extraMinutes }) + ')' : '');
         $('week').textContent = s.weekUsedMinutes;
@@ -255,13 +217,10 @@
         $('tvDot').className = 'dot' + (connected && s.tvOn ? ' ok' : '');
         $('tv').textContent = t(connected && s.tvOn ? 'tvOn' : 'tvOff');
       }
-      function call(method, path, body, beforeRender) {
+      function call(method, path, body) {
         return Homey.api(method, path, body || {})
-          .then(function (s) { if (beforeRender) beforeRender(); render(s); })
-          .catch(function (err) {
-            $('apply').disabled = false; // the change can be tried again
-            $('connDot').className = 'dot'; $('tvDot').className = 'dot'; $('conn').textContent = t('error') + ': ' + (err && err.message || err);
-          });
+          .then(function (s) { render(s); })
+          .catch(function (err) { $('connDot').className = 'dot'; $('tvDot').className = 'dot'; $('conn').textContent = t('error') + ': ' + (err && err.message || err); });
       }
       function refresh() { return call('GET', '/status'); }
 
@@ -271,20 +230,8 @@
         $('toggle').setAttribute('aria-checked', String(on)); // immediate feedback
         call('POST', '/child-mode', { on: on });
       });
-      function adjust(minutes) {
-        if (!status) return;
-        pending += minutes;
-        render(status);
-      }
-      $('plus').addEventListener('click', function () { adjust(step()); });
-      $('minus').addEventListener('click', function () { adjust(-step()); });
-      $('cancel').addEventListener('click', function () { pending = 0; render(status); });
-      $('apply').addEventListener('click', function () {
-        if (!status || pending === 0) return;
-        var minutes = Math.abs(pending);
-        $('apply').disabled = true; // the preview stays until the new status arrives
-        call('POST', pending > 0 ? '/extra-time' : '/reduce-time', { minutes: minutes }, function () { pending = 0; });
-      });
+      $('plus').addEventListener('click', function () { call('POST', '/extra-time', { minutes: step() }); });
+      $('minus').addEventListener('click', function () { call('POST', '/reduce-time', { minutes: step() }); });
       $('step').addEventListener('change', function () {
         stepMin = Number($('step').value);
         $('step').setAttribute('aria-label', t('perTap', { minutes: stepMin }));
