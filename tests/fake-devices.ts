@@ -9,7 +9,16 @@ export class FakeDevices implements TvDevices {
   unreachable = false;
 
   add(over: Partial<TvDeviceInfo> = {}): TvDeviceInfo {
-    const info = { id: 'tv1', name: 'Living room TV', zone: 'Living room', on: false, available: true, ...over };
+    const info = {
+      id: 'tv1',
+      name: 'Living room TV',
+      zone: 'Living room',
+      on: false,
+      available: true,
+      appId: '',
+      settings: {},
+      ...over,
+    };
     this.devices.set(info.id, info);
     return info;
   }

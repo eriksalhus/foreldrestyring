@@ -11,6 +11,8 @@ const device = (over: Partial<Dev> & { id: string }): Dev =>
     capabilities: ['onoff', 'volume_set'],
     capabilitiesObj: { onoff: { value: false } },
     available: true,
+    ownerUri: 'homey:app:com.example.tv',
+    settings: { ipAddress: '10.0.0.7' },
     makeCapabilityInstance: () => ({ destroy() {} }),
     ...over,
   }) as Dev;
@@ -51,13 +53,29 @@ test('list offers only TVs with onoff, honours a class the user overrode, and na
   ]);
   const list = await new HomeyDevices(async () => api).list();
   assert.deepEqual(list.map((d) => d.id).sort(), ['speaker-as-tv', 'tv']);
-  assert.deepEqual(list.find((d) => d.id === 'tv'), { id: 'tv', name: 'LG', zone: 'Living room', on: true, available: true });
+  assert.deepEqual(list.find((d) => d.id === 'tv'), {
+    id: 'tv',
+    name: 'LG',
+    zone: 'Living room',
+    on: true,
+    available: true,
+    appId: 'com.example.tv',
+    settings: { ipAddress: '10.0.0.7' },
+  });
 });
 
 test('get gives the state, null for a removed device, and rejects for other errors', async () => {
   const { api } = fakeApi([device({ id: 'tv', available: false, capabilitiesObj: { onoff: { value: true } } })]);
   const devices = new HomeyDevices(async () => api);
-  assert.deepEqual(await devices.get('tv'), { id: 'tv', name: 'tv', zone: '', on: true, available: false });
+  assert.deepEqual(await devices.get('tv'), {
+    id: 'tv',
+    name: 'tv',
+    zone: '',
+    on: true,
+    available: false,
+    appId: 'com.example.tv',
+    settings: { ipAddress: '10.0.0.7' },
+  });
   assert.equal(await devices.get('gone'), null);
 
   api.devices.getDevice = async () => {

@@ -46,6 +46,10 @@ export interface TvDeviceInfo {
   on: boolean;
   /** False when Homey says the device cannot be reached. */
   available: boolean;
+  /** Id of the Homey app that owns the device, e.g. `com.maxvandelaar.webos-plus`, or an empty string. */
+  appId: string;
+  /** The device's own settings, as the owning app defines them. Values are whatever that app stores. */
+  settings: Record<string, unknown>;
 }
 
 /**

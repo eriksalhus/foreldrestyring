@@ -38,35 +38,44 @@ export function isConfigured(driver: TvDriver, config: Readonly<Record<string, s
   return driver.fields.every((f) => !f.required || Boolean(config[f.key]));
 }
 
+export interface FieldDescription extends Required<Pick<DriverField, 'key' | 'required'>> {
+  kind: NonNullable<DriverField['kind']>;
+  label: string;
+  hint: string;
+  placeholder: string;
+  inputMode: NonNullable<DriverField['inputMode']>;
+}
+
 export interface DriverDescription {
   id: string;
   name: string;
   hint: string;
   canWake: boolean;
-  fields: Array<Required<Pick<DriverField, 'key' | 'required'>> & {
-    kind: NonNullable<DriverField['kind']>;
-    label: string;
-    hint: string;
-    placeholder: string;
-    inputMode: NonNullable<DriverField['inputMode']>;
-  }>;
+  canToast: boolean;
+  fields: FieldDescription[];
 }
 
-/** What the settings page needs to draw the brand picker and each driver's fields, in the user's language. */
+/** The fields of a TV driver or message provider as the settings page draws them, in the user's language. */
+export function describeFields(fields: readonly DriverField[], language: string): FieldDescription[] {
+  return fields.map((f) => ({
+    key: f.key,
+    kind: f.kind ?? 'text',
+    required: Boolean(f.required),
+    label: resolveText(f.label, language),
+    hint: resolveText(f.hint, language),
+    placeholder: f.placeholder ?? '',
+    inputMode: f.inputMode ?? 'text',
+  }));
+}
+
+/** What the settings page needs to draw the Connected TV list and each driver's fields, in the user's language. */
 export function describeDrivers(language: string, drivers: readonly TvDriver[] = DRIVERS): DriverDescription[] {
   return drivers.map((d) => ({
     id: d.id,
     name: d.name,
     hint: resolveText(d.hint, language),
     canWake: Boolean(d.canWake),
-    fields: d.fields.map((f) => ({
-      key: f.key,
-      kind: f.kind ?? 'text',
-      required: Boolean(f.required),
-      label: resolveText(f.label, language),
-      hint: resolveText(f.hint, language),
-      placeholder: f.placeholder ?? '',
-      inputMode: f.inputMode ?? 'text',
-    })),
+    canToast: Boolean(d.canToast),
+    fields: describeFields(d.fields, language),
   }));
 }
