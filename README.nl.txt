@@ -2,7 +2,7 @@ Geef je kinderen een dagelijkse tv-limiet die je vanaf je telefoon beheert. Als 
 
 De app werkt met elke tv die al als apparaat in Homey staat, of praat rechtstreeks met een LG webOS-tv via je thuisnetwerk. Een widget voor je Homey-dashboard toont de resterende tijd en laat beide ouders de Kindermodus in- of uitschakelen, extra tijd geven en zien hoeveel tijd er vandaag en deze week is gebruikt. Iedereen kan de tv nog steeds met de afstandsbediening aanzetten, maar zolang hij vergrendeld is, gaat hij binnen enkele seconden weer uit. De Kindermodus kan automatisch worden uitgeschakeld als er een nieuwe dag begint en automatisch worden ingeschakeld op een tijdstip dat je zelf kiest. Beide stel je in op de instellingenpagina, waar je ook kiest wanneer de dag begint (standaard 05:00).
 
-Werkt met elke tv die aan Homey is toegevoegd (de app schakelt hem via dat apparaat uit en aan) en met LG webOS-tv's via het IP-adres, waarbij ook berichten op het scherm verschijnen. Rechtstreeks getest op een LG G2 (webOS 22); andere tv's zijn niet getest.
+Werkt met elke tv die aan Homey is toegevoegd (de app schakelt hem via dat apparaat uit en aan) en met LG webOS-tv's via het IP-adres. Berichten op het tv-scherm (minuten over, tv-tijd is om) werken met LG webOS-tv's, rechtstreeks via het IP-adres of, voor een tv in Homey, via een ondersteunde LG-app na een eenmalige koppeling; ze kunnen worden uitgezet. Rechtstreeks getest op een LG G2 (webOS 22); andere tv's zijn niet getest.
 
 De app vraagt volledige toegang tot Homey om je tv's te kunnen weergeven en de tv die je kiest uit en aan te zetten. Er wordt niets anders gelezen of gewijzigd.
 

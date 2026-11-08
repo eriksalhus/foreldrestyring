@@ -21,6 +21,8 @@ homey app install   # installs permanently on the selected Homey
 
 ## Adding a TV brand
 
+Messages on the TV for a Homey device work the same way: one file in `lib/messages/` that fulfils the contract in `lib/messages/types.ts`, described in [docs/adding-a-message-provider.md](docs/adding-a-message-provider.md) and explained in [ADR 0004](docs/adr/0004-message-providers-supplement-the-tv-driver.md).
+
 Each brand is one file in `lib/drivers/` that fulfils the contract in `lib/drivers/types.ts`. Quota, Child mode, settings page and widget work unchanged for every brand. The steps are in [docs/adding-a-tv.md](docs/adding-a-tv.md), and the choice is explained in [ADR 0002](docs/adr/0002-tv-drivers.md).
 
 ## Setting up the TV
@@ -32,7 +34,18 @@ Open the app's settings in Homey and choose the TV in the **Connected TV** list.
 1. Add the TV to Homey with the TV brand's own Homey app, if you have not already.
 2. In the app's settings, pick it in the **Connected TV** list. New installations preselect the first TV found.
 
-The app reads the device's on/off state and switches it off (and on) through that device. This works with every TV brand Homey supports, but how quickly and reliably the Lock reacts depends on the app that added the TV to Homey, because this app only sees what that app reports. If the Lock misses, use the direct connection below. In this mode the app cannot show messages on the TV ("5 minutes left", "time is up"), and only devices that Homey classes as a TV and that can be switched on and off are listed.
+The app reads the device's on/off state and switches it off (and on) through that device. This works with every TV brand Homey supports, but how quickly and reliably the Lock reacts depends on the app that added the TV to Homey, because this app only sees what that app reports. If the Lock misses, use the direct connection below. A Homey device cannot show messages on the TV by itself ("5 minutes left", "time is up"), but an LG TV added through a supported LG app can show them after a one-time link: see below. Only devices that Homey classes as a TV and that can be switched on and off are listed.
+
+### On-screen messages for an LG TV that is in Homey
+
+When the chosen TV was added through a supported LG app (today the community app `com.maxvandelaar.webos-plus`), the **Connected TV** section also offers messages on the TV screen. They need a one-time link between this app and the TV:
+
+1. On the TV, turn on "LG Connect Apps" and give the TV a fixed IP address in your router.
+2. In the app's settings, check the TV's IP address. It is filled in from the Homey device when that knows it.
+3. Press **Link to TV**, then press "Allow" on the TV with the remote.
+4. The switch **Show messages on the TV** is now active. It is on by default, and you can turn it off at any time.
+
+Nothing contacts the TV until you press **Link to TV**, so never pressing it is a way to opt out of messages. Messages are a supplement: they never affect counting or the Lock, and a message that cannot be shown right away because the TV is in standby or unreachable is skipped, not shown late. A TV that was added through another app gets no message section; use the direct connection below, or see [docs/adding-a-message-provider.md](docs/adding-a-message-provider.md) to add support for that app.
 
 ### LG webOS directly, by IP address (tested on an LG G2, webOS 22)
 
@@ -40,7 +53,7 @@ The app reads the device's on/off state and switches it off (and on) through tha
 2. Give the TV a fixed IP address in your router, preferably on a cable.
 3. In the app's settings, choose **By IP address (LG webOS)**, enter the IP address and MAC address, and press "Allow" on the TV.
 
-This talks to the TV itself, so the power state is immediate and Wake-on-LAN works, and the app can show messages on the TV. It does not need the TV to be a device in Homey.
+This talks to the TV itself, so the power state is immediate and Wake-on-LAN works, and the app shows messages on the TV without a separate link (the **Show messages on the TV** switch is there too). It does not need the TV to be a device in Homey.
 
 ## Why this app asks for full access to Homey
 

@@ -2,7 +2,7 @@ Ge barnen en daglig TV-kvot som du styr från mobilen. När Barnläge är på r�
 
 Appen fungerar med alla TV-apparater som redan är en enhet i Homey, eller pratar direkt med en LG webOS-TV över ditt hemnätverk. En widget för din Homey-instrumentpanel visar återstående tid och låter båda föräldrarna slå på eller av Barnläge, ge extra tid och se hur mycket tid som använts idag och den här veckan. Vem som helst kan fortfarande slå på TV:n med fjärrkontrollen, men medan den är låst stängs den av igen inom några sekunder. Barnläge kan stängas av automatiskt när ett nytt dygn börjar och slås på automatiskt vid en tidpunkt du väljer. Båda ställs in på inställningssidan, där du också väljer när dygnet börjar (som standard klockan 05:00).
 
-Fungerar med alla TV-apparater som lagts till i Homey (appen stänger av och slår på dem via enheten) och med LG webOS-TV via IP-adress, som också visar meddelanden på skärmen. Testad direkt på en LG G2 (webOS 22); andra TV-apparater har inte testats.
+Fungerar med alla TV-apparater som lagts till i Homey (appen stänger av och slår på dem via enheten) och med LG webOS-TV via IP-adress. Meddelanden på TV-skärmen (minuter kvar, TV-tiden är slut) fungerar med LG webOS-TV, direkt via IP-adress eller, för en TV i Homey, via en LG-app som stöds efter en engångslänk; de kan stängas av. Testad direkt på en LG G2 (webOS 22); andra TV-apparater har inte testats.
 
 Appen ber om full åtkomst till Homey för att kunna lista dina TV-apparater och slå av och på den du väljer. Den läser och ändrar inget annat.
 

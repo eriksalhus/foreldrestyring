@@ -2,7 +2,7 @@
 
 The app counts how long the TV has been on, and turns it off when the daily Quota is used up. Everything about *which brand* of TV that is lives in one small file, a **TV driver** (see [GLOSSARY.md](../GLOSSARY.md) for the terms: *Child mode*, *Quota*, *the Lock*, …).
 
-A driver does three things: connects to the TV, tells the app whether the TV is on, and turns the TV off. It can also turn the TV on and show a short message on screen, if the brand can do that. Everything else (quota, schedule, settings page, widget, Flows) works for every brand without changes.
+A driver does three things: connects to the TV, tells the app whether the TV is on, and turns the TV off. It can also turn the TV on and show a short message on screen, if the brand can do that (set `canWake` and `canToast` on the driver). A TV that is a Homey device cannot show messages by itself: a [message provider](adding-a-message-provider.md) does that. Everything else (quota, schedule, settings page, widget, Flows) works for every brand without changes.
 
 If the TV is already a device in Homey, you do not need a new driver: the built-in `homey-device` driver ([`lib/drivers/homey-device.ts`](../lib/drivers/homey-device.ts)) switches it through that device. Write a driver when the brand has a direct network protocol, for example to get a reliable power state or to show messages on screen.
 
