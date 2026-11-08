@@ -149,3 +149,29 @@ test('an upgrade keeps the LG setup and the old clientKey', async () => {
   assert.equal(status.settings.weekdayMinutes, 20);
   assert.equal(connections[0].credentials, 'old-key');
 });
+
+test('time can be set before Child mode is turned on, and turning it on or off never changes the time left', async () => {
+  const { controller } = await setup();
+  await controller.configure(settings({ weekdayMinutes: 30, weekendMinutes: 30 }));
+  assert.equal(controller.getStatus().childMode, false);
+
+  controller.addExtraTime(60);
+  controller.reduceTime(30);
+  assert.equal(controller.getStatus().remainingMinutes, 60);
+  assert.equal(controller.getStatus().locked, false);
+
+  controller.setChildMode(true);
+  assert.equal(controller.getStatus().remainingMinutes, 60);
+  controller.setChildMode(false);
+  assert.equal(controller.getStatus().remainingMinutes, 60);
+});
+
+test('removing all time while Child mode is off does not lock until it is turned on', async () => {
+  const { controller } = await setup();
+  await controller.configure(settings({ weekdayMinutes: 30, weekendMinutes: 30 }));
+  controller.reduceTime(30);
+  const off = controller.getStatus();
+  assert.equal(off.remainingMinutes, 0);
+  assert.equal(off.locked, false);
+  assert.equal(controller.setChildMode(true).locked, true);
+});
