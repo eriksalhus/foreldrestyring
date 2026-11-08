@@ -4,7 +4,9 @@ import type { Connection } from '../drivers/types.ts';
 
 /** The part of the lgtv2 client (SSAP over wss) that the app uses. */
 export interface LgClientLike {
-  on(event: 'connecting' | 'prompt' | 'connect' | 'close', listener: () => void): unknown;
+  on(event: 'connecting' | 'prompt' | 'connect', listener: () => void): unknown;
+  /** The TV closed the connection, with the websocket close code and reason when it gave them. */
+  on(event: 'close', listener: (info?: { code?: number; reason?: string }) => void): unknown;
   on(event: 'error', listener: (err: Error) => void): unknown;
   /** Every frame the TV sends, as text. */
   on(event: 'message', listener: (text: string) => void): unknown;
@@ -13,6 +15,8 @@ export interface LgClientLike {
   unsubscribe(id: string): void;
   disconnect(): unknown;
   wake(mac?: string): unknown;
+  /** On an open connection that is not paired yet, registers again, which makes the TV show a new Allow prompt. */
+  connect(host?: string): unknown;
 }
 
 export interface LgClientOptions {
@@ -51,7 +55,17 @@ export interface LgSessionOptions {
   createClient?: (options: LgClientOptions) => Promise<LgClientLike>;
   /** How long to wait for the TV to answer a toast before concluding that it ignores it. A working TV answers within milliseconds. */
   toastWaitMs?: number;
+  /** How long an Allow prompt may sit unanswered before the app asks the TV for a new one. */
+  promptWaitMs?: number;
+  /** The pause between the TV dropping a prompt and the app asking for a new one. */
+  promptRetryDelayMs?: number;
 }
+
+/** The TV removes its Allow prompt after a while, and lgtv2 then leaves the app waiting for nothing. Ask again after this long. */
+const PROMPT_WAIT_MS = 45_000;
+const PROMPT_RETRY_DELAY_MS = 1_500;
+/** The user gets this many prompts in all before the app gives up and asks them to press Link again. */
+const MAX_PROMPTS = 3;
 
 /** The TV answers a toast within milliseconds when it accepts it, so two seconds of silence means it is ignoring it. */
 const TOAST_WAIT_MS = 2000;
@@ -73,6 +87,8 @@ export class LgSession extends EventEmitter {
   private powerSubscription: string | undefined;
   private readonly recentFrames: string[] = [];
   private loggedIgnoredToast = false;
+  private promptsShown = 0;
+  private promptTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly options: LgSessionOptions;
 
   constructor(options: LgSessionOptions) {
@@ -99,8 +115,14 @@ export class LgSession extends EventEmitter {
       // "connecting" must not hide the Allow prompt while the TV waits for the user.
       if (this.connection !== 'prompt') this.setConnection('connecting');
     });
-    lg.on('prompt', () => this.setConnection('prompt'));
+    lg.on('prompt', () => {
+      this.promptsShown++;
+      this.setConnection('prompt');
+      this.waitForAnswer();
+    });
     lg.on('connect', () => {
+      this.clearPromptTimer();
+      this.promptsShown = 0;
       this.setConnection('connected');
       if (this.options.followPower === false) return;
       if (this.powerSubscription) lg.unsubscribe(this.powerSubscription);
@@ -109,8 +131,16 @@ export class LgSession extends EventEmitter {
         this.emit('power', ON_STATES.has(result.state));
       });
     });
-    lg.on('close', () => this.setConnection('offline'));
-    lg.on('error', (err) => log('TV error:', err.message));
+    lg.on('close', (info) => {
+      this.clearPromptTimer();
+      if (this.lg) log('TV connection closed' + (info?.code ? ` (code ${info.code}${info.reason ? `, ${info.reason}` : ''})` : ''));
+      this.setConnection('offline');
+    });
+    lg.on('error', (err) => {
+      log('TV error:', err.message);
+      // An error while the TV waits for the user means the prompt was refused or has timed out.
+      if (this.connection === 'prompt') this.promptEnded(/cancel/i.test(err.message), err.message);
+    });
     lg.on('message', (text) => {
       this.recentFrames.push(frameForLog(text));
       if (this.recentFrames.length > FRAMES_KEPT) this.recentFrames.shift();
@@ -120,6 +150,7 @@ export class LgSession extends EventEmitter {
   async stop(): Promise<void> {
     const lg = this.lg;
     this.lg = null;
+    this.clearPromptTimer();
     this.setConnection('offline');
     await lg?.disconnect();
   }
@@ -166,6 +197,48 @@ export class LgSession extends EventEmitter {
 
   async wake(): Promise<void> {
     await this.lg?.wake(this.options.mac || undefined);
+  }
+
+  private clearPromptTimer(): void {
+    if (this.promptTimer) clearTimeout(this.promptTimer);
+    this.promptTimer = null;
+  }
+
+  /** If nobody answers the Allow prompt, ask again after a while: the TV drops it silently. */
+  private waitForAnswer(): void {
+    this.clearPromptTimer();
+    this.promptTimer = setTimeout(() => this.promptEnded(false, 'no answer'), this.options.promptWaitMs ?? PROMPT_WAIT_MS);
+    this.promptTimer.unref?.();
+  }
+
+  /**
+   * The Allow prompt is gone without the user approving it. A refusal ends the link; anything else gets a new prompt,
+   * up to `MAX_PROMPTS` in all, so the user does not have to press Link again just because the first one timed out.
+   */
+  private promptEnded(declined: boolean, reason: string): void {
+    this.clearPromptTimer();
+    const { log } = this.options;
+    if (declined) {
+      log('The TV link was declined on the TV, so the app stops asking');
+      this.giveUpLinking();
+      return;
+    }
+    if (this.promptsShown >= MAX_PROMPTS) {
+      log(`The TV never approved the link after ${MAX_PROMPTS} prompts (${reason}), so the app stops asking`);
+      this.giveUpLinking();
+      return;
+    }
+    log(`The Allow prompt is gone (${reason}), asking the TV for a new one (${this.promptsShown + 1} of ${MAX_PROMPTS})`);
+    this.promptTimer = setTimeout(() => {
+      this.promptTimer = null;
+      void this.lg?.connect();
+    }, this.options.promptRetryDelayMs ?? PROMPT_RETRY_DELAY_MS);
+    this.promptTimer.unref?.();
+  }
+
+  /** Stops asking, but keeps the connection open: an Allow that still arrives late is accepted and links as usual. */
+  private giveUpLinking(): void {
+    this.setConnection('offline');
   }
 
   private setConnection(connection: Connection): void {

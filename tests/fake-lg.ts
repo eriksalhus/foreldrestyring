@@ -6,6 +6,8 @@ export class FakeLg extends EventEmitter {
   readonly wakes: Array<string | undefined> = [];
   readonly unsubscribed: string[] = [];
   disconnected = false;
+  /** How many times the app asked the open connection to register again (a new Allow prompt). */
+  connectCalls = 0;
   /** When set, `request` fails with it, like the lgtv2 timeout does. */
   rejectWith: Error | null = null;
   /** Answers by uri, taking precedence over `rejectWith`. */
@@ -26,6 +28,9 @@ export class FakeLg extends EventEmitter {
   }
   unsubscribe(id: string) {
     this.unsubscribed.push(id);
+  }
+  connect() {
+    this.connectCalls++;
   }
   async disconnect() {
     this.disconnected = true;

@@ -217,3 +217,105 @@ test('a message after stop shows nothing and throws nothing', async () => {
   await session.toast('late');
   assert.equal(lg.requests.length, 0);
 });
+
+function promptSetup() {
+  const lg = new FakeLg();
+  const logs: string[] = [];
+  const session = new LgSession({
+    host: '10.0.0.5',
+    credentials: undefined,
+    saveCredentials: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
+    createClient: async () => lg as unknown as LgClientLike,
+    promptWaitMs: 40,
+    promptRetryDelayMs: 5,
+  });
+  const states: Connection[] = [];
+  session.on('connection', (c) => states.push(c));
+  return { session, lg, logs, states };
+}
+
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+test('when the TV drops the Allow prompt with an error, the app asks again by itself', async () => {
+  const { session, lg, logs } = promptSetup();
+  await session.start();
+  lg.emit('prompt');
+  lg.emit('error', new Error('403 timeout'));
+  await wait(20);
+  assert.equal(lg.connectCalls, 1, 'registered again, so the TV shows a new prompt');
+  assert.ok(logs.some((l) => /Allow prompt is gone/.test(l)));
+  assert.equal(session.connection, 'prompt');
+  lg.emit('prompt'); // the new prompt
+  lg.emit('connect'); // the user pressed Allow
+  assert.equal(session.connection, 'connected');
+  await wait(60);
+  assert.equal(lg.connectCalls, 1, 'nothing more once it is linked');
+  await session.stop();
+});
+
+test('when the prompt gets no answer at all, the app asks again after a while', async () => {
+  const { session, lg } = promptSetup();
+  await session.start();
+  lg.emit('prompt');
+  await wait(70);
+  assert.equal(lg.connectCalls, 1);
+  await session.stop();
+});
+
+test('a prompt the user declined is not asked again', async () => {
+  const { session, lg, logs } = promptSetup();
+  await session.start();
+  lg.emit('prompt');
+  lg.emit('error', new Error('403 cancelled'));
+  await wait(30);
+  assert.equal(lg.connectCalls, 0);
+  assert.equal(session.connection, 'offline');
+  assert.ok(logs.some((l) => /declined/.test(l)));
+  await session.stop();
+});
+
+test('after three prompts nobody answered, the app gives up and says so', async () => {
+  const { session, lg, logs } = promptSetup();
+  await session.start();
+  for (let i = 0; i < 3; i++) {
+    lg.emit('prompt');
+    lg.emit('error', new Error('403 timeout'));
+    await wait(15);
+  }
+  assert.equal(lg.connectCalls, 2, 'two repeats after the first prompt');
+  assert.equal(session.connection, 'offline');
+  assert.ok(logs.some((l) => /never approved/.test(l)));
+  lg.emit('connect'); // an Allow that still arrives late is accepted
+  assert.equal(session.connection, 'connected');
+});
+
+test('stopping cancels a waiting prompt retry', async () => {
+  const { session, lg } = promptSetup();
+  await session.start();
+  lg.emit('prompt');
+  await session.stop();
+  await wait(70);
+  assert.equal(lg.connectCalls, 0);
+});
+
+test('the log says when and why the TV closed the connection, but not when the app closed it itself', async () => {
+  const lg = new FakeLg();
+  const logs: string[] = [];
+  const session = new LgSession({
+    host: '10.0.0.5',
+    credentials: undefined,
+    saveCredentials: () => {},
+    log: (...args) => void logs.push(args.join(' ')),
+    createClient: async () => lg as unknown as LgClientLike,
+  });
+  await session.start();
+  lg.emit('connect');
+  lg.emit('close', { code: 1006, reason: '' });
+  assert.ok(logs.includes('TV connection closed (code 1006)'));
+  lg.emit('close', { code: 1001, reason: 'going away' });
+  assert.ok(logs.includes('TV connection closed (code 1001, going away)'));
+  logs.length = 0;
+  await session.stop();
+  assert.deepEqual(logs, [], 'closing it ourselves is not news');
+});
