@@ -1,11 +1,13 @@
 {
   "toast": {
     "minutesLeft": "Je hebt nog __minutes__ min over",
-    "timeUp": "De tv-tijd is op"
+    "timeUp": "De tv-tijd is op",
+    "test": "Testbericht van Tv-tijdbeheer"
   },
   "error": {
     "invalidMinutes": "Ongeldig aantal minuten",
-    "cannotLink": "Vul eerst het IP-adres van de tv in"
+    "cannotLink": "Vul eerst het IP-adres van de tv in",
+    "testFailed": "Het bericht kon niet worden getoond. Controleer of de tv aan staat en berichten zijn ingeschakeld."
   },
   "settings": {
     "title": "Tv-tijdbeheer",
@@ -18,6 +20,8 @@
     "messages": "Berichten op de tv tonen",
     "messagesHint": "“Minuten over” en “tv-tijd is om” verschijnen op het tv-scherm.",
     "messagesUnsupported": "Berichten op het scherm zijn nog niet beschikbaar voor deze tv. Daarvoor is een LG-tv nodig die via een ondersteunde LG-app aan Homey is toegevoegd (deze tv komt van “__app__”).",
+    "testMessage": "Testbericht sturen",
+    "testSent": "Verstuurd. Kijk op de tv.",
     "linkPreface": "Voor berichten is eenmalig een koppeling tussen deze app en de tv nodig.",
     "link": "Koppelen met tv",
     "unlink": "Ontkoppelen",

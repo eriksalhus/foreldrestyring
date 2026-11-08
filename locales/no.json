@@ -1,11 +1,13 @@
 {
   "toast": {
     "minutesLeft": "Du har __minutes__ min igjen",
-    "timeUp": "TV-tiden er brukt opp"
+    "timeUp": "TV-tiden er brukt opp",
+    "test": "Testmelding fra TV-foreldrestyring"
   },
   "error": {
     "invalidMinutes": "Ugyldig antall minutter",
-    "cannotLink": "Skriv inn TV-ens IP-adresse først"
+    "cannotLink": "Skriv inn TV-ens IP-adresse først",
+    "testFailed": "Kunne ikke vise meldingen. Sjekk at TV-en er på og at meldinger er slått på."
   },
   "settings": {
     "title": "TV-foreldrestyring",
@@ -18,6 +20,8 @@
     "messages": "Vis meldinger på TV-en",
     "messagesHint": "«Minutter igjen» og «TV-tiden er over» vises på TV-skjermen.",
     "messagesUnsupported": "Skjermmeldinger er ikke tilgjengelig for denne TV-en ennå. De krever en LG-TV som er lagt til i Homey via en støttet LG-app (denne TV-en kommer fra «__app__»).",
+    "testMessage": "Send testmelding",
+    "testSent": "Sendt. Se på TV-en.",
     "linkPreface": "Meldinger krever en engangskobling mellom denne appen og TV-en.",
     "link": "Koble til TV",
     "unlink": "Koble fra",

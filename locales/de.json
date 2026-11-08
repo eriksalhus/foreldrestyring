@@ -1,11 +1,13 @@
 {
   "toast": {
     "minutesLeft": "Du hast noch __minutes__ Min.",
-    "timeUp": "Die Fernsehzeit ist abgelaufen"
+    "timeUp": "Die Fernsehzeit ist abgelaufen",
+    "test": "Testmeldung von TV-Zeitkontrolle"
   },
   "error": {
     "invalidMinutes": "Ungültige Minutenzahl",
-    "cannotLink": "Gib zuerst die IP-Adresse des Fernsehers ein"
+    "cannotLink": "Gib zuerst die IP-Adresse des Fernsehers ein",
+    "testFailed": "Die Meldung konnte nicht angezeigt werden. Prüfe, ob der Fernseher eingeschaltet ist und Meldungen aktiviert sind."
   },
   "settings": {
     "title": "TV-Zeitkontrolle",
@@ -18,6 +20,8 @@
     "messages": "Meldungen auf dem Fernseher anzeigen",
     "messagesHint": "„Minuten übrig“ und „Fernsehzeit ist vorbei“ erscheinen auf dem Fernsehbildschirm.",
     "messagesUnsupported": "Meldungen auf dem Bildschirm sind für diesen Fernseher noch nicht verfügbar. Dafür muss ein LG-Fernseher über eine unterstützte LG-App zu Homey hinzugefügt sein (dieser Fernseher stammt von „__app__“).",
+    "testMessage": "Testmeldung senden",
+    "testSent": "Gesendet. Schau auf den Fernseher.",
     "linkPreface": "Für Meldungen muss diese App einmalig mit dem Fernseher verknüpft werden.",
     "link": "Mit Fernseher verknüpfen",
     "unlink": "Verknüpfung aufheben",

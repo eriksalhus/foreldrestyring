@@ -1,11 +1,13 @@
 {
   "toast": {
     "minutesLeft": "You have __minutes__ min left",
-    "timeUp": "TV time is up"
+    "timeUp": "TV time is up",
+    "test": "Test message from TV Parental Control"
   },
   "error": {
     "invalidMinutes": "Invalid number of minutes",
-    "cannotLink": "Enter the TV’s IP address first"
+    "cannotLink": "Enter the TV’s IP address first",
+    "testFailed": "Couldn’t show the message. Check that the TV is on and that messages are switched on."
   },
   "settings": {
     "title": "TV Parental Control",
@@ -18,6 +20,8 @@
     "messages": "Show messages on the TV",
     "messagesHint": "“Minutes left” and “time is up” appear on the TV screen.",
     "messagesUnsupported": "On-screen messages aren’t available for this TV yet. They need an LG TV added to Homey through a supported LG app (this TV comes from “__app__”).",
+    "testMessage": "Send test message",
+    "testSent": "Sent. Look at the TV.",
     "linkPreface": "Messages need a one-time link between this app and the TV.",
     "link": "Link to TV",
     "unlink": "Unlink",

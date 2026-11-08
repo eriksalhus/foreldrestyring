@@ -148,6 +148,8 @@
               <div><b data-i18n="settings.messages"></b><span class="fs-d" data-i18n="settings.messagesHint"></span></div>
               <span class="fs-switch"><input id="msgon" type="checkbox" role="switch"><i></i></span>
             </label>
+            <button type="button" class="fs-btn fs-ghost" id="testbtn" hidden data-i18n="settings.testMessage"></button>
+            <p class="fs-hint" style="margin:0" id="teststate" role="status" hidden></p>
           </div>
         </div>
       </section>
@@ -226,6 +228,7 @@
       var msgStore = {}; // values of the message provider's fields (the TV's IP address)
       var msgKey = null; // which TV and provider msgStore belongs to
       var msgState = null; // the messages part of the last status
+      var testTimer = null;
       var values = {}; // driver id → { field key → value }, so what was typed survives switching brand
       var currentDriver = null;
       var lastSettings = null; // what the app has stored
@@ -346,6 +349,10 @@
         var m = msgState = s.messages;
         // A Homey TV without message support gets a note saying why, so the missing section is never a mystery.
         var unsupported = m.mode === 'unsupported';
+        // Test message: only when messages can actually be shown right now (linked, or a direct connection).
+        var canTest = m.enabled && ((m.mode === 'provider' && m.linked) || (m.mode === 'direct' && s.configured));
+        $('testbtn').hidden = !canTest;
+        if (!canTest) $('teststate').hidden = true;
         $('msgbox').hidden = m.mode === 'none';
         $('msgnote').hidden = !unsupported;
         $('msgnote').textContent = unsupported ? Homey.__('settings.messagesUnsupported', { app: m.appId || '?' }) : '';
@@ -479,6 +486,19 @@
       $('autoon').addEventListener('change', function () { syncAutoTime(); saveNow(); });
       $('autooff').addEventListener('change', saveNow);
       $('msgon').addEventListener('change', saveNow);
+      // Shows a test message the way real ones are shown, so the user can see that it works.
+      $('testbtn').addEventListener('click', function () {
+        var button = $('testbtn');
+        button.disabled = true;
+        Homey.api('POST', '/messages/test', null, function (err) {
+          button.disabled = false;
+          var out = $('teststate');
+          out.hidden = false;
+          out.textContent = err ? err.message : Homey.__('settings.testSent');
+          clearTimeout(testTimer);
+          testTimer = setTimeout(function () { out.hidden = true; }, 6000);
+        });
+      });
       // Link starts the connection so the user can press "Allow" on the TV; nothing contacts the TV before this.
       $('linkbtn').addEventListener('click', function () {
         var linked = msgState && msgState.linked;

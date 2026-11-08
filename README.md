@@ -44,6 +44,7 @@ When the chosen TV was added through a supported LG app (today the official "LG 
 2. In the app's settings, check the TV's IP address. It is filled in from the Homey device when that knows it (LG ThinQ does not, so type it).
 3. Press **Link to TV**, then press "Allow" on the TV with the remote.
 4. The switch **Show messages on the TV** is now active. It is on by default, and you can turn it off at any time.
+5. Press **Send test message** to see a message on the TV right away. Real messages appear only while Child mode is on and the TV is on: about 8 seconds after the TV is switched on, when 5 and 1 minutes are left, and when the time is up. The test button is there for the direct connection too.
 
 Nothing contacts the TV until you press **Link to TV**, so never pressing it is a way to opt out of messages. Messages are a supplement: they never affect counting or the Lock, and a message that cannot be shown right away because the TV is in standby or unreachable is skipped, not shown late. A TV that was added through another app shows a note that messages are not available for it yet, with the name of the app; use the direct connection below, or see [docs/adding-a-message-provider.md](docs/adding-a-message-provider.md) to add support for that app.
 

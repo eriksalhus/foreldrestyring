@@ -52,6 +52,10 @@ module.exports = {
   async unlinkMessages({ homey }) {
     return homey.app.unlinkMessages();
   },
+  async sendTestMessage({ homey }) {
+    await homey.app.sendTestMessage();
+    return { ok: true };
+  },
   async wakeTv({ homey }) {
     await homey.app.wakeTv();
     return { ok: true };

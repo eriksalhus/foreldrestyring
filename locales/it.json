@@ -1,11 +1,13 @@
 {
   "toast": {
     "minutesLeft": "Ti restano __minutes__ min",
-    "timeUp": "Il tempo davanti alla TV è finito"
+    "timeUp": "Il tempo davanti alla TV è finito",
+    "test": "Messaggio di prova da Controllo parentale TV"
   },
   "error": {
     "invalidMinutes": "Numero di minuti non valido",
-    "cannotLink": "Inserisci prima l’indirizzo IP del televisore"
+    "cannotLink": "Inserisci prima l’indirizzo IP del televisore",
+    "testFailed": "Impossibile mostrare il messaggio. Controlla che il televisore sia acceso e che i messaggi siano attivi."
   },
   "settings": {
     "title": "Controllo parentale TV",
@@ -18,6 +20,8 @@
     "messages": "Mostra messaggi sul televisore",
     "messagesHint": "“Minuti rimasti” e “tempo scaduto” compaiono sullo schermo del televisore.",
     "messagesUnsupported": "I messaggi sullo schermo non sono ancora disponibili per questo televisore. Richiedono un televisore LG aggiunto a Homey tramite un’app LG supportata (questo televisore proviene da “__app__”).",
+    "testMessage": "Invia messaggio di prova",
+    "testSent": "Inviato. Guarda il televisore.",
     "linkPreface": "I messaggi richiedono un collegamento una tantum tra questa app e il televisore.",
     "link": "Collega al televisore",
     "unlink": "Scollega",

@@ -64,6 +64,10 @@
       "method": "POST",
       "path": "/messages/unlink"
     },
+    "sendTestMessage": {
+      "method": "POST",
+      "path": "/messages/test"
+    },
     "setChildMode": {
       "method": "POST",
       "path": "/child-mode"

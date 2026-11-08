@@ -48,6 +48,10 @@ module.exports = class TvParentalControlApp extends Homey.App {
     return this.controller.unlinkMessages();
   }
 
+  sendTestMessage(): Promise<void> {
+    return this.controller.sendTestMessage();
+  }
+
   getDrivers() {
     return this.controller.getDrivers();
   }

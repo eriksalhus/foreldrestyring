@@ -360,3 +360,49 @@ test('the log says when a message was not shown because messages are switched of
   await lockWithTvOn(env);
   assert.ok(env.logs.some((l) => /not shown, messages are switched off/.test(l)));
 });
+
+test('a test message goes through the message channel of a linked TV', async () => {
+  const { controller, channels, logs } = await linked();
+  await controller.sendTestMessage();
+  assert.deepEqual(channels[0].sent, ['toast.test']);
+  assert.ok(logs.some((l) => l === 'Showing message: toast.test'));
+});
+
+test('a test message fails with a clear error when the TV cannot be reached, is not linked, or messages are off', async () => {
+  const unreachable = await linked();
+  unreachable.channels[0].simulateOffline();
+  await assert.rejects(unreachable.controller.sendTestMessage(), /error.testFailed/);
+  assert.deepEqual(unreachable.channels[0].sent, []);
+
+  const notLinked = await setup();
+  await notLinked.controller.configure(homeySettings());
+  await assert.rejects(notLinked.controller.sendTestMessage(), /error.testFailed/);
+
+  const off = await linked();
+  await off.controller.configure(homeySettings({ messages: { enabled: false } }));
+  await assert.rejects(off.controller.sendTestMessage(), /error.testFailed/);
+});
+
+test('a test message that the TV refuses is reported as failed and logged, and nothing else is affected', async () => {
+  const { controller, channels, fake } = await linked();
+  channels[0].send = async () => {
+    throw new Error('TV said no');
+  };
+  await assert.rejects(controller.sendTestMessage(), /error.testFailed/);
+  assert.equal(controller.getStatus().messages.linked, true);
+  assert.deepEqual(fake.setCalls, []);
+});
+
+test('with a direct connection the test message is shown by the TV itself', async () => {
+  const { driver, connections } = createSimulatedDriver();
+  const directDriver = { ...driver, canToast: true };
+  const env = fakeHost();
+  const controller = new Controller(env.host, [homeyDevice, directDriver], new FakeDevices(), []);
+  await controller.start();
+  await controller.configure({ ...base, driver: 'simulated', driverConfig: { name: 'Living room' } });
+  await controller.sendTestMessage();
+  assert.deepEqual(connections[0].toasts, ['toast.test']);
+
+  connections[0].simulateOffline();
+  await assert.rejects(controller.sendTestMessage(), /error.testFailed/);
+});

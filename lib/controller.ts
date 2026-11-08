@@ -312,6 +312,31 @@ export class Controller {
     return this.getStatus();
   }
 
+  /**
+   * Shows a test message the way real messages are shown, so the user can see that the link works without waiting
+   * for the Quota. Throws a message the user can read when it cannot be shown: the TV is off or unreachable, is not
+   * linked, or messages are switched off.
+   */
+  async sendTestMessage(): Promise<void> {
+    const text = this.host.__('toast.test');
+    const failed = () => new Error(this.host.__('error.testFailed'));
+    const tv = this.tv;
+    const channel = this.messageChannel;
+    const reachable = tv?.toast ? tv.connection === 'connected' : channel?.connection === 'connected';
+    if (!this.settings.messages.enabled || !reachable) throw failed();
+    try {
+      if (tv?.toast) {
+        await tv.toast(text);
+      } else {
+        this.host.log('Showing message:', text);
+        await channel!.send(text);
+      }
+    } catch (err) {
+      this.host.error('Test message failed:', err instanceof Error ? err.message : err);
+      throw failed();
+    }
+  }
+
   /** Forgets the link: stops the connection and the stored key. The on/off choice stays. */
   async unlinkMessages(): Promise<Status> {
     const provider = this.currentProvider();
