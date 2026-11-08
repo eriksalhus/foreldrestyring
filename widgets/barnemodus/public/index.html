@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <script type="text/javascript" src="/homey.js" data-origin="widget"></script>
   <style>
     /* Sizes taken from Homey's own widgets: title 17px bold, subtitle 14px muted, values 20-24px bold. */
@@ -17,7 +17,7 @@
       --track: rgba(127, 127, 127, .25);
     }
     * { box-sizing: border-box; }
-    html, body { overflow: hidden; }
+    html, body { overflow: hidden; touch-action: manipulation; } /* no double-tap zoom on iOS */
     html { height: 100%; }
     body { margin: 0; padding: 16px; min-height: 100%; border-radius: 16px; transition: background-color .3s;
       font-family: var(--homey-font-family, sans-serif); font-size: 14px; color: var(--text); }
