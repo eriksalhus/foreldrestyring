@@ -21,6 +21,7 @@ import {
 import type { QuotaConfig, QuotaState } from './quota.ts';
 import { DEFAULT_DRIVER_ID, DRIVERS, describeDrivers, getDriver, isConfigured, sanitizeConfig } from './drivers/index.ts';
 import type { DriverDescription } from './drivers/index.ts';
+import { MessageIgnoredError } from './drivers/types.ts';
 import type { Connection, TvConnection, TvDevices, TvDriver } from './drivers/types.ts';
 import { MESSAGE_PROVIDERS, describeMessageProvider, getMessageProvider } from './messages/index.ts';
 import type { MessageProviderDescription } from './messages/index.ts';
@@ -333,6 +334,8 @@ export class Controller {
       }
     } catch (err) {
       this.host.error('Test message failed:', err instanceof Error ? err.message : err);
+      // A TV that is connected but stays silent gets its own explanation, so it is not mistaken for a broken link.
+      if (err instanceof MessageIgnoredError) throw new Error(this.host.__('error.testIgnored'));
       throw failed();
     }
   }

@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import { Controller } from '../lib/controller.ts';
 import type { Host, TvSettingsInput } from '../lib/controller.ts';
 import { homeyDevice } from '../lib/drivers/homey-device.ts';
+import { MessageIgnoredError } from '../lib/drivers/types.ts';
 import { createSimulatedDriver } from '../lib/drivers/simulated.ts';
 import { createSimulatedProvider } from '../lib/messages/simulated.ts';
 import { FakeDevices } from './fake-devices.ts';
@@ -423,4 +424,27 @@ test('with a direct connection the test message is shown by the TV itself', asyn
 
   connections[0].simulateOffline();
   await assert.rejects(controller.sendTestMessage(), /error.testFailed/);
+});
+
+test('a TV that accepts the connection but ignores the message gets its own explanation from the test button', async () => {
+  const { controller, channels, logs } = await linked();
+  channels[0].send = async () => {
+    throw new MessageIgnoredError('no answer');
+  };
+  await assert.rejects(controller.sendTestMessage(), /error.testIgnored/);
+  assert.ok(logs.length > 0);
+  assert.equal(controller.getStatus().messages.linked, true, 'the link itself is fine');
+});
+
+test('with a direct connection an ignored message is explained the same way', async () => {
+  const { driver, connections } = createSimulatedDriver();
+  const directDriver = { ...driver, canToast: true };
+  const env = fakeHost();
+  const controller = new Controller(env.host, [homeyDevice, directDriver], new FakeDevices(), []);
+  await controller.start();
+  await controller.configure({ ...base, driver: 'simulated', driverConfig: { name: 'Living room' } });
+  connections[0].toast = async () => {
+    throw new MessageIgnoredError('no answer');
+  };
+  await assert.rejects(controller.sendTestMessage(), /error.testIgnored/);
 });

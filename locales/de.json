@@ -7,7 +7,8 @@
   "error": {
     "invalidMinutes": "Ungültige Minutenzahl",
     "cannotLink": "Gib zuerst die IP-Adresse des Fernsehers ein",
-    "testFailed": "Die Meldung konnte nicht angezeigt werden. Prüfe, ob der Fernseher eingeschaltet ist und Meldungen aktiviert sind."
+    "testFailed": "Die Meldung konnte nicht angezeigt werden. Prüfe, ob der Fernseher eingeschaltet ist und Meldungen aktiviert sind.",
+    "testIgnored": "Der Fernseher ist verbunden, hat die Meldung aber nicht angezeigt. Manche LG-Fernseher erlauben Apps keine Bildschirmmeldungen mehr."
   },
   "settings": {
     "title": "TV-Zeitkontrolle",

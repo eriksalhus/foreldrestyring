@@ -35,6 +35,17 @@ export interface DriverField {
   inputMode?: 'text' | 'decimal' | 'numeric';
 }
 
+/**
+ * Thrown when a TV accepted the connection but did not show a message: it stayed silent on the request. Some LG TVs
+ * do this with toasts on newer webOS. Drivers and message providers throw it so the app can say so plainly.
+ */
+export class MessageIgnoredError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'MessageIgnoredError';
+  }
+}
+
 /** A TV that exists as a device in Homey. */
 export interface TvDeviceInfo {
   /** Homey's id for the device. This is what a `device` field stores. */

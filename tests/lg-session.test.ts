@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { LgSession } from '../lib/lg/session.ts';
 import type { LgClientLike, LgClientOptions } from '../lib/lg/session.ts';
+import { MessageIgnoredError } from '../lib/drivers/types.ts';
 import type { Connection } from '../lib/drivers/types.ts';
 import { FakeLg } from './fake-lg.ts';
 
@@ -115,7 +116,7 @@ test('stop disconnects and leaves the session offline', async () => {
   assert.equal(lg.requests.length, 0);
 });
 
-test('a message that cannot be shown at all logs the last frames from the TV, with the pairing key hidden', async () => {
+test('a toast that fails with an error logs the last frames from the TV, with the pairing key hidden', async () => {
   const lg = new FakeLg();
   const logs: string[] = [];
   const session = new LgSession({
@@ -130,7 +131,7 @@ test('a message that cannot be shown at all logs the last frames from the TV, wi
   lg.emit('message', '{"type":"response","id":"s1","payload":{"state":"Active"}}');
   lg.rejectWith = new Error('timeout');
   await assert.rejects(session.toast('Hello'), /timeout/);
-  const line = logs.find((l) => l.startsWith('SSAP message failed: timeout'));
+  const line = logs.find((l) => l.startsWith('SSAP createToast failed: timeout'));
   assert.ok(line, 'the failure is logged');
   assert.ok(line.includes('"state":"Active"'), 'recent frames are included');
   assert.ok(!line.includes('SECRET-KEY-123'), 'the pairing key is never logged');
@@ -152,16 +153,15 @@ test('only the last few frames are kept, and long ones are cut', async () => {
   lg.emit('message', 'x'.repeat(1000));
   lg.rejectWith = new Error('timeout');
   await assert.rejects(session.toast('Hello'));
-  const line = logs.find((l) => l.startsWith('SSAP message failed'))!;
+  const line = logs.find((l) => l.startsWith('SSAP createToast failed'))!;
   assert.ok(!line.includes('{"n":0}'), 'old frames are dropped');
   assert.ok(line.includes('{"n":19}'));
   assert.ok(line.length < 2500, 'long frames are cut');
 });
 
 const TOAST = 'ssap://system.notifications/createToast';
-const ALERT = 'ssap://system.notifications/createAlert';
 
-function alertSetup(over: { toastWaitMs?: number; now?: () => number } = {}) {
+function toastSetup() {
   const lg = new FakeLg();
   const logs: string[] = [];
   const session = new LgSession({
@@ -170,67 +170,48 @@ function alertSetup(over: { toastWaitMs?: number; now?: () => number } = {}) {
     saveCredentials: () => {},
     log: (...args) => void logs.push(args.join(' ')),
     createClient: async () => lg as unknown as LgClientLike,
-    toastWaitMs: over.toastWaitMs ?? 20,
-    now: over.now,
+    toastWaitMs: 20,
   });
   return { session, lg, logs };
 }
 
-test('a TV that answers the toast gets a toast and never an alert', async () => {
-  const { session, lg } = alertSetup();
+test('a TV that answers the toast gets only a toast', async () => {
+  const { session, lg } = toastSetup();
   await session.start();
   await session.toast('Hello');
   assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST]);
 });
 
-test('a TV that ignores the toast gets an alert instead, and the next messages go straight to alerts', async () => {
-  const { session, lg, logs } = alertSetup();
+test('a TV that stays silent on the toast is reported as ignoring it, quickly, and nothing else is shown', async () => {
+  const { session, lg, logs } = toastSetup();
   await session.start();
   lg.hangOn.add(TOAST);
-  await session.toast('You have 5 min left');
-  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT]);
-  assert.deepEqual(lg.requests[1].payload, { message: 'You have 5 min left', buttons: [{ label: 'OK' }] });
-  assert.ok(logs.some((l) => /did not answer createToast.*alerts/.test(l)));
-
-  await session.toast('TV time is up');
-  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT, ALERT], 'no more waiting for a toast');
+  await assert.rejects(session.toast('You have 5 min left'), (err) => err instanceof MessageIgnoredError);
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST], 'no alert or other dialog is ever sent');
+  assert.ok(logs.some((l) => /did not answer createToast/.test(l)));
 });
 
-test('a TV that refuses the toast with an error also gets an alert', async () => {
-  const { session, lg } = alertSetup();
-  await session.start();
-  lg.rejectWith = new Error('401 insufficient permissions');
-  lg.responses[ALERT] = { returnValue: true, alertId: 'a1' };
-  await session.toast('Hello');
-  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT]);
-});
-
-test('the toast is tried again after an hour, in case the TV behaves differently later', async () => {
-  let clock = 1_000_000;
-  const { session, lg } = alertSetup({ now: () => clock });
+test('the ignored toast is logged once, and a later toast is tried again in case the TV accepts it then', async () => {
+  const { session, lg, logs } = toastSetup();
   await session.start();
   lg.hangOn.add(TOAST);
-  await session.toast('one');
-  await session.toast('two');
-  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT, ALERT]);
-  clock += 61 * 60 * 1000;
+  await assert.rejects(session.toast('one'), MessageIgnoredError);
+  await assert.rejects(session.toast('two'), MessageIgnoredError);
+  assert.equal(logs.filter((l) => /did not answer createToast/.test(l)).length, 1, 'logged once');
   lg.hangOn.delete(TOAST);
   await session.toast('three');
-  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT, ALERT, TOAST], 'the toast works again, so no alert');
-  await session.toast('four');
-  assert.deepEqual(lg.requests.map((r) => r.uri).slice(-1), [TOAST], 'and it stays a toast');
+  assert.equal(lg.requests.length, 3);
 });
 
-test('when neither the toast nor the alert can be shown the error reaches the caller', async () => {
-  const { session, lg } = alertSetup();
+test('a toast the TV refuses with an error is that error, not "ignored"', async () => {
+  const { session, lg } = toastSetup();
   await session.start();
-  lg.hangOn.add(TOAST);
-  lg.rejectWith = new Error('boom');
-  await assert.rejects(session.toast('Hello'), /boom/);
+  lg.rejectWith = new Error('401 insufficient permissions');
+  await assert.rejects(session.toast('Hello'), /401 insufficient permissions/);
 });
 
 test('a message after stop shows nothing and throws nothing', async () => {
-  const { session, lg } = alertSetup();
+  const { session, lg } = toastSetup();
   await session.start();
   await session.stop();
   await session.toast('late');

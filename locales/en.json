@@ -7,7 +7,8 @@
   "error": {
     "invalidMinutes": "Invalid number of minutes",
     "cannotLink": "Enter the TV’s IP address first",
-    "testFailed": "Couldn’t show the message. Check that the TV is on and that messages are switched on."
+    "testFailed": "Couldn’t show the message. Check that the TV is on and that messages are switched on.",
+    "testIgnored": "The TV is connected but did not show the message. Some LG TVs no longer let apps show on-screen messages."
   },
   "settings": {
     "title": "TV Parental Control",
