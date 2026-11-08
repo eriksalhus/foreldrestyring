@@ -10,10 +10,13 @@ export class FakeLg extends EventEmitter {
   rejectWith: Error | null = null;
   /** Answers by uri, taking precedence over `rejectWith`. */
   responses: Record<string, unknown> = {};
+  /** Requests to these uris are never answered, like a TV that ignores them. */
+  hangOn = new Set<string>();
   powerCallback: ((err: Error | null, result?: { state: string }) => void) | null = null;
 
   async request(uri: string, payload?: object) {
     this.requests.push({ uri, payload });
+    if (this.hangOn.has(uri)) return new Promise(() => {});
     if (uri in this.responses) return this.responses[uri];
     if (this.rejectWith) throw this.rejectWith;
   }

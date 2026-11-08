@@ -115,7 +115,7 @@ test('stop disconnects and leaves the session offline', async () => {
   assert.equal(lg.requests.length, 0);
 });
 
-test('a toast that gets no answer logs the last frames from the TV, with the pairing key hidden', async () => {
+test('a message that cannot be shown at all logs the last frames from the TV, with the pairing key hidden', async () => {
   const lg = new FakeLg();
   const logs: string[] = [];
   const session = new LgSession({
@@ -130,7 +130,7 @@ test('a toast that gets no answer logs the last frames from the TV, with the pai
   lg.emit('message', '{"type":"response","id":"s1","payload":{"state":"Active"}}');
   lg.rejectWith = new Error('timeout');
   await assert.rejects(session.toast('Hello'), /timeout/);
-  const line = logs.find((l) => l.startsWith('SSAP createToast failed: timeout'));
+  const line = logs.find((l) => l.startsWith('SSAP message failed: timeout'));
   assert.ok(line, 'the failure is logged');
   assert.ok(line.includes('"state":"Active"'), 'recent frames are included');
   assert.ok(!line.includes('SECRET-KEY-123'), 'the pairing key is never logged');
@@ -152,13 +152,16 @@ test('only the last few frames are kept, and long ones are cut', async () => {
   lg.emit('message', 'x'.repeat(1000));
   lg.rejectWith = new Error('timeout');
   await assert.rejects(session.toast('Hello'));
-  const line = logs.find((l) => l.startsWith('SSAP createToast failed'))!;
+  const line = logs.find((l) => l.startsWith('SSAP message failed'))!;
   assert.ok(!line.includes('{"n":0}'), 'old frames are dropped');
   assert.ok(line.includes('{"n":19}'));
   assert.ok(line.length < 2500, 'long frames are cut');
 });
 
-test('after a toast that got no answer the session probes harmless requests and logs which ones the TV answers', async () => {
+const TOAST = 'ssap://system.notifications/createToast';
+const ALERT = 'ssap://system.notifications/createAlert';
+
+function alertSetup(over: { toastWaitMs?: number; now?: () => number } = {}) {
   const lg = new FakeLg();
   const logs: string[] = [];
   const session = new LgSession({
@@ -167,18 +170,69 @@ test('after a toast that got no answer the session probes harmless requests and 
     saveCredentials: () => {},
     log: (...args) => void logs.push(args.join(' ')),
     createClient: async () => lg as unknown as LgClientLike,
+    toastWaitMs: over.toastWaitMs ?? 20,
+    now: over.now,
   });
+  return { session, lg, logs };
+}
+
+test('a TV that answers the toast gets a toast and never an alert', async () => {
+  const { session, lg } = alertSetup();
   await session.start();
-  lg.rejectWith = new Error('timeout');
-  lg.responses['ssap://system/getSystemInfo'] = { returnValue: true, modelName: 'OLED65G2' };
-  await assert.rejects(session.toast('Hello'), /timeout/);
-  await new Promise<void>((resolve) => setImmediate(resolve));
-  await new Promise<void>((resolve) => setImmediate(resolve));
-  const probe = logs.find((l) => l.startsWith('SSAP probe after the failed toast:'));
-  assert.ok(probe, 'the probe is logged');
-  assert.ok(probe.includes('getSystemInfo: {"returnValue":true,"modelName":"OLED65G2"}'), 'an answered request shows its answer');
-  assert.ok(probe.includes('getForegroundAppInfo: timeout'), 'an unanswered request shows the error');
-  const probed = lg.requests.map((r) => r.uri);
-  assert.ok(probed.includes('ssap://system/getSystemInfo') && probed.includes('ssap://audio/getVolume'));
-  assert.ok(!probed.some((u) => u.includes('turnOff')), 'only read-only requests are probed');
+  await session.toast('Hello');
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST]);
+});
+
+test('a TV that ignores the toast gets an alert instead, and the next messages go straight to alerts', async () => {
+  const { session, lg, logs } = alertSetup();
+  await session.start();
+  lg.hangOn.add(TOAST);
+  await session.toast('You have 5 min left');
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT]);
+  assert.deepEqual(lg.requests[1].payload, { message: 'You have 5 min left', buttons: [{ label: 'OK' }] });
+  assert.ok(logs.some((l) => /did not answer createToast.*alerts/.test(l)));
+
+  await session.toast('TV time is up');
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT, ALERT], 'no more waiting for a toast');
+});
+
+test('a TV that refuses the toast with an error also gets an alert', async () => {
+  const { session, lg } = alertSetup();
+  await session.start();
+  lg.rejectWith = new Error('401 insufficient permissions');
+  lg.responses[ALERT] = { returnValue: true, alertId: 'a1' };
+  await session.toast('Hello');
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT]);
+});
+
+test('the toast is tried again after an hour, in case the TV behaves differently later', async () => {
+  let clock = 1_000_000;
+  const { session, lg } = alertSetup({ now: () => clock });
+  await session.start();
+  lg.hangOn.add(TOAST);
+  await session.toast('one');
+  await session.toast('two');
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT, ALERT]);
+  clock += 61 * 60 * 1000;
+  lg.hangOn.delete(TOAST);
+  await session.toast('three');
+  assert.deepEqual(lg.requests.map((r) => r.uri), [TOAST, ALERT, ALERT, TOAST], 'the toast works again, so no alert');
+  await session.toast('four');
+  assert.deepEqual(lg.requests.map((r) => r.uri).slice(-1), [TOAST], 'and it stays a toast');
+});
+
+test('when neither the toast nor the alert can be shown the error reaches the caller', async () => {
+  const { session, lg } = alertSetup();
+  await session.start();
+  lg.hangOn.add(TOAST);
+  lg.rejectWith = new Error('boom');
+  await assert.rejects(session.toast('Hello'), /boom/);
+});
+
+test('a message after stop shows nothing and throws nothing', async () => {
+  const { session, lg } = alertSetup();
+  await session.start();
+  await session.stop();
+  await session.toast('late');
+  assert.equal(lg.requests.length, 0);
 });

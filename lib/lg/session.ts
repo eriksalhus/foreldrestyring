@@ -30,13 +30,6 @@ const ON_STATES = new Set(['on', 'screen_off', 'screen_saver']);
 const FRAMES_KEPT = 8;
 const FRAME_MAX = 300;
 
-/** Read-only requests that tell whether the TV answers requests at all, used when a toast gets no answer. */
-const PROBES = [
-  'ssap://system/getSystemInfo',
-  'ssap://com.webos.applicationManager/getForegroundAppInfo',
-  'ssap://audio/getVolume',
-];
-
 /** A frame for the log: cut short, and without the pairing key, which is a credential. */
 function frameForLog(text: string): string {
   return text.replace(/("client-key"\s*:\s*")[^"]*(")/g, '$1***$2').slice(0, FRAME_MAX);
@@ -55,7 +48,16 @@ export interface LgSessionOptions {
   followPower?: boolean;
   /** Makes the lgtv2 client. Tests pass a fake; the default connects for real. */
   createClient?: (options: LgClientOptions) => Promise<LgClientLike>;
+  /** How long to wait for the TV to answer a toast before showing an alert instead. A working TV answers within milliseconds. */
+  toastWaitMs?: number;
+  /** The clock, for tests. */
+  now?: () => number;
 }
+
+/** The TV answers a toast within milliseconds when it accepts it, so two seconds of silence means it is ignoring it. */
+const TOAST_WAIT_MS = 2000;
+/** A TV that ignored a toast is asked again after this long, in case its firmware or state is different by then. */
+const TOAST_RETRY_MS = 60 * 60 * 1000;
 
 async function createLgtv2Client(options: LgClientOptions): Promise<LgClientLike> {
   const { default: LG } = await import('lgtv2');
@@ -73,6 +75,8 @@ export class LgSession extends EventEmitter {
   private lg: LgClientLike | null = null;
   private powerSubscription: string | undefined;
   private readonly recentFrames: string[] = [];
+  /** When the TV last ignored a toast, or null while toasts work. */
+  private toastIgnoredAt: number | null = null;
   private readonly options: LgSessionOptions;
 
   constructor(options: LgSessionOptions) {
@@ -124,36 +128,55 @@ export class LgSession extends EventEmitter {
     await lg?.disconnect();
   }
 
+  /**
+   * Shows a short message on the TV: as a toast, which fades by itself. Some TVs (LG keeps toasts for system apps on
+   * newer webOS) register, answer every other request and silently ignore the toast. Such a TV gets an alert instead,
+   * a dialog with an OK button that stays until someone presses OK, because the TV cannot close it from here.
+   * After one ignored toast the session goes straight to alerts, and tries a toast again after an hour.
+   */
   async toast(message: string): Promise<void> {
+    const lg = this.lg;
+    if (!lg) return;
+    const now = (this.options.now ?? Date.now)();
+    const ignoring = this.toastIgnoredAt !== null && now - this.toastIgnoredAt < TOAST_RETRY_MS;
+    if (!ignoring) {
+      if (await this.tryToast(lg, message)) {
+        this.toastIgnoredAt = null;
+        return;
+      }
+      if (this.toastIgnoredAt === null) {
+        this.options.log('The TV did not answer createToast, so messages are shown as alerts (an alert stays until OK is pressed)');
+      }
+      this.toastIgnoredAt = now;
+    }
     try {
-      await this.lg?.request('ssap://system.notifications/createToast', { message });
+      await lg.request('ssap://system.notifications/createAlert', { message, buttons: [{ label: 'OK' }] });
     } catch (err) {
-      // The TV's latest frames show what it does answer when it stays silent on this request.
+      // The TV's latest frames show what it does answer when it stays silent.
       this.options.log(
-        'SSAP createToast failed:',
+        'SSAP message failed:',
         err instanceof Error ? err.message : err,
         '| last frames from the TV:',
         this.recentFrames.join(' | ') || 'none',
       );
-      void this.probe();
       throw err;
     }
   }
 
-  /**
-   * Diagnostic, only after a toast got no answer: asks the TV a few harmless read-only questions and logs which ones
-   * it answers. Answers to those but not to the toast point at the toast; answers to none point at requests in general.
-   */
-  private async probe(): Promise<void> {
-    const lg = this.lg;
-    if (!lg) return;
-    const results = await Promise.allSettled(PROBES.map((uri) => Promise.resolve(lg.request(uri))));
-    const line = PROBES.map((uri, i) => {
-      const result = results[i];
-      const answer = result.status === 'fulfilled' ? JSON.stringify(result.value) : result.reason instanceof Error ? result.reason.message : String(result.reason);
-      return `${uri.split('/').pop()}: ${String(answer).slice(0, 120)}`;
-    }).join(' | ');
-    this.options.log('SSAP probe after the failed toast:', line);
+  /** True when the TV answered the toast in time. A silence or an error means it is not shown. */
+  private async tryToast(lg: LgClientLike, message: string): Promise<boolean> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const silence = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error('no answer')), this.options.toastWaitMs ?? TOAST_WAIT_MS);
+      });
+      await Promise.race([Promise.resolve(lg.request('ssap://system.notifications/createToast', { message })), silence]);
+      return true;
+    } catch {
+      return false;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   async turnOff(): Promise<void> {
