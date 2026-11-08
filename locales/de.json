@@ -11,7 +11,7 @@
     "sectionTv": "Verbundener Fernseher",
     "sectionTvSub": "Welchen Fernseher die App steuert",
     "tvChoose": "Fernseher",
-    "otherTv": "Anderer Fernseher, per IP-Adresse (__name__)",
+    "byIpAddress": "Per IP-Adresse (__name__)",
     "noHomeyTvs": "Keine Fernseher in Homey gefunden. Fernseher, die du zu Homey hinzufügst, erscheinen in der Liste.",
     "tvGone": "In Homey nicht gefunden",
     "wake": "Fernseher einschalten",

@@ -11,7 +11,7 @@
     "sectionTv": "Televisore collegato",
     "sectionTvSub": "Quale televisore controlla l’app",
     "tvChoose": "Televisore",
-    "otherTv": "Altro televisore, tramite indirizzo IP (__name__)",
+    "byIpAddress": "Tramite indirizzo IP (__name__)",
     "noHomeyTvs": "Nessun televisore trovato in Homey. I televisori che aggiungi a Homey compariranno nell’elenco.",
     "tvGone": "Non trovato in Homey",
     "wake": "Accendi il televisore",

@@ -38,7 +38,7 @@ The app reads the device's on/off state and switches it off (and on) through tha
 
 1. Turn on "LG Connect Apps" and "Turn on via Wi-Fi" (Wake-on-LAN) in the TV settings.
 2. Give the TV a fixed IP address in your router, preferably on a cable.
-3. In the app's settings, choose **Other TV, by IP address (LG webOS)**, enter the IP address and MAC address, and press "Allow" on the TV.
+3. In the app's settings, choose **By IP address (LG webOS)**, enter the IP address and MAC address, and press "Allow" on the TV.
 
 This talks to the TV itself, so the power state is immediate and Wake-on-LAN works, and the app can show messages on the TV. It does not need the TV to be a device in Homey.
 

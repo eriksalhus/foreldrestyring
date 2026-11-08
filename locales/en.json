@@ -11,7 +11,7 @@
     "sectionTv": "Connected TV",
     "sectionTvSub": "Which TV the app controls",
     "tvChoose": "TV",
-    "otherTv": "Other TV, by IP address (__name__)",
+    "byIpAddress": "By IP address (__name__)",
     "noHomeyTvs": "No TVs found in Homey. TVs you add to Homey will appear in the list.",
     "tvGone": "Not found in Homey",
     "wake": "Turn on TV",

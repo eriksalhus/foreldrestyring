@@ -11,7 +11,7 @@
     "sectionTv": "Tilsluttet tv",
     "sectionTvSub": "Hvilket tv appen styrer",
     "tvChoose": "Tv",
-    "otherTv": "Andet tv, via IP-adresse (__name__)",
+    "byIpAddress": "Via IP-adresse (__name__)",
     "noHomeyTvs": "Ingen tv fundet i Homey. Tv, du føjer til Homey, vises på listen.",
     "tvGone": "Ikke fundet i Homey",
     "wake": "Tænd tv'et",

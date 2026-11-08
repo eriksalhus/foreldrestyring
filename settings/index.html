@@ -241,7 +241,7 @@
         drivers.forEach(function (d) {
           var field = deviceField(d);
           if (!field) {
-            add(d.id, Homey.__('settings.otherTv', { name: d.name }));
+            add(d.id, Homey.__('settings.byIpAddress', { name: d.name }));
             if (d.id === wanted) chosen = d.id;
             return;
           }

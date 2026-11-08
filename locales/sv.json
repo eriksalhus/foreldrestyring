@@ -11,7 +11,7 @@
     "sectionTv": "Ansluten TV",
     "sectionTvSub": "Vilken TV appen styr",
     "tvChoose": "TV",
-    "otherTv": "Annan TV, via IP-adress (__name__)",
+    "byIpAddress": "Via IP-adress (__name__)",
     "noHomeyTvs": "Inga TV-apparater hittades i Homey. TV-apparater du lägger till i Homey visas i listan.",
     "tvGone": "Hittades inte i Homey",
     "wake": "Slå på TV:n",

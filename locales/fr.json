@@ -11,7 +11,7 @@
     "sectionTv": "Télévision connectée",
     "sectionTvSub": "Quelle télévision l’application contrôle",
     "tvChoose": "Télévision",
-    "otherTv": "Autre télévision, par adresse IP (__name__)",
+    "byIpAddress": "Par adresse IP (__name__)",
     "noHomeyTvs": "Aucune télévision trouvée dans Homey. Les télévisions que vous ajoutez à Homey apparaîtront dans la liste.",
     "tvGone": "Introuvable dans Homey",
     "wake": "Allumer la télévision",
