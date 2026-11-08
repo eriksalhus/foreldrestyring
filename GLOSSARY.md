@@ -40,7 +40,7 @@ _Avoid_: Device, screen, set
 
 **Homey device** (*Homey-enhet*):
 A TV that already exists in Homey, added there through another app. The app reads its on/off state and switches it off and on through that device, so it works with any brand Homey supports.
-_Avoid_: Paired TV, linked TV
+_Avoid_: Paired TV
 
 **Direct connection** (*Direkte tilkobling*):
 The app talks to the TV itself by IP address, without Homey knowing the TV as a device. LG webOS today.
@@ -49,6 +49,18 @@ _Avoid_: Manual connection, IP mode
 **TV driver** (*TV-driver*):
 The code that connects the app to a Connected TV. It knows whether the TV is on and how to turn it off, and may also be able to turn it on or show it a message. Everything else in the app is the same for every TV driver. Not to be confused with a Homey driver, which is Homey's word for the code behind a device.
 _Avoid_: Plugin, adapter, integration
+
+**On-screen message** (*Skjermmelding*; `toast` in code):
+A short text the app shows on the Connected TV: the minutes left, a welcome when the TV is switched on, and "time is up". It is a supplement and never affects the Quota or the Lock. A Parent can switch it off.
+_Avoid_: Notification, popup, alert
+
+**Message provider** (*Meldingsleverandør*):
+The code that can show On-screen messages on one kind of TV when the Connected TV is a Homey device, which cannot show them by itself. LG webOS today. A Direct connection shows messages through its own TV driver and needs no message provider.
+_Avoid_: Notifier, messenger
+
+**Link** (*Kobling*):
+The one-time approval, "Allow" on the TV, that lets the app show On-screen messages on a Homey device. A Parent presses Link on the settings page, and until then nothing contacts the TV. A Direct connection is always linked.
+_Avoid_: Pair, authorise
 
 **The Lock** (*Låsen*):
 The state that occurs when the Quota is used up while Child mode is on. The TV is turned off as soon as it is on, until a Parent gives Extra time or turns Child mode off, or until the next Quota day begins.
