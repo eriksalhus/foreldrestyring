@@ -6,4 +6,4 @@ Funktioniert mit jedem Fernseher, der zu Homey hinzugefügt wurde (die App schal
 
 Die App bittet um vollen Zugriff auf Homey, damit sie deine Fernseher auflisten und den von dir gewählten aus- und einschalten kann. Sie liest und ändert nichts anderes.
 
-Nicht mit LG Electronics verbunden und nicht von LG Electronics unterstützt oder gesponsert. LG und webOS sind Marken von LG Electronics. Die App arbeitet nur in deinem Heimnetzwerk und sendet keine Daten irgendwohin.
+Nicht mit LG Electronics verbunden und nicht von LG Electronics unterstützt oder gesponsert. LG und webOS sind Marken von LG Electronics. Die App arbeitet nur in deinem Heimnetzwerk. Das Einzige, was sie nach außen sendet, ist ein Fehlerbericht an den Entwickler, wenn etwas schiefgeht.

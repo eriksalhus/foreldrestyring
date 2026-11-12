@@ -174,21 +174,25 @@ export class Controller {
   private readonly drivers: readonly TvDriver[];
   private readonly devices: TvDevices | undefined;
   private readonly providers: readonly MessageProvider[];
+  private readonly reportError: (err: Error) => void;
 
   /**
    * `devices` is the app's access to the TVs in Homey. Without it only Direct connections work.
    * `providers` are the message providers that can show On-screen messages for a Homey TV.
+   * `reportError` gets failures worth a developer's attention, such as the Lock failing to turn the TV off.
    */
   constructor(
     host: Host,
     drivers: readonly TvDriver[] = DRIVERS,
     devices?: TvDevices,
     providers: readonly MessageProvider[] = MESSAGE_PROVIDERS,
+    reportError: (err: Error) => void = () => {},
   ) {
     this.host = host;
     this.drivers = drivers;
     this.devices = devices;
     this.providers = providers;
+    this.reportError = reportError;
   }
 
   async start(): Promise<void> {
@@ -629,7 +633,10 @@ export class Controller {
     this.say(this.host.__('toast.timeUp'));
     this.host.setTimeout(() => {
       if (!isLocked(this.state, Date.now(), this.config)) return;
-      this.tv?.turnOff().catch((err) => this.host.error('turnOff failed:', err.message));
+      this.tv?.turnOff().catch((err) => {
+        this.host.error('turnOff failed:', err.message);
+        this.reportError(err);
+      });
     }, TURN_OFF_DELAY_MS);
   }
 

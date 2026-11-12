@@ -9,6 +9,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # env.json is not in git; homey-log reads the Sentry DSN from it.
+      - name: Write env.json
+        env:
+          HOMEY_LOG_URL: ${{ secrets.HOMEY_LOG_URL }}
+        run: |
+          if [ -n "$HOMEY_LOG_URL" ]; then
+            jq -n --arg url "$HOMEY_LOG_URL" '{HOMEY_LOG_URL: $url}' > env.json
+          else
+            echo "::warning::The HOMEY_LOG_URL secret is not set, so this build sends no error reports to Sentry."
+          fi
+
       - name: Publish Homey App
         uses: athombv/github-action-homey-app-publish@master
         id: publish

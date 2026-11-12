@@ -31,7 +31,7 @@ homey login
 homey app publish
 ```
 
-Or run the **Publish Homey App** workflow from the Actions tab on GitHub. It needs a repository secret `HOMEY_PAT`, a personal access token from the [Homey developer tools](https://tools.developer.homey.app).
+Or run the **Publish Homey App** workflow from the Actions tab on GitHub. It needs a repository secret `HOMEY_PAT`, a personal access token from the [Homey developer tools](https://tools.developer.homey.app), and a repository secret `HOMEY_LOG_URL` with the Sentry DSN, which it writes to `env.json` (see below). Without `HOMEY_LOG_URL` it still publishes, with a warning, but the build sends no error reports.
 
 `homey app publish` uploads a build, and the app first appears as a **test version** that only people with the link can install. When it has been tried, submit it for certification in the [Homey developer tools](https://tools.developer.homey.app); Athom reviews it before it goes live in the store.
 
@@ -49,7 +49,14 @@ The **Update Homey App Version** workflow on GitHub does the bump and the change
 
 - **Do not change the app id** (`no.salhus.foreldrestyring`) or the widget id (`barnemodus`) after publishing. Users' installs and dashboards depend on them.
 - **Brand names.** The app name does not contain a TV brand, and the store text says it is not affiliated with LG Electronics. Keep it that way when adding drivers: the app name stays generic, and brands appear only in the description of what is supported.
-- **Privacy.** The app talks only to the TV on the local network and sends nothing elsewhere. Say so in the store text if that ever changes.
+- **Privacy.** The app talks only to the TV on the local network. The one exception is error reports to Sentry through `homey-log`: the error message and stack trace, tagged with the app version, Homey version and Homey ID. Breadcrumbs are off, so the app log is not sent. The store text says this; update it if anything more is ever sent.
+- **Error reports need `env.json`.** `homey-log` reads the Sentry DSN from `HOMEY_LOG_URL` in `env.json`, which is not in git. Without it, nothing is sent. Create it before a local `homey app publish` (the workflow creates it from the `HOMEY_LOG_URL` secret):
+
+  ```json
+  { "HOMEY_LOG_URL": "https://<key>@<org>.ingest.de.sentry.io/<project>" }
+  ```
+
+  Reports are not sent while running with `homey app run` (debug mode) unless you add `"HOMEY_LOG_FORCE": "1"`.
 - **Settings are not migrated by Homey.** If you change the stored settings shape, migrate it in `migrateSavedSettings` (see `lib/controller.ts`), as was done when drivers were introduced.
 
 ## Regenerating images

@@ -6,4 +6,4 @@ Werkt met elke tv die aan Homey is toegevoegd (de app schakelt hem via dat appar
 
 De app vraagt volledige toegang tot Homey om je tv's te kunnen weergeven en de tv die je kiest uit en aan te zetten. Er wordt niets anders gelezen of gewijzigd.
 
-Niet gelieerd aan, goedgekeurd door of gesponsord door LG Electronics. LG en webOS zijn handelsmerken van LG Electronics. De app werkt alleen op je thuisnetwerk en verstuurt nergens gegevens naartoe.
+Niet gelieerd aan, goedgekeurd door of gesponsord door LG Electronics. LG en webOS zijn handelsmerken van LG Electronics. De app werkt alleen op je thuisnetwerk. Het enige wat hij verstuurt, is een foutrapport naar de ontwikkelaar als er iets misgaat.
