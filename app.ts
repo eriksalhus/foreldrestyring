@@ -9,7 +9,8 @@ module.exports = class TvParentalControlApp extends Homey.App {
   async onInit() {
     // Sends uncaught errors to Sentry when env.json has HOMEY_LOG_URL. Off under `homey app run`.
     // homey-log's types ask for the Homey module, but it wants this.homey (see its README).
-    this.homeyLog = new Log({ homey: this.homey as any });
+    // Raven gives up on a send after 1 s by default, which a cold connect from a Homey can exceed.
+    this.homeyLog = new Log({ homey: this.homey as any, options: { sendTimeout: 5 } });
     this.controller = new Controller(this.homey, undefined, (err) => this.reportError(err));
     try {
       await this.controller.start();
