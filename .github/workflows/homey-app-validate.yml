@@ -10,6 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # The validate action runs `npx tsc` but does not install dependencies
+      # itself. Without node_modules, npx fetches the unrelated `tsc` package
+      # and the TypeScript build fails.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
       - uses: athombv/github-action-homey-app-validate@master
         with:
-          level: verified
+          # `verified` also requires a `support` property, which only
+          # Homey Verified Developer apps need.
+          level: publish
