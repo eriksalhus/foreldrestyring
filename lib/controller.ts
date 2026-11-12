@@ -1,8 +1,10 @@
+import { EventEmitter } from 'node:events';
 import {
   DEFAULT_CONFIG,
   addExtra,
   applyAutoOn,
   applyDayRolloverOff,
+  crossedAnyMinute,
   dayKey,
   emptyState,
   extraMs,
@@ -121,6 +123,35 @@ export interface Status {
   settings: TvSettings;
 }
 
+/** The numbers every Flow trigger carries as tokens. */
+export interface FlowTokens {
+  /** Today's time left, in whole minutes, never below 0. */
+  minutesLeft: number;
+  /** TV time used today, in whole minutes. */
+  minutesUsed: number;
+}
+
+/**
+ * What happens in the app, for Flow triggers. They only report: they are emitted after the change, a listener that
+ * throws is logged and ignored, and nothing a listener does can affect counting or the Lock. Nothing is emitted for
+ * what happened while the app was down, so nothing is replayed after a restart.
+ */
+export interface ControllerEvents {
+  /** Child mode really changed: switched by a Parent, a Flow, the set time or the new Quota day. */
+  childMode: [on: boolean, tokens: FlowTokens];
+  /**
+   * Counting TV time carried today's time left past at least one whole minute. A Flow decides with
+   * `crossedMinutesLeft` whether its own "N minutes left" was crossed. Parent actions never emit this.
+   */
+  countdown: [range: { beforeMs: number; afterMs: number }, tokens: FlowTokens];
+  /** The Lock engaged, whatever the cause, whether the TV is on or off. */
+  timeUp: [tokens: FlowTokens];
+  /** The Lock switched the TV off: emitted after the TV driver reports the turn-off as done. */
+  tvTurnedOff: [tokens: FlowTokens];
+  /** An On-screen message the app wants to show, whether or not the TV can show it or messages are switched off. */
+  message: [text: string, tokens: FlowTokens];
+}
+
 const TICK_MS = 5_000;
 const SAVE_MS = 30_000;
 const ENFORCE_MIN_INTERVAL_MS = 10_000;
@@ -145,7 +176,7 @@ function parseTime(time: string, fallback: number): number {
   return match ? Number(match[1]) * 60 + Number(match[2]) : fallback;
 }
 
-export class Controller {
+export class Controller extends EventEmitter<ControllerEvents> {
   private config: QuotaConfig = { ...DEFAULT_CONFIG };
   private settings: TvSettings = {
     driver: DEFAULT_DRIVER_ID,
@@ -169,6 +200,8 @@ export class Controller {
   private target: { provider: MessageProvider; suggested: Record<string, string> } | null = null;
   private timers: unknown[] = [];
   private lastEnforceMs = 0;
+  /** Whether the Lock was engaged at the last check, so the moment it engages can be reported once. */
+  private wasLocked = false;
 
   private readonly host: Host;
   private readonly drivers: readonly TvDriver[];
@@ -185,6 +218,7 @@ export class Controller {
     devices?: TvDevices,
     providers: readonly MessageProvider[] = MESSAGE_PROVIDERS,
   ) {
+    super();
     this.host = host;
     this.drivers = drivers;
     this.devices = devices;
@@ -201,6 +235,8 @@ export class Controller {
     const now = Date.now();
     if (applyDayRolloverOff(this.state, now, this.config)) this.host.log('Child mode turned off at new Quota day (while the app was down)');
     if (applyAutoOn(this.state, now, this.config)) this.host.log('Child mode turned on automatically (while the app was down)');
+    // A Lock that is already engaged at startup is not news: "time is up" is reported only when it engages.
+    this.wasLocked = isLocked(this.state, now, this.config);
     this.timers.push(this.host.setInterval(() => this.onTick(), TICK_MS));
     this.timers.push(this.host.setInterval(() => this.save(), SAVE_MS));
     this.timers.push(this.host.setInterval(() => void this.refreshMessages(), RESOLVE_MS));
@@ -237,6 +273,8 @@ export class Controller {
     if (autoOnChanged) rearmAutoOn(this.state, Date.now(), this.config);
     if (dayStartChanged || autoOnChanged) this.save();
     this.host.settings.set('tvSettings', this.settings);
+    // A lower Quota can engage the Lock.
+    this.noteLock();
     if (tvChanged) {
       await this.connect();
       await this.resolveMessageTarget();
@@ -269,6 +307,8 @@ export class Controller {
     const changed = this.state.childMode !== on;
     setChildMode(this.state, on);
     this.save();
+    if (changed) this.report('childMode', on, this.tokens());
+    this.noteLock();
     this.enforce();
     if (changed) this.announceChildMode();
     return this.getStatus();
@@ -277,6 +317,7 @@ export class Controller {
   addExtraTime(extraMinutes: number): Status {
     addExtra(this.state, extraMinutes, Date.now(), this.config);
     this.save();
+    this.noteLock();
     return this.getStatus();
   }
 
@@ -284,6 +325,7 @@ export class Controller {
   reduceTime(reduceMinutes: number): Status {
     reduceTime(this.state, reduceMinutes, Date.now(), this.config);
     this.save();
+    this.noteLock();
     this.enforce();
     return this.getStatus();
   }
@@ -291,7 +333,13 @@ export class Controller {
   resetToday(): Status {
     resetDay(this.state, Date.now(), this.config);
     this.save();
+    this.noteLock();
     return this.getStatus();
+  }
+
+  /** Today's time left in ms, unrounded, so "less than N minutes left" is exact. Negative values are possible. */
+  getRemainingMs(now = Date.now()): number {
+    return remainingMs(this.state, now, this.config);
   }
 
   async wakeTv(): Promise<void> {
@@ -322,6 +370,8 @@ export class Controller {
    */
   async sendTestMessage(): Promise<void> {
     const text = this.host.__('toast.test');
+    // Reported first, so a Flow on "A message for the TV" runs even when the TV cannot show the message.
+    this.report('message', text, this.tokens());
     const failed = () => new Error(this.host.__('error.testFailed'));
     const tv = this.tv;
     const channel = this.messageChannel;
@@ -574,20 +624,24 @@ export class Controller {
     if (applyDayRolloverOff(this.state, now, this.config)) {
       this.host.log('Child mode turned off at new Quota day');
       this.save();
+      this.report('childMode', false, this.tokens());
       this.announceChildMode();
     }
     if (applyAutoOn(this.state, now, this.config)) {
       this.host.log('Child mode turned on automatically');
       this.save();
+      this.report('childMode', true, this.tokens());
       this.announceChildMode();
     }
     const on = Boolean(tv?.isOn && tv.connection === 'connected');
-    const { crossed } = tick(this.state, now, on, this.config);
+    const { crossed, counted } = tick(this.state, now, on, this.config);
+    if (counted && crossedAnyMinute(counted.beforeMs, counted.afterMs)) this.report('countdown', counted, this.tokens());
     if (crossed.length) {
       const min = Math.min(...crossed);
       this.say(this.host.__('toast.minutesLeft', { minutes: min }));
     }
     prune(this.state, now);
+    this.noteLock();
     this.enforce();
   }
 
@@ -629,8 +683,35 @@ export class Controller {
     this.say(this.host.__('toast.timeUp'));
     this.host.setTimeout(() => {
       if (!isLocked(this.state, Date.now(), this.config)) return;
-      this.tv?.turnOff().catch((err) => this.host.error('turnOff failed:', err.message));
+      this.tv
+        ?.turnOff()
+        .then(() => this.report('tvTurnedOff', this.tokens()))
+        .catch((err) => this.host.error('turnOff failed:', err.message));
     }, TURN_OFF_DELAY_MS);
+  }
+
+  /** Reports "time is up" once, at the moment the Lock engages. Call after anything that can change the Lock. */
+  private noteLock(): void {
+    const locked = isLocked(this.state, Date.now(), this.config);
+    const engaged = locked && !this.wasLocked;
+    this.wasLocked = locked;
+    if (engaged) this.report('timeUp', this.tokens());
+  }
+
+  private tokens(now = Date.now()): FlowTokens {
+    return {
+      minutesLeft: Math.max(0, minutes(remainingMs(this.state, now, this.config))),
+      minutesUsed: minutes(usedMs(this.state, now, this.config)),
+    };
+  }
+
+  /** Emits an event for the Flow triggers. A listener that throws is logged, never passed on to counting or the Lock. */
+  private report<K extends keyof ControllerEvents>(event: K, ...args: ControllerEvents[K]): void {
+    try {
+      (this.emit as (event: K, ...args: ControllerEvents[K]) => boolean)(event, ...args);
+    } catch (err) {
+      this.host.error(`Flow event "${event}" failed:`, err instanceof Error ? err.message : err);
+    }
   }
 
   /**
@@ -639,6 +720,8 @@ export class Controller {
    * Nothing here may affect counting or the Lock.
    */
   private say(message: string): void {
+    // Every message goes to the Flows first, whether or not the TV can show it: the brand-neutral fallback.
+    this.report('message', message, this.tokens());
     if (!this.settings.messages.enabled) {
       this.host.log('Message not shown, messages are switched off:', message);
       return;

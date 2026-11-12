@@ -1,0 +1,55 @@
+{
+  "title": {
+    "en": "Give Extra time",
+    "no": "Gi ekstra tid",
+    "nl": "Extra tijd geven",
+    "de": "Extra Zeit geben",
+    "sv": "Ge extra tid",
+    "da": "Giv ekstra tid",
+    "fr": "Donner du temps en plus",
+    "it": "Aggiungi tempo",
+    "es": "Dar tiempo extra"
+  },
+  "titleFormatted": {
+    "en": "Give [[minutes]] minutes of Extra time",
+    "no": "Gi [[minutes]] minutter ekstra tid",
+    "nl": "Geef [[minutes]] minuten extra tijd",
+    "de": "[[minutes]] Minuten extra Zeit geben",
+    "sv": "Ge [[minutes]] minuter extra tid",
+    "da": "Giv [[minutes]] minutters ekstra tid",
+    "fr": "Donner [[minutes]] minutes en plus",
+    "it": "Aggiungi [[minutes]] minuti",
+    "es": "Dar [[minutes]] minutos de tiempo extra"
+  },
+  "hint": {
+    "en": "Adds minutes to today's quota, like + in the widget (1–240).",
+    "no": "Legger minutter til dagens kvote, som + i widgeten (1–240).",
+    "nl": "Voegt minuten toe aan de limiet van vandaag, zoals + in de widget (1–240).",
+    "de": "Fügt dem heutigen Kontingent Minuten hinzu, wie + im Widget (1–240).",
+    "sv": "Lägger till minuter i dagens kvot, som + i widgeten (1–240).",
+    "da": "Lægger minutter til dagens kvote, som + i widgetten (1–240).",
+    "fr": "Ajoute des minutes au quota du jour, comme + dans le widget (1–240).",
+    "it": "Aggiunge minuti alla quota di oggi, come + nel widget (1–240).",
+    "es": "Añade minutos a la cuota de hoy, como + en el widget (1–240)."
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "minutes",
+      "min": 1,
+      "max": 240,
+      "step": 1,
+      "placeholder": {
+        "en": "Minutes",
+        "no": "Minutter",
+        "nl": "Minuten",
+        "de": "Minuten",
+        "sv": "Minuter",
+        "da": "Minutter",
+        "fr": "Minutes",
+        "it": "Minuti",
+        "es": "Minutos"
+      }
+    }
+  ]
+}

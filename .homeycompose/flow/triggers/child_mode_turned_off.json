@@ -1,0 +1,58 @@
+{
+  "title": {
+    "en": "Child mode was turned off",
+    "no": "Barnemodus ble slått av",
+    "nl": "Kindermodus is uitgezet",
+    "de": "Kindermodus wurde ausgeschaltet",
+    "sv": "Barnläget slogs av",
+    "da": "Børnetilstand blev slået fra",
+    "fr": "Le mode enfant a été désactivé",
+    "it": "La modalità bambini è stata disattivata",
+    "es": "Se desactivó el modo infantil"
+  },
+  "hint": {
+    "en": "By a parent, a Flow or when a new day begins.",
+    "no": "Av en forelder, en Flow eller når et nytt døgn begynner.",
+    "nl": "Door een ouder, een Flow of als een nieuwe dag begint.",
+    "de": "Durch ein Elternteil, einen Flow oder wenn ein neuer Tag beginnt.",
+    "sv": "Av en förälder, ett Flow eller när ett nytt dygn börjar.",
+    "da": "Af en forælder, et Flow eller når et nyt døgn begynder.",
+    "fr": "Par un parent, un Flow ou au début d’une nouvelle journée.",
+    "it": "Da un genitore, un Flow o all’inizio di un nuovo giorno.",
+    "es": "Por un padre, un Flow o al empezar un nuevo día."
+  },
+  "tokens": [
+    {
+      "name": "minutes_left",
+      "type": "number",
+      "title": {
+        "en": "Minutes left",
+        "no": "Minutter igjen",
+        "nl": "Minuten over",
+        "de": "Restliche Minuten",
+        "sv": "Minuter kvar",
+        "da": "Minutter tilbage",
+        "fr": "Minutes restantes",
+        "it": "Minuti rimasti",
+        "es": "Minutos restantes"
+      },
+      "example": 25
+    },
+    {
+      "name": "minutes_used",
+      "type": "number",
+      "title": {
+        "en": "Minutes used today",
+        "no": "Minutter brukt i dag",
+        "nl": "Minuten gebruikt vandaag",
+        "de": "Heute genutzte Minuten",
+        "sv": "Minuter använda i dag",
+        "da": "Minutter brugt i dag",
+        "fr": "Minutes utilisées aujourd'hui",
+        "it": "Minuti usati oggi",
+        "es": "Minutos usados hoy"
+      },
+      "example": 35
+    }
+  ]
+}

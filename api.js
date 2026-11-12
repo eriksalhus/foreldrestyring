@@ -16,15 +16,12 @@ module.exports = {
   async resetToday({ homey }) {
     return homey.app.resetToday();
   },
+  // The app checks the minutes (1–240), the same check a Flow gets.
   async addExtraTime({ homey, body }) {
-    const minutes = Number(body.minutes);
-    if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 240) throw new Error(homey.__('error.invalidMinutes'));
-    return homey.app.addExtraTime(minutes);
+    return homey.app.addExtraTime(body.minutes);
   },
   async reduceTime({ homey, body }) {
-    const minutes = Number(body.minutes);
-    if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 240) throw new Error(homey.__('error.invalidMinutes'));
-    return homey.app.reduceTime(minutes);
+    return homey.app.reduceTime(body.minutes);
   },
   async configure({ homey, body }) {
     const num = (v, fallback) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Number(v) : fallback);

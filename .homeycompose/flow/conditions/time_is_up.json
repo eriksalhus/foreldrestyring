@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "TV time !{{is|is not}} up",
+    "no": "TV-tiden !{{er|er ikke}} brukt opp",
+    "nl": "De tv-tijd !{{is|is niet}} op",
+    "de": "Die Fernsehzeit !{{ist|ist nicht}} abgelaufen",
+    "sv": "TV-tiden !{{är|är inte}} slut",
+    "da": "TV-tiden !{{er|er ikke}} brugt op",
+    "fr": "Le temps de télé !{{est|n’est pas}} écoulé",
+    "it": "Il tempo davanti alla TV !{{è|non è}} finito",
+    "es": "El tiempo de TV !{{se ha|no se ha}} acabado"
+  },
+  "hint": {
+    "en": "Child mode is on and no time is left today. Always false while Child mode is off.",
+    "no": "Barnemodus er på og det er ingen tid igjen i dag. Alltid usann når Barnemodus er av.",
+    "nl": "Kindermodus staat aan en er is vandaag geen tijd meer over. Altijd onwaar als Kindermodus uit staat.",
+    "de": "Kindermodus ist an und heute ist keine Zeit mehr übrig. Immer falsch, solange Kindermodus aus ist.",
+    "sv": "Barnläget är på och ingen tid finns kvar i dag. Alltid falskt när barnläget är av.",
+    "da": "Børnetilstand er slået til, og der er ingen tid tilbage i dag. Altid falsk, når børnetilstand er slået fra.",
+    "fr": "Le mode enfant est activé et il ne reste plus de temps aujourd’hui. Toujours faux si le mode enfant est désactivé.",
+    "it": "La modalità bambini è attiva e oggi non resta più tempo. Sempre falso con la modalità bambini disattivata.",
+    "es": "El modo infantil está activado y hoy no queda tiempo. Siempre falso con el modo infantil desactivado."
+  }
+}

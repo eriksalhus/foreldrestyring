@@ -165,10 +165,22 @@ export function weekUsedMs(state: QuotaState, nowMs: number, config: QuotaConfig
   return total;
 }
 
+/** True when the time left went from above `minutes` to `minutes` or below, between two readings in ms. */
+export function crossedMinutesLeft(beforeMs: number, afterMs: number, minutes: number): boolean {
+  return beforeMs > minutes * 60_000 && afterMs <= minutes * 60_000;
+}
+
+/** True when the time left passed at least one whole minute from 1 upwards, so some "N minutes left" was crossed. */
+export function crossedAnyMinute(beforeMs: number, afterMs: number): boolean {
+  return crossedMinutesLeft(beforeMs, afterMs, Math.max(1, Math.ceil(afterMs / 60_000)));
+}
+
 export interface TickResult {
   /** Thresholds (minutes left) crossed in this tick. */
   crossed: number[];
   locked: boolean;
+  /** The time left before and after this tick, when the tick counted TV time (Child mode on, TV on); otherwise null. */
+  counted: { beforeMs: number; afterMs: number } | null;
 }
 
 /**
@@ -183,11 +195,13 @@ export function tick(state: QuotaState, nowMs: number, tvOn: boolean, config: Qu
   }
   state.lastOnObservedMs = tvOn ? nowMs : null;
   const after = remainingMs(state, nowMs, config);
-  const crossed =
-    state.childMode && tvOn
-      ? WARN_THRESHOLDS_MIN.filter((min) => before > min * 60_000 && after <= min * 60_000)
-      : [];
-  return { crossed, locked: isLocked(state, nowMs, config) };
+  const counting = state.childMode && tvOn;
+  const crossed = counting ? WARN_THRESHOLDS_MIN.filter((min) => crossedMinutesLeft(before, after, min)) : [];
+  return {
+    crossed,
+    locked: isLocked(state, nowMs, config),
+    counted: counting ? { beforeMs: before, afterMs: after } : null,
+  };
 }
 
 export function setChildMode(state: QuotaState, on: boolean): void {

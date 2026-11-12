@@ -1,0 +1,58 @@
+{
+  "title": {
+    "en": "TV time is up",
+    "no": "TV-tiden er brukt opp",
+    "nl": "De tv-tijd is op",
+    "de": "Die Fernsehzeit ist abgelaufen",
+    "sv": "TV-tiden är slut",
+    "da": "TV-tiden er brugt op",
+    "fr": "Le temps de télé est écoulé",
+    "it": "Il tempo davanti alla TV è finito",
+    "es": "Se acabó el tiempo de TV"
+  },
+  "hint": {
+    "en": "Once, when Child mode is on and the time runs out, whether the TV is on or off.",
+    "no": "Én gang, når Barnemodus er på og tiden går ut, uansett om TV-en står på.",
+    "nl": "Eén keer, als Kindermodus aan staat en de tijd op is, of de tv nu aan staat of niet.",
+    "de": "Einmal, wenn Kindermodus an ist und die Zeit abläuft, egal ob der Fernseher läuft.",
+    "sv": "En gång, när barnläget är på och tiden tar slut, oavsett om TV:n är på.",
+    "da": "Én gang, når børnetilstand er slået til og tiden løber ud, uanset om TV’et er tændt.",
+    "fr": "Une fois, quand le mode enfant est activé et que le temps est écoulé, télé allumée ou non.",
+    "it": "Una volta, quando la modalità bambini è attiva e il tempo finisce, che la TV sia accesa o no.",
+    "es": "Una vez, cuando el modo infantil está activado y se acaba el tiempo, esté la TV encendida o no."
+  },
+  "tokens": [
+    {
+      "name": "minutes_left",
+      "type": "number",
+      "title": {
+        "en": "Minutes left",
+        "no": "Minutter igjen",
+        "nl": "Minuten over",
+        "de": "Restliche Minuten",
+        "sv": "Minuter kvar",
+        "da": "Minutter tilbage",
+        "fr": "Minutes restantes",
+        "it": "Minuti rimasti",
+        "es": "Minutos restantes"
+      },
+      "example": 25
+    },
+    {
+      "name": "minutes_used",
+      "type": "number",
+      "title": {
+        "en": "Minutes used today",
+        "no": "Minutter brukt i dag",
+        "nl": "Minuten gebruikt vandaag",
+        "de": "Heute genutzte Minuten",
+        "sv": "Minuter använda i dag",
+        "da": "Minutter brugt i dag",
+        "fr": "Minutes utilisées aujourd'hui",
+        "it": "Minuti usati oggi",
+        "es": "Minutos usados hoy"
+      },
+      "example": 35
+    }
+  ]
+}

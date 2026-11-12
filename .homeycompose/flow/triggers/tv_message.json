@@ -1,0 +1,84 @@
+{
+  "title": {
+    "en": "A message for the TV",
+    "no": "En melding til TV-en",
+    "nl": "Een bericht voor de tv",
+    "de": "Eine Nachricht für den Fernseher",
+    "sv": "Ett meddelande till TV:n",
+    "da": "En besked til TV’et",
+    "fr": "Un message pour la télé",
+    "it": "Un messaggio per la TV",
+    "es": "Un mensaje para la TV"
+  },
+  "hint": {
+    "en": "Every message the app wants to show on the TV, also when the TV cannot show it. Send it to a speaker or a phone.",
+    "no": "Hver melding appen vil vise på TV-en, også når TV-en ikke kan vise den. Send den til en høyttaler eller en telefon.",
+    "nl": "Elk bericht dat de app op de tv wil tonen, ook als de tv het niet kan tonen. Stuur het naar een speaker of een telefoon.",
+    "de": "Jede Nachricht, die die App auf dem Fernseher zeigen will, auch wenn er sie nicht zeigen kann. Schicke sie an einen Lautsprecher oder ein Handy.",
+    "sv": "Varje meddelande som appen vill visa på TV:n, även när TV:n inte kan visa det. Skicka det till en högtalare eller en telefon.",
+    "da": "Hver besked, appen vil vise på TV’et, også når TV’et ikke kan vise den. Send den til en højttaler eller en telefon.",
+    "fr": "Chaque message que l’app veut afficher sur la télé, même si la télé ne peut pas l’afficher. Envoyez-le à une enceinte ou un téléphone.",
+    "it": "Ogni messaggio che l’app vuole mostrare sulla TV, anche quando la TV non può mostrarlo. Invialo a un altoparlante o a un telefono.",
+    "es": "Cada mensaje que la app quiere mostrar en la TV, aunque la TV no pueda mostrarlo. Envíalo a un altavoz o a un teléfono."
+  },
+  "tokens": [
+    {
+      "name": "text",
+      "type": "string",
+      "title": {
+        "en": "Message",
+        "no": "Melding",
+        "nl": "Bericht",
+        "de": "Nachricht",
+        "sv": "Meddelande",
+        "da": "Besked",
+        "fr": "Message",
+        "it": "Messaggio",
+        "es": "Mensaje"
+      },
+      "example": {
+        "en": "You have 5 min left",
+        "no": "Du har 5 min igjen",
+        "nl": "Je hebt nog 5 min over",
+        "de": "Du hast noch 5 Min.",
+        "sv": "Du har 5 min kvar",
+        "da": "Du har 5 min tilbage",
+        "fr": "Il te reste 5 min",
+        "it": "Ti restano 5 min",
+        "es": "Te quedan 5 min"
+      }
+    },
+    {
+      "name": "minutes_left",
+      "type": "number",
+      "title": {
+        "en": "Minutes left",
+        "no": "Minutter igjen",
+        "nl": "Minuten over",
+        "de": "Restliche Minuten",
+        "sv": "Minuter kvar",
+        "da": "Minutter tilbage",
+        "fr": "Minutes restantes",
+        "it": "Minuti rimasti",
+        "es": "Minutos restantes"
+      },
+      "example": 25
+    },
+    {
+      "name": "minutes_used",
+      "type": "number",
+      "title": {
+        "en": "Minutes used today",
+        "no": "Minutter brukt i dag",
+        "nl": "Minuten gebruikt vandaag",
+        "de": "Heute genutzte Minuten",
+        "sv": "Minuter använda i dag",
+        "da": "Minutter brugt i dag",
+        "fr": "Minutes utilisées aujourd'hui",
+        "it": "Minuti usati oggi",
+        "es": "Minutos usados hoy"
+      },
+      "example": 35
+    }
+  ]
+}

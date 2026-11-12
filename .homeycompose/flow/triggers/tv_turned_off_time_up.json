@@ -1,0 +1,58 @@
+{
+  "title": {
+    "en": "The TV was turned off because time is up",
+    "no": "TV-en ble slått av fordi tiden er brukt opp",
+    "nl": "De tv is uitgezet omdat de tijd op is",
+    "de": "Der Fernseher wurde ausgeschaltet, weil die Zeit abgelaufen ist",
+    "sv": "TV:n stängdes av eftersom tiden är slut",
+    "da": "TV’et blev slukket, fordi tiden er brugt op",
+    "fr": "La télé a été éteinte car le temps est écoulé",
+    "it": "La TV è stata spenta perché il tempo è finito",
+    "es": "Se apagó la TV porque se acabó el tiempo"
+  },
+  "hint": {
+    "en": "Each time the app turns the TV off, for example when it is turned on again.",
+    "no": "Hver gang appen slår av TV-en, for eksempel når den blir slått på igjen.",
+    "nl": "Elke keer dat de app de tv uitzet, bijvoorbeeld als die weer wordt aangezet.",
+    "de": "Jedes Mal, wenn die App den Fernseher ausschaltet, etwa wenn er wieder eingeschaltet wird.",
+    "sv": "Varje gång appen stänger av TV:n, till exempel när den slås på igen.",
+    "da": "Hver gang appen slukker TV’et, for eksempel når det bliver tændt igen.",
+    "fr": "Chaque fois que l’app éteint la télé, par exemple quand elle est rallumée.",
+    "it": "Ogni volta che l’app spegne la TV, per esempio quando viene riaccesa.",
+    "es": "Cada vez que la app apaga la TV, por ejemplo cuando se vuelve a encender."
+  },
+  "tokens": [
+    {
+      "name": "minutes_left",
+      "type": "number",
+      "title": {
+        "en": "Minutes left",
+        "no": "Minutter igjen",
+        "nl": "Minuten over",
+        "de": "Restliche Minuten",
+        "sv": "Minuter kvar",
+        "da": "Minutter tilbage",
+        "fr": "Minutes restantes",
+        "it": "Minuti rimasti",
+        "es": "Minutos restantes"
+      },
+      "example": 25
+    },
+    {
+      "name": "minutes_used",
+      "type": "number",
+      "title": {
+        "en": "Minutes used today",
+        "no": "Minutter brukt i dag",
+        "nl": "Minuten gebruikt vandaag",
+        "de": "Heute genutzte Minuten",
+        "sv": "Minuter använda i dag",
+        "da": "Minutter brugt i dag",
+        "fr": "Minutes utilisées aujourd'hui",
+        "it": "Minuti usati oggi",
+        "es": "Minutos usados hoy"
+      },
+      "example": 35
+    }
+  ]
+}

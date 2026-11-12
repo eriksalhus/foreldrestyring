@@ -1,0 +1,55 @@
+{
+  "title": {
+    "en": "!{{Less|Not less}} than … minutes left",
+    "no": "!{{Mindre|Ikke mindre}} enn … minutter igjen",
+    "nl": "!{{Minder|Niet minder}} dan … minuten over",
+    "de": "!{{Weniger|Nicht weniger}} als … Minuten übrig",
+    "sv": "!{{Mindre|Inte mindre}} än … minuter kvar",
+    "da": "!{{Mindre|Ikke mindre}} end … minutter tilbage",
+    "fr": "Il reste !{{moins de|au moins}} … minutes",
+    "it": "!{{Restano meno di|Restano almeno}} … minuti",
+    "es": "!{{Quedan menos de|Quedan al menos}} … minutos"
+  },
+  "titleFormatted": {
+    "en": "!{{Less|Not less}} than [[minutes]] minutes left",
+    "no": "!{{Mindre|Ikke mindre}} enn [[minutes]] minutter igjen",
+    "nl": "!{{Minder|Niet minder}} dan [[minutes]] minuten over",
+    "de": "!{{Weniger|Nicht weniger}} als [[minutes]] Minuten übrig",
+    "sv": "!{{Mindre|Inte mindre}} än [[minutes]] minuter kvar",
+    "da": "!{{Mindre|Ikke mindre}} end [[minutes]] minutter tilbage",
+    "fr": "Il reste !{{moins de|au moins}} [[minutes]] minutes",
+    "it": "!{{Restano meno di|Restano almeno}} [[minutes]] minuti",
+    "es": "!{{Quedan menos de|Quedan al menos}} [[minutes]] minutos"
+  },
+  "hint": {
+    "en": "Today's time left, whether or not Child mode is on.",
+    "no": "Tiden som er igjen i dag, uansett om Barnemodus er på.",
+    "nl": "De resterende tijd van vandaag, of Kindermodus nu aan staat of niet.",
+    "de": "Die heute verbleibende Zeit, egal ob Kindermodus an ist.",
+    "sv": "Tiden som finns kvar i dag, oavsett om barnläget är på.",
+    "da": "Den tid, der er tilbage i dag, uanset om børnetilstand er slået til.",
+    "fr": "Le temps restant aujourd’hui, que le mode enfant soit activé ou non.",
+    "it": "Il tempo rimasto oggi, che la modalità bambini sia attiva o no.",
+    "es": "El tiempo que queda hoy, esté o no activado el modo infantil."
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "minutes",
+      "min": 1,
+      "max": 240,
+      "step": 1,
+      "placeholder": {
+        "en": "Minutes",
+        "no": "Minutter",
+        "nl": "Minuten",
+        "de": "Minuten",
+        "sv": "Minuter",
+        "da": "Minutter",
+        "fr": "Minutes",
+        "it": "Minuti",
+        "es": "Minutos"
+      }
+    }
+  ]
+}
