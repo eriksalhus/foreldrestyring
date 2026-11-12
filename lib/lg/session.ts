@@ -53,7 +53,7 @@ export interface LgSessionOptions {
   followPower?: boolean;
   /** Makes the lgtv2 client. Tests pass a fake; the default connects for real. */
   createClient?: (options: LgClientOptions) => Promise<LgClientLike>;
-  /** How long to wait for the TV to answer a toast before concluding that it ignores it. A working TV answers within milliseconds. */
+  /** How long to wait for the TV to answer a toast before concluding that it will not show it. A working TV answers within milliseconds. */
   toastWaitMs?: number;
   /** How long an Allow prompt may sit unanswered before the app asks the TV for a new one. */
   promptWaitMs?: number;
@@ -67,7 +67,7 @@ const PROMPT_RETRY_DELAY_MS = 1_500;
 /** The user gets this many prompts in all before the app gives up and asks them to press Link again. */
 const MAX_PROMPTS = 3;
 
-/** The TV answers a toast within milliseconds when it accepts it, so two seconds of silence means it is ignoring it. */
+/** The TV answers a toast within milliseconds when it accepts it, so two seconds of silence means it will not show it. */
 const TOAST_WAIT_MS = 2000;
 
 async function createLgtv2Client(options: LgClientOptions): Promise<LgClientLike> {
@@ -156,10 +156,10 @@ export class LgSession extends EventEmitter {
   }
 
   /**
-   * Shows a short message on the TV as a toast, which fades by itself and needs nobody to press anything. Some TVs
-   * (LG keeps toasts for system apps on newer webOS) register, answer every other request and silently ignore the
-   * toast. That is reported as `MessageIgnoredError` after two seconds, and nothing else is shown instead: an alert
-   * dialog was tried and rejected because someone has to press OK on it.
+   * Shows a short message on the TV as a toast, which fades by itself and needs nobody to press anything. A TV whose
+   * notification service has hung keeps answering every other request but never answers the toast; on an LG OLED G2
+   * unplugging the TV for a minute fixed that. It is reported as `MessageIgnoredError` after two seconds, and nothing
+   * else is shown instead: an alert dialog was tried and rejected because someone has to press OK on it.
    */
   async toast(message: string): Promise<void> {
     const lg = this.lg;
@@ -174,7 +174,7 @@ export class LgSession extends EventEmitter {
       if (err instanceof MessageIgnoredError) {
         if (!this.loggedIgnoredToast) {
           this.loggedIgnoredToast = true;
-          this.options.log('The TV did not answer createToast, so it is not showing on-screen messages (LG keeps toasts for system apps on some webOS versions)');
+          this.options.log('The TV did not answer createToast, so it is not showing on-screen messages. Its notification service has probably hung: unplug the TV for a minute');
         }
         throw err;
       }

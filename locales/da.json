@@ -8,7 +8,7 @@
     "invalidMinutes": "Ugyldigt antal minutter",
     "cannotLink": "Indtast tv'ets IP-adresse først",
     "testFailed": "Beskeden kunne ikke vises. Tjek, at tv'et er tændt, og at beskeder er slået til.",
-    "testIgnored": "Tv'et er forbundet, men viste ikke beskeden. Nogle LG-tv tillader ikke længere apps at vise beskeder på skærmen."
+    "testIgnored": "Tv'et er forbundet, men viste ikke beskeden. Tag tv'ets stik ud af stikkontakten i et minut, og prøv igen."
   },
   "settings": {
     "title": "TV-tidsstyring",

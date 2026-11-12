@@ -36,8 +36,9 @@ export interface DriverField {
 }
 
 /**
- * Thrown when a TV accepted the connection but did not show a message: it stayed silent on the request. Some LG TVs
- * do this with toasts on newer webOS. Drivers and message providers throw it so the app can say so plainly.
+ * Thrown when a TV accepted the connection but did not show a message: it stayed silent on the request. An LG TV
+ * whose notification service has hung does this with toasts. Drivers and message providers throw it so the app can
+ * say so plainly.
  */
 export class MessageIgnoredError extends Error {
   constructor(message: string) {

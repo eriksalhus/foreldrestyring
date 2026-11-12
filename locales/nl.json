@@ -8,7 +8,7 @@
     "invalidMinutes": "Ongeldig aantal minuten",
     "cannotLink": "Vul eerst het IP-adres van de tv in",
     "testFailed": "Het bericht kon niet worden getoond. Controleer of de tv aan staat en berichten zijn ingeschakeld.",
-    "testIgnored": "De tv is verbonden, maar toonde het bericht niet. Sommige LG-tv's laten apps geen berichten op het scherm meer tonen."
+    "testIgnored": "De tv is verbonden, maar toonde het bericht niet. Haal de stekker van de tv een minuut uit het stopcontact en probeer het opnieuw."
   },
   "settings": {
     "title": "Tv-tijdbeheer",

@@ -8,7 +8,7 @@
     "invalidMinutes": "Nombre de minutes invalide",
     "cannotLink": "Saisissez d’abord l’adresse IP de la télévision",
     "testFailed": "Impossible d’afficher le message. Vérifiez que la télévision est allumée et que les messages sont activés.",
-    "testIgnored": "La télévision est connectée mais n’a pas affiché le message. Certains téléviseurs LG n’autorisent plus les applications à afficher des messages à l’écran."
+    "testIgnored": "La télévision est connectée mais n’a pas affiché le message. Débranchez la télévision de la prise pendant une minute, puis réessayez."
   },
   "settings": {
     "title": "Contrôle parental TV",

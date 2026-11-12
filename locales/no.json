@@ -8,7 +8,7 @@
     "invalidMinutes": "Ugyldig antall minutter",
     "cannotLink": "Skriv inn TV-ens IP-adresse først",
     "testFailed": "Kunne ikke vise meldingen. Sjekk at TV-en er på og at meldinger er slått på.",
-    "testIgnored": "TV-en er tilkoblet, men viste ikke meldingen. Noen LG-TV-er lar ikke lenger apper vise meldinger på skjermen."
+    "testIgnored": "TV-en er tilkoblet, men viste ikke meldingen. Trekk ut strømkabelen til TV-en i ett minutt og prøv igjen."
   },
   "settings": {
     "title": "TV-foreldrestyring",

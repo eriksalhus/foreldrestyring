@@ -8,7 +8,7 @@
     "invalidMinutes": "Ogiltigt antal minuter",
     "cannotLink": "Ange TV:ns IP-adress först",
     "testFailed": "Meddelandet kunde inte visas. Kontrollera att TV:n är på och att meddelanden är påslagna.",
-    "testIgnored": "TV:n är ansluten men visade inte meddelandet. Vissa LG-TV tillåter inte längre appar att visa meddelanden på skärmen."
+    "testIgnored": "TV:n är ansluten men visade inte meddelandet. Dra ur TV:ns kontakt ur vägguttaget i en minut och försök igen."
   },
   "settings": {
     "title": "TV-tidsstyrning",
