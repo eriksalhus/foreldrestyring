@@ -51,7 +51,7 @@ The code that connects the app to a Connected TV. It knows whether the TV is on 
 _Avoid_: Plugin, adapter, integration
 
 **On-screen message** (*Skjermmelding*; `toast` in code):
-A short text the app shows on the Connected TV: the minutes left, a welcome when the TV is switched on, and "time is up". It is a supplement and never affects the Quota or the Lock. A Parent can switch it off.
+A short text the app shows on the Connected TV: the minutes left, a welcome when the TV is switched on, that Child mode was switched on or off, and "time is up". It is a supplement and never affects the Quota or the Lock. A Parent can switch it off.
 _Avoid_: Notification, popup, alert
 
 **Message provider** (*Meldingsleverandør*):

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { mock, test } from 'node:test';
 import { Controller, migrateSavedSettings } from '../lib/controller.ts';
 import type { Host, TvSettings } from '../lib/controller.ts';
 import { homeyDevice } from '../lib/drivers/homey-device.ts';
@@ -285,4 +285,64 @@ test('settings from before TV drivers still become LG when the Homey device driv
   const status = controller.getStatus();
   assert.equal(status.settings.driver, 'lg-webos');
   assert.deepEqual(status.settings.driverConfig, { host: '10.0.0.5', mac: 'AA:BB' });
+});
+
+test('switching Child mode on or off shows a message while the TV is on', async () => {
+  const { controller, connections } = await setup();
+  await controller.configure(settings());
+  connections[0].simulatePower(true);
+
+  controller.setChildMode(true);
+  controller.setChildMode(true);
+  controller.setChildMode(false);
+  controller.setChildMode(false);
+
+  assert.deepEqual(connections[0].toasts, ['toast.childModeOn', 'toast.childModeOff'], 'only real changes are shown');
+});
+
+test('switching Child mode shows nothing while the TV is off', async () => {
+  const { controller, connections } = await setup();
+  await controller.configure(settings());
+  controller.setChildMode(true);
+  controller.setChildMode(false);
+  assert.deepEqual(connections[0].toasts, []);
+});
+
+test('switching Child mode on with no time left shows only "time is up"', async () => {
+  const { controller, connections } = await setup();
+  await controller.configure(settings());
+  controller.reduceTime(1000);
+  connections[0].simulatePower(true);
+  controller.setChildMode(true);
+  assert.deepEqual(connections[0].toasts, ['toast.timeUp']);
+});
+
+test('Child mode switched on at the set time and off at the new Quota day shows a message on a TV that is on', async () => {
+  mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-12T13:00:00Z') }); // 14:00 in Oslo
+  try {
+    const { driver, connections } = createSimulatedDriver();
+    const env = fakeHost();
+    const intervals: Array<() => void> = [];
+    env.host.setInterval = (fn) => {
+      intervals.push(fn);
+      return fn;
+    };
+    const controller = new Controller(env.host, [driver]);
+    await controller.start();
+    await controller.configure(settings({ autoOnEnabled: true, autoOnTime: '15:00', dayStartTime: '05:00' }));
+    const onTick = intervals[0];
+    connections[0].simulatePower(true);
+
+    mock.timers.tick(61 * 60_000); // 15:01
+    onTick();
+    assert.equal(controller.getStatus().childMode, true);
+    assert.deepEqual(connections[0].toasts, ['toast.childModeOn']);
+
+    mock.timers.tick(14 * 60 * 60_000); // 05:01 the next day
+    onTick();
+    assert.equal(controller.getStatus().childMode, false);
+    assert.deepEqual(connections[0].toasts, ['toast.childModeOn', 'toast.childModeOff']);
+  } finally {
+    mock.timers.reset();
+  }
 });

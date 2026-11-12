@@ -266,9 +266,11 @@ export class Controller {
   }
 
   setChildMode(on: boolean): Status {
+    const changed = this.state.childMode !== on;
     setChildMode(this.state, on);
     this.save();
     this.enforce();
+    if (changed) this.announceChildMode();
     return this.getStatus();
   }
 
@@ -572,10 +574,12 @@ export class Controller {
     if (applyDayRolloverOff(this.state, now, this.config)) {
       this.host.log('Child mode turned off at new Quota day');
       this.save();
+      this.announceChildMode();
     }
     if (applyAutoOn(this.state, now, this.config)) {
       this.host.log('Child mode turned on automatically');
       this.save();
+      this.announceChildMode();
     }
     const on = Boolean(tv?.isOn && tv.connection === 'connected');
     const { crossed } = tick(this.state, now, on, this.config);
@@ -597,6 +601,23 @@ export class Controller {
         if (this.state.childMode && this.tv?.isOn) this.say(this.host.__('toast.minutesLeft', { minutes: left }));
       }, WELCOME_DELAY_MS);
     }
+  }
+
+  /**
+   * Tells whoever is watching that Child mode has just been switched on or off, by a Parent or automatically. Only
+   * while the TV is on: a TV that is off cannot show it, and the message is not saved for later. When Child mode is
+   * switched on with no time left, `enforce()` shows "time is up" instead, so the screen does not get two messages.
+   */
+  private announceChildMode(): void {
+    if (!this.tv?.isOn) return;
+    if (!this.state.childMode) {
+      this.say(this.host.__('toast.childModeOff'));
+      return;
+    }
+    const now = Date.now();
+    if (isLocked(this.state, now, this.config)) return;
+    const left = Math.max(0, minutes(remainingMs(this.state, now, this.config)));
+    this.say(this.host.__('toast.childModeOn', { minutes: left }));
   }
 
   /** Turns the TV off if the Lock is engaged and the TV is on. */

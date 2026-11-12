@@ -2,6 +2,8 @@
   "toast": {
     "minutesLeft": "Du har __minutes__ min igjen",
     "timeUp": "TV-tiden er brukt opp",
+    "childModeOn": "Barnemodus er på. Du har __minutes__ min igjen",
+    "childModeOff": "Barnemodus er av",
     "test": "Testmelding fra TV-foreldrestyring"
   },
   "error": {
