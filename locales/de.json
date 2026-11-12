@@ -1,10 +1,14 @@
 {
   "toast": {
     "minutesLeft": "Du hast noch __minutes__ Min.",
-    "timeUp": "Die Fernsehzeit ist abgelaufen"
+    "timeUp": "Die Fernsehzeit ist abgelaufen",
+    "test": "Testmeldung von TV-Zeitkontrolle"
   },
   "error": {
-    "invalidMinutes": "Ungültige Minutenzahl"
+    "invalidMinutes": "Ungültige Minutenzahl",
+    "cannotLink": "Gib zuerst die IP-Adresse des Fernsehers ein",
+    "testFailed": "Die Meldung konnte nicht angezeigt werden. Prüfe, ob der Fernseher eingeschaltet ist und Meldungen aktiviert sind.",
+    "testIgnored": "Der Fernseher ist verbunden, hat die Meldung aber nicht angezeigt. Zieh für eine Minute den Netzstecker des Fernsehers und versuche es erneut."
   },
   "settings": {
     "title": "TV-Zeitkontrolle",
@@ -14,6 +18,20 @@
     "byIpAddress": "Per IP-Adresse (__name__)",
     "noHomeyTvs": "Keine Fernseher in Homey gefunden. Fernseher, die du zu Homey hinzufügst, erscheinen in der Liste.",
     "tvGone": "In Homey nicht gefunden",
+    "messages": "Meldungen auf dem Fernseher anzeigen",
+    "messagesHint": "„Minuten übrig“ und „Fernsehzeit ist vorbei“ erscheinen auf dem Fernsehbildschirm.",
+    "messagesUnsupported": "Meldungen auf dem Bildschirm sind für diesen Fernseher noch nicht verfügbar. Dafür muss ein LG-Fernseher über eine unterstützte LG-App zu Homey hinzugefügt sein (dieser Fernseher stammt von „__app__“).",
+    "testMessage": "Testmeldung senden",
+    "testSent": "Gesendet. Schau auf den Fernseher.",
+    "linkPreface": "Für Meldungen muss diese App einmalig mit dem Fernseher verknüpft werden.",
+    "link": "Mit Fernseher verknüpfen",
+    "unlink": "Verknüpfung aufheben",
+    "linkState": {
+      "connecting": "Verbinde …",
+      "prompt": "Drücke „Zulassen“ am Fernseher",
+      "linked": "Mit dem Fernseher verknüpft",
+      "unreachable": "Der Fernseher ist nicht erreichbar. Schalte ihn ein und prüfe die IP-Adresse."
+    },
     "wake": "Fernseher einschalten",
     "sectionQuota": "Zeitkontingent",
     "sectionQuotaSub": "Minuten Fernsehzeit pro Tag",

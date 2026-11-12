@@ -35,6 +35,18 @@ export interface DriverField {
   inputMode?: 'text' | 'decimal' | 'numeric';
 }
 
+/**
+ * Thrown when a TV accepted the connection but did not show a message: it stayed silent on the request. An LG TV
+ * whose notification service has hung does this with toasts. Drivers and message providers throw it so the app can
+ * say so plainly.
+ */
+export class MessageIgnoredError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'MessageIgnoredError';
+  }
+}
+
 /** A TV that exists as a device in Homey. */
 export interface TvDeviceInfo {
   /** Homey's id for the device. This is what a `device` field stores. */
@@ -46,6 +58,10 @@ export interface TvDeviceInfo {
   on: boolean;
   /** False when Homey says the device cannot be reached. */
   available: boolean;
+  /** Id of the Homey app that owns the device, e.g. `com.maxvandelaar.webos-plus`, or an empty string. */
+  appId: string;
+  /** The device's own settings, as the owning app defines them. Values are whatever that app stores. */
+  settings: Record<string, unknown>;
 }
 
 /**
@@ -111,5 +127,7 @@ export interface TvDriver {
   readonly fields: readonly DriverField[];
   /** True when connections from this driver implement `wake()`. Decides if the settings page shows a button for it. */
   readonly canWake?: boolean;
+  /** True when connections from this driver implement `toast()`. The settings page then offers the on-screen messages switch without a message provider. */
+  readonly canToast?: boolean;
   createConnection(options: DriverOptions): TvConnection & EventEmitter;
 }

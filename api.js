@@ -38,8 +38,23 @@ module.exports = {
       autoOffAtRollover: body.autoOffAtRollover !== false,
       autoOnEnabled: body.autoOnEnabled === true,
       autoOnTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(body.autoOnTime) ? body.autoOnTime : '15:00',
+      // Only the on/off switch and the provider's fields come from the page; the link is decided by the app.
+      messages: {
+        enabled: body.messages && typeof body.messages.enabled === 'boolean' ? body.messages.enabled : undefined,
+        config: body.messages && body.messages.config && typeof body.messages.config === 'object' ? body.messages.config : undefined,
+      },
     });
     return homey.app.getStatus();
+  },
+  async linkMessages({ homey, body }) {
+    return homey.app.linkMessages(body && body.config && typeof body.config === 'object' ? body.config : undefined);
+  },
+  async unlinkMessages({ homey }) {
+    return homey.app.unlinkMessages();
+  },
+  async sendTestMessage({ homey }) {
+    await homey.app.sendTestMessage();
+    return { ok: true };
   },
   async wakeTv({ homey }) {
     await homey.app.wakeTv();

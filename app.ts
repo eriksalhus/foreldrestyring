@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { Controller, Status, TvDeviceOption, TvSettings } from './lib/controller.ts';
+import { Controller, Status, TvDeviceOption, TvSettingsInput } from './lib/controller.ts';
 import { HomeyDevices, createHomeyApi } from './lib/homey-devices.ts';
 
 module.exports = class TvParentalControlApp extends Homey.App {
@@ -36,8 +36,20 @@ module.exports = class TvParentalControlApp extends Homey.App {
     return this.controller.resetToday();
   }
 
-  async configure(settings: TvSettings): Promise<void> {
+  async configure(settings: TvSettingsInput): Promise<void> {
     await this.controller.configure(settings);
+  }
+
+  linkMessages(config?: Record<string, string>): Promise<Status> {
+    return this.controller.linkMessages(config);
+  }
+
+  unlinkMessages(): Promise<Status> {
+    return this.controller.unlinkMessages();
+  }
+
+  sendTestMessage(): Promise<void> {
+    return this.controller.sendTestMessage();
   }
 
   getDrivers() {

@@ -1,10 +1,14 @@
 {
   "toast": {
     "minutesLeft": "Du har __minutes__ min kvar",
-    "timeUp": "TV-tiden är slut"
+    "timeUp": "TV-tiden är slut",
+    "test": "Testmeddelande från TV-tidsstyrning"
   },
   "error": {
-    "invalidMinutes": "Ogiltigt antal minuter"
+    "invalidMinutes": "Ogiltigt antal minuter",
+    "cannotLink": "Ange TV:ns IP-adress först",
+    "testFailed": "Meddelandet kunde inte visas. Kontrollera att TV:n är på och att meddelanden är påslagna.",
+    "testIgnored": "TV:n är ansluten men visade inte meddelandet. Dra ur TV:ns kontakt ur vägguttaget i en minut och försök igen."
   },
   "settings": {
     "title": "TV-tidsstyrning",
@@ -14,6 +18,20 @@
     "byIpAddress": "Via IP-adress (__name__)",
     "noHomeyTvs": "Inga TV-apparater hittades i Homey. TV-apparater du lägger till i Homey visas i listan.",
     "tvGone": "Hittades inte i Homey",
+    "messages": "Visa meddelanden på TV:n",
+    "messagesHint": "”Minuter kvar” och ”TV-tiden är slut” visas på TV-skärmen.",
+    "messagesUnsupported": "Meddelanden på skärmen är inte tillgängliga för den här TV:n ännu. De kräver en LG-TV som lagts till i Homey via en LG-app som stöds (den här TV:n kommer från ”__app__”).",
+    "testMessage": "Skicka testmeddelande",
+    "testSent": "Skickat. Titta på TV:n.",
+    "linkPreface": "Meddelanden kräver en engångslänk mellan appen och TV:n.",
+    "link": "Länka till TV",
+    "unlink": "Ta bort länk",
+    "linkState": {
+      "connecting": "Ansluter …",
+      "prompt": "Tryck på ”Tillåt” på TV:n",
+      "linked": "Länkad till TV:n",
+      "unreachable": "Det går inte att nå TV:n. Slå på den och kontrollera IP-adressen."
+    },
     "wake": "Slå på TV:n",
     "sectionQuota": "Tidskvot",
     "sectionQuotaSub": "Minuter TV-tid per dygn",

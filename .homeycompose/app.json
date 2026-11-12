@@ -1,6 +1,6 @@
 {
   "id": "no.salhus.foreldrestyring",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "platforms": [
@@ -54,6 +54,18 @@
     "getTvDevices": {
       "method": "GET",
       "path": "/tv-devices"
+    },
+    "linkMessages": {
+      "method": "POST",
+      "path": "/messages/link"
+    },
+    "unlinkMessages": {
+      "method": "POST",
+      "path": "/messages/unlink"
+    },
+    "sendTestMessage": {
+      "method": "POST",
+      "path": "/messages/test"
     },
     "setChildMode": {
       "method": "POST",

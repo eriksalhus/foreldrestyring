@@ -1,10 +1,14 @@
 {
   "toast": {
     "minutesLeft": "Du har __minutes__ min tilbage",
-    "timeUp": "TV-tiden er brugt op"
+    "timeUp": "TV-tiden er brugt op",
+    "test": "Testbesked fra TV-tidsstyring"
   },
   "error": {
-    "invalidMinutes": "Ugyldigt antal minutter"
+    "invalidMinutes": "Ugyldigt antal minutter",
+    "cannotLink": "Indtast tv'ets IP-adresse først",
+    "testFailed": "Beskeden kunne ikke vises. Tjek, at tv'et er tændt, og at beskeder er slået til.",
+    "testIgnored": "Tv'et er forbundet, men viste ikke beskeden. Tag tv'ets stik ud af stikkontakten i et minut, og prøv igen."
   },
   "settings": {
     "title": "TV-tidsstyring",
@@ -14,6 +18,20 @@
     "byIpAddress": "Via IP-adresse (__name__)",
     "noHomeyTvs": "Ingen tv fundet i Homey. Tv, du føjer til Homey, vises på listen.",
     "tvGone": "Ikke fundet i Homey",
+    "messages": "Vis beskeder på tv'et",
+    "messagesHint": "”Minutter tilbage” og ”tv-tiden er slut” vises på tv-skærmen.",
+    "messagesUnsupported": "Beskeder på skærmen er endnu ikke tilgængelige for dette tv. De kræver et LG-tv, der er føjet til Homey via en understøttet LG-app (dette tv kommer fra ”__app__”).",
+    "testMessage": "Send testbesked",
+    "testSent": "Sendt. Se på tv'et.",
+    "linkPreface": "Beskeder kræver en engangsforbindelse mellem appen og tv'et.",
+    "link": "Forbind med tv",
+    "unlink": "Fjern forbindelsen",
+    "linkState": {
+      "connecting": "Forbinder …",
+      "prompt": "Tryk på ”Tillad” på tv'et",
+      "linked": "Forbundet med tv'et",
+      "unreachable": "Kan ikke komme i kontakt med tv'et. Tænd det, og tjek IP-adressen."
+    },
     "wake": "Tænd tv'et",
     "sectionQuota": "Tidskvote",
     "sectionQuotaSub": "Minutters tv-tid pr. døgn",

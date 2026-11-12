@@ -2,7 +2,7 @@ Da a tus hijos una cuota diaria de televisión que controlas desde el móvil. Co
 
 La aplicación funciona con cualquier televisor que ya sea un dispositivo en Homey, o se comunica directamente con un televisor LG webOS a través de tu red doméstica. Un widget para tu panel de Homey muestra el tiempo restante y permite que ambos progenitores activen o desactiven el modo infantil, concedan tiempo extra y vean cuánto tiempo se ha usado hoy y esta semana. Cualquiera puede seguir encendiendo el televisor con el mando, pero mientras esté bloqueado se vuelve a apagar en pocos segundos. El modo infantil puede desactivarse automáticamente cuando empieza un nuevo día y activarse automáticamente a la hora que elijas. Ambas opciones se ajustan en la página de ajustes, donde también eliges cuándo empieza el día (a las 05:00 por defecto).
 
-Funciona con cualquier televisor añadido a Homey (la aplicación lo apaga y lo enciende a través de ese dispositivo) y con televisores LG webOS por dirección IP, que además muestran mensajes en pantalla. Probada directamente en un LG G2 (webOS 22); otros televisores no se han probado.
+Funciona con cualquier televisor añadido a Homey (la aplicación lo apaga y lo enciende a través de ese dispositivo) y con televisores LG webOS por dirección IP. Los mensajes en pantalla (minutos restantes, se acabó el tiempo) funcionan con televisores LG webOS, directamente por dirección IP o, para un televisor en Homey, mediante una app de LG compatible tras una vinculación única; se pueden desactivar. Probada directamente en un LG G2 (webOS 22); otros televisores no se han probado.
 
 La aplicación pide acceso completo a Homey para poder listar tus televisores y apagar y encender el que elijas. No lee ni cambia nada más.
 

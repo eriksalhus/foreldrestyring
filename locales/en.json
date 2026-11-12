@@ -1,10 +1,14 @@
 {
   "toast": {
     "minutesLeft": "You have __minutes__ min left",
-    "timeUp": "TV time is up"
+    "timeUp": "TV time is up",
+    "test": "Test message from TV Parental Control"
   },
   "error": {
-    "invalidMinutes": "Invalid number of minutes"
+    "invalidMinutes": "Invalid number of minutes",
+    "cannotLink": "Enter the TV’s IP address first",
+    "testFailed": "Couldn’t show the message. Check that the TV is on and that messages are switched on.",
+    "testIgnored": "The TV is connected but did not show the message. Unplug the TV from the wall for a minute and try again."
   },
   "settings": {
     "title": "TV Parental Control",
@@ -14,6 +18,20 @@
     "byIpAddress": "By IP address (__name__)",
     "noHomeyTvs": "No TVs found in Homey. TVs you add to Homey will appear in the list.",
     "tvGone": "Not found in Homey",
+    "messages": "Show messages on the TV",
+    "messagesHint": "“Minutes left” and “time is up” appear on the TV screen.",
+    "messagesUnsupported": "On-screen messages aren’t available for this TV yet. They need an LG TV added to Homey through a supported LG app (this TV comes from “__app__”).",
+    "testMessage": "Send test message",
+    "testSent": "Sent. Look at the TV.",
+    "linkPreface": "Messages need a one-time link between this app and the TV.",
+    "link": "Link to TV",
+    "unlink": "Unlink",
+    "linkState": {
+      "connecting": "Connecting …",
+      "prompt": "Press “Allow” on the TV",
+      "linked": "Linked to the TV",
+      "unreachable": "Can’t reach the TV. Switch it on and check the IP address."
+    },
     "wake": "Turn on TV",
     "sectionQuota": "Time quota",
     "sectionQuotaSub": "Minutes of TV time per day",

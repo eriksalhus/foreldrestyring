@@ -1,6 +1,6 @@
 {
   "name": "foreldrestyring",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Phone-controlled daily TV time quota for your TV, as a Homey Pro app",
   "scripts": {

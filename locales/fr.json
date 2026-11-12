@@ -1,10 +1,14 @@
 {
   "toast": {
     "minutesLeft": "Il te reste __minutes__ min",
-    "timeUp": "Le temps de télé est écoulé"
+    "timeUp": "Le temps de télé est écoulé",
+    "test": "Message de test de Contrôle parental TV"
   },
   "error": {
-    "invalidMinutes": "Nombre de minutes invalide"
+    "invalidMinutes": "Nombre de minutes invalide",
+    "cannotLink": "Saisissez d’abord l’adresse IP de la télévision",
+    "testFailed": "Impossible d’afficher le message. Vérifiez que la télévision est allumée et que les messages sont activés.",
+    "testIgnored": "La télévision est connectée mais n’a pas affiché le message. Débranchez la télévision de la prise pendant une minute, puis réessayez."
   },
   "settings": {
     "title": "Contrôle parental TV",
@@ -14,6 +18,20 @@
     "byIpAddress": "Par adresse IP (__name__)",
     "noHomeyTvs": "Aucune télévision trouvée dans Homey. Les télévisions que vous ajoutez à Homey apparaîtront dans la liste.",
     "tvGone": "Introuvable dans Homey",
+    "messages": "Afficher des messages sur la télévision",
+    "messagesHint": "« Minutes restantes » et « temps écoulé » s’affichent sur l’écran de la télévision.",
+    "messagesUnsupported": "Les messages à l’écran ne sont pas encore disponibles pour cette télévision. Ils nécessitent une télévision LG ajoutée à Homey via une application LG prise en charge (cette télévision provient de « __app__ »).",
+    "testMessage": "Envoyer un message de test",
+    "testSent": "Envoyé. Regardez la télévision.",
+    "linkPreface": "Les messages nécessitent d’associer une fois cette application à la télévision.",
+    "link": "Associer à la télévision",
+    "unlink": "Dissocier",
+    "linkState": {
+      "connecting": "Connexion …",
+      "prompt": "Appuyez sur « Autoriser » sur la télévision",
+      "linked": "Associée à la télévision",
+      "unreachable": "Impossible de joindre la télévision. Allumez-la et vérifiez l’adresse IP."
+    },
     "wake": "Allumer la télévision",
     "sectionQuota": "Quota de temps",
     "sectionQuotaSub": "Minutes de télévision par jour",

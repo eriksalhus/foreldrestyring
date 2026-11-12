@@ -13,6 +13,9 @@ export interface ApiDevice {
   zone: string;
   class: string;
   virtualClass?: string | null;
+  /** `homey:app:<app id>` for a device that belongs to an app. */
+  ownerUri?: string;
+  settings?: Record<string, unknown>;
   capabilities: string[];
   capabilitiesObj?: { onoff?: { value?: unknown } };
   available: boolean;
@@ -40,6 +43,8 @@ function toInfo(device: ApiDevice, zones: Record<string, { name: string }>): TvD
     zone: zones[device.zone]?.name ?? '',
     on: device.capabilitiesObj?.onoff?.value === true,
     available: device.available !== false,
+    appId: (device.ownerUri ?? '').replace(/^homey:app:/, ''),
+    settings: device.settings ?? {},
   };
 }
 
