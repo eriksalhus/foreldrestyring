@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { DRIVERS, describeDrivers, isConfigured, resolveText, sanitizeConfig } from '../lib/drivers/index.ts';
+import { DRIVERS, describeDrivers, getDriver, isConfigured, resolveText, sanitizeConfig } from '../lib/drivers/index.ts';
 import { createSimulatedDriver } from '../lib/drivers/simulated.ts';
 import type { Connection, TvDriver } from '../lib/drivers/types.ts';
 
@@ -34,7 +34,8 @@ for (const driver of all) {
     const tv = driver.createConnection(options(config));
     assert.equal(tv.connection, 'connecting');
     assert.equal(tv.isOn, false);
-    for (const m of ['start', 'stop', 'toast', 'turnOff'] as const) assert.equal(typeof tv[m], 'function', m);
+    for (const m of ['start', 'stop', 'turnOff'] as const) assert.equal(typeof tv[m], 'function', m);
+    if (tv.toast !== undefined) assert.equal(typeof tv.toast, 'function', 'toast is optional, but must be a function when present');
     if (driver.canWake) assert.equal(typeof tv.wake, 'function', 'canWake requires wake()');
   });
 }
@@ -79,7 +80,7 @@ test('sanitizeConfig keeps only the driver\'s fields, as trimmed text', () => {
 });
 
 test('isConfigured requires all required fields', () => {
-  const lg = DRIVERS[0];
+  const lg = getDriver('lg-webos')!;
   assert.equal(isConfigured(lg, { host: '', mac: 'AA' }), false);
   assert.equal(isConfigured(lg, { host: '192.168.1.5', mac: '' }), true);
 });
@@ -93,10 +94,18 @@ test('resolveText falls back to English and then to the first text', () => {
 });
 
 test('describeDrivers gives the settings page text in the user\'s language', () => {
-  const [lg] = describeDrivers('no');
-  assert.equal(lg.id, 'lg-webos');
+  const lg = describeDrivers('no').find((d) => d.id === 'lg-webos')!;
   assert.equal(lg.fields[0].label, 'TV-ens IP-adresse');
   assert.equal(lg.fields[0].required, true);
+  assert.equal(lg.fields[0].kind, 'text');
   assert.equal(lg.canWake, true);
   assert.match(lg.hint, /Tillat/);
+});
+
+test('new installations start on the Homey device driver, and the LG driver is still offered', () => {
+  assert.equal(DRIVERS[0].id, 'homey-device');
+  assert.ok(getDriver('lg-webos'));
+  const homey = describeDrivers('no')[0];
+  assert.deepEqual(homey.fields.map((f) => [f.key, f.kind]), [['deviceId', 'device']]);
+  assert.equal(homey.canWake, true);
 });

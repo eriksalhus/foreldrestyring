@@ -8,9 +8,12 @@
   },
   "settings": {
     "title": "TV-tidsstyring",
-    "sectionTv": "Tv-forbindelse",
-    "sectionTvSub": "Sådan finder appen dit tv",
-    "tvBrand": "Tv-mærke",
+    "sectionTv": "Tilsluttet tv",
+    "sectionTvSub": "Hvilket tv appen styrer",
+    "tvChoose": "Tv",
+    "byIpAddress": "Via IP-adresse (__name__)",
+    "noHomeyTvs": "Ingen tv fundet i Homey. Tv, du føjer til Homey, vises på listen.",
+    "tvGone": "Ikke fundet i Homey",
     "wake": "Tænd tv'et",
     "sectionQuota": "Tidskvote",
     "sectionQuotaSub": "Minutters tv-tid pr. døgn",
@@ -41,7 +44,8 @@
       "connecting": "Forbinder …",
       "prompt": "Tryk på ”Tillad” på tv'et",
       "connected": "Forbundet",
-      "offline": "Tv'et er ikke tilgængeligt"
+      "offline": "Tv'et er ikke tilgængeligt",
+      "missing": "Det valgte tv findes ikke længere i Homey"
     }
   },
   "widget": {

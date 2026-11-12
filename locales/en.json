@@ -8,9 +8,12 @@
   },
   "settings": {
     "title": "TV Parental Control",
-    "sectionTv": "TV connection",
-    "sectionTvSub": "How the app finds your TV",
-    "tvBrand": "TV brand",
+    "sectionTv": "Connected TV",
+    "sectionTvSub": "Which TV the app controls",
+    "tvChoose": "TV",
+    "byIpAddress": "By IP address (__name__)",
+    "noHomeyTvs": "No TVs found in Homey. TVs you add to Homey will appear in the list.",
+    "tvGone": "Not found in Homey",
     "wake": "Turn on TV",
     "sectionQuota": "Time quota",
     "sectionQuotaSub": "Minutes of TV time per day",
@@ -41,7 +44,8 @@
       "connecting": "Connecting …",
       "prompt": "Press “Allow” on the TV",
       "connected": "Connected",
-      "offline": "TV unavailable"
+      "offline": "TV unavailable",
+      "missing": "The selected TV no longer exists in Homey"
     }
   },
   "widget": {

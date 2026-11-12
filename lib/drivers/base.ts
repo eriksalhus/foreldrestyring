@@ -18,7 +18,7 @@ export abstract class BaseTvConnection extends EventEmitter implements TvConnect
 
   abstract start(): Promise<void>;
   abstract stop(): Promise<void>;
-  abstract toast(message: string): Promise<void>;
+  toast?(message: string): Promise<void>;
   abstract turnOff(): Promise<void>;
   wake?(): Promise<void>;
 

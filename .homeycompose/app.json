@@ -1,6 +1,6 @@
 {
   "id": "no.salhus.foreldrestyring",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "platforms": [
@@ -31,7 +31,9 @@
   "category": [
     "tools"
   ],
-  "permissions": [],
+  "permissions": [
+    "homey:manager:api"
+  ],
   "author": {
     "name": "Erik Salhus"
   },
@@ -48,6 +50,10 @@
     "getDrivers": {
       "method": "GET",
       "path": "/drivers"
+    },
+    "getTvDevices": {
+      "method": "GET",
+      "path": "/tv-devices"
     },
     "setChildMode": {
       "method": "POST",

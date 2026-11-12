@@ -21,7 +21,7 @@ import {
 import type { QuotaConfig, QuotaState } from './quota.ts';
 import { DEFAULT_DRIVER_ID, DRIVERS, describeDrivers, getDriver, isConfigured, sanitizeConfig } from './drivers/index.ts';
 import type { DriverDescription } from './drivers/index.ts';
-import type { Connection, TvConnection, TvDriver } from './drivers/types.ts';
+import type { Connection, TvConnection, TvDevices, TvDriver } from './drivers/types.ts';
 
 export type { Connection };
 
@@ -55,9 +55,18 @@ export interface TvSettings {
   autoOnTime: string;
 }
 
+/** A TV in Homey, as the settings page lists it. */
+export interface TvDeviceOption {
+  id: string;
+  name: string;
+  zone: string;
+}
+
 export interface Status {
   configured: boolean;
   connection: Connection | 'unconfigured';
+  /** The chosen Homey device does not exist in Homey any more. Always false for a Direct connection. */
+  tvMissing: boolean;
   tvOn: boolean;
   childMode: boolean;
   locked: boolean;
@@ -111,10 +120,13 @@ export class Controller {
 
   private readonly host: Host;
   private readonly drivers: readonly TvDriver[];
+  private readonly devices: TvDevices | undefined;
 
-  constructor(host: Host, drivers: readonly TvDriver[] = DRIVERS) {
+  /** `devices` is the app's access to the TVs in Homey. Without it only Direct connections work. */
+  constructor(host: Host, drivers: readonly TvDriver[] = DRIVERS, devices?: TvDevices) {
     this.host = host;
     this.drivers = drivers;
+    this.devices = devices;
   }
 
   async start(): Promise<void> {
@@ -163,6 +175,7 @@ export class Controller {
     return {
       configured: this.isTvConfigured(),
       connection: this.tv?.connection ?? 'unconfigured',
+      tvMissing: Boolean(this.tv?.missing),
       tvOn: this.tv?.isOn ?? false,
       childMode: this.state.childMode,
       locked: isLocked(this.state, now, this.config),
@@ -211,6 +224,20 @@ export class Controller {
     return describeDrivers(this.host.i18n.getLanguage(), this.drivers);
   }
 
+  /** The TVs in Homey that can be chosen as the Connected TV, sorted by name. Empty when Homey cannot be asked. */
+  async getTvDevices(): Promise<TvDeviceOption[]> {
+    if (!this.devices) return [];
+    try {
+      const list = await this.devices.list();
+      return list
+        .map(({ id, name, zone }) => ({ id, name, zone }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    } catch (err) {
+      this.host.error('Could not list the TVs in Homey:', err instanceof Error ? err.message : err);
+      return [];
+    }
+  }
+
   private applySettings(settings: Partial<TvSettings>): void {
     this.settings = { ...this.settings, ...settings };
     this.config = {
@@ -255,6 +282,7 @@ export class Controller {
       credentials: this.loadCredentials(driver.id),
       saveCredentials: (credentials) => this.saveCredentials(driver.id, credentials),
       log: (...args) => this.host.log(...args),
+      devices: driver.fields.some((f) => f.kind === 'device') ? this.devices : undefined,
     });
     tv.on('power', (on) => this.onPower(on));
     this.tv = tv;
@@ -307,8 +335,9 @@ export class Controller {
     }, TURN_OFF_DELAY_MS);
   }
 
+  /** Shows a message on the TV, if this TV can show one. Never an error if it cannot. */
   private say(message: string): void {
-    this.tv?.toast(message).catch((err) => this.host.error('toast failed:', err.message));
+    this.tv?.toast?.(message).catch((err) => this.host.error('toast failed:', err.message));
   }
 
   private save(): void {

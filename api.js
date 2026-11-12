@@ -7,6 +7,9 @@ module.exports = {
   async getDrivers({ homey }) {
     return homey.app.getDrivers();
   },
+  async getTvDevices({ homey }) {
+    return homey.app.getTvDevices();
+  },
   async setChildMode({ homey, body }) {
     return homey.app.setChildMode(Boolean(body.on));
   },

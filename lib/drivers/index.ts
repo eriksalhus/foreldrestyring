@@ -1,11 +1,13 @@
+import { homeyDevice } from './homey-device.ts';
 import { lgWebos } from './lg-webos.ts';
 import type { DriverField, LocalizedText, TvDriver } from './types.ts';
 
 /**
  * Every TV brand the app can control. To add one: write a driver (docs/adding-a-tv.md)
- * and put it here. The first entry is the default for new installations.
+ * and put it here. The first entry is the default for new installations. Existing installations keep
+ * the driver stored in their settings, so adding a driver here never changes their TV.
  */
-export const DRIVERS: readonly TvDriver[] = [lgWebos];
+export const DRIVERS: readonly TvDriver[] = [homeyDevice, lgWebos];
 
 export const DEFAULT_DRIVER_ID = DRIVERS[0].id;
 
@@ -42,6 +44,7 @@ export interface DriverDescription {
   hint: string;
   canWake: boolean;
   fields: Array<Required<Pick<DriverField, 'key' | 'required'>> & {
+    kind: NonNullable<DriverField['kind']>;
     label: string;
     hint: string;
     placeholder: string;
@@ -58,6 +61,7 @@ export function describeDrivers(language: string, drivers: readonly TvDriver[] =
     canWake: Boolean(d.canWake),
     fields: d.fields.map((f) => ({
       key: f.key,
+      kind: f.kind ?? 'text',
       required: Boolean(f.required),
       label: resolveText(f.label, language),
       hint: resolveText(f.hint, language),

@@ -1,11 +1,13 @@
 import Homey from 'homey';
-import { Controller, Status, TvSettings } from './lib/controller.ts';
+import { Controller, Status, TvDeviceOption, TvSettings } from './lib/controller.ts';
+import { HomeyDevices, createHomeyApi } from './lib/homey-devices.ts';
 
 module.exports = class TvParentalControlApp extends Homey.App {
   private controller!: Controller;
 
   async onInit() {
-    this.controller = new Controller(this.homey);
+    // The TVs in Homey are read through the Web API, which needs the homey:manager:api permission.
+    this.controller = new Controller(this.homey, undefined, new HomeyDevices(() => createHomeyApi(this.homey)));
     await this.controller.start();
     this.log('TV Parental Control started');
   }
@@ -40,6 +42,10 @@ module.exports = class TvParentalControlApp extends Homey.App {
 
   getDrivers() {
     return this.controller.getDrivers();
+  }
+
+  getTvDevices(): Promise<TvDeviceOption[]> {
+    return this.controller.getTvDevices();
   }
 
   async wakeTv(): Promise<void> {
