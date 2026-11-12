@@ -2,6 +2,8 @@
   "toast": {
     "minutesLeft": "Te quedan __minutes__ min",
     "timeUp": "Se acabó el tiempo de TV",
+    "childModeOn": "El modo infantil está activado. Te quedan __minutes__ min",
+    "childModeOff": "El modo infantil está desactivado",
     "test": "Mensaje de prueba de Control parental TV"
   },
   "error": {

@@ -1,6 +1,6 @@
 # Adding On-screen messages for a new kind of TV
 
-The app can show short **On-screen messages** on the TV: the minutes left, a welcome when the TV is switched on, and "time is up" (see [GLOSSARY.md](../GLOSSARY.md)). A TV that is connected by a TV driver with `toast()` shows them by itself. A TV that is a **Homey device** cannot, because a Homey device has no way to show text. For those, a **message provider** shows the messages through the TV's own network interface.
+The app can show short **On-screen messages** on the TV: the minutes left, a welcome when the TV is switched on, that Child mode was switched on or off, and "time is up" (see [GLOSSARY.md](../GLOSSARY.md)). A TV that is connected by a TV driver with `toast()` shows them by itself. A TV that is a **Homey device** cannot, because a Homey device has no way to show text. For those, a **message provider** shows the messages through the TV's own network interface.
 
 A message provider does one thing: it opens a link to one kind of TV and sends it a short text. Everything else (when a message is due, the switch, the Link button, the settings page) is the same for every provider.
 

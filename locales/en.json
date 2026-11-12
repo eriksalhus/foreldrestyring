@@ -2,6 +2,8 @@
   "toast": {
     "minutesLeft": "You have __minutes__ min left",
     "timeUp": "TV time is up",
+    "childModeOn": "Child mode is on. You have __minutes__ min left",
+    "childModeOff": "Child mode is off",
     "test": "Test message from TV Parental Control"
   },
   "error": {

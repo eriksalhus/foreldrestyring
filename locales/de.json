@@ -2,6 +2,8 @@
   "toast": {
     "minutesLeft": "Du hast noch __minutes__ Min.",
     "timeUp": "Die Fernsehzeit ist abgelaufen",
+    "childModeOn": "Kindermodus ist an. Du hast noch __minutes__ Min.",
+    "childModeOff": "Kindermodus ist aus",
     "test": "Testmeldung von TV-Zeitkontrolle"
   },
   "error": {
