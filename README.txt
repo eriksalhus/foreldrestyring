@@ -4,4 +4,4 @@ The app talks directly to your TV over your home network. A widget for your Home
 
 Currently supports LG webOS TVs. Tested on an LG G2 (webOS 22); other webOS models should work but have not been tested.
 
-Not affiliated with, endorsed by or sponsored by LG Electronics. LG and webOS are trademarks of LG Electronics. The app works only on your home network and sends no data anywhere.
+Not affiliated with, endorsed by or sponsored by LG Electronics. LG and webOS are trademarks of LG Electronics. The app works only on your home network. The only thing it sends out is an error report to the developer when something goes wrong.

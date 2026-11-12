@@ -4,4 +4,4 @@ Appen pratar direkt med TV:n över ditt hemnätverk. En widget för din Homey-in
 
 Stöder för närvarande LG webOS-TV. Testad på en LG G2 (webOS 22); andra webOS-modeller bör fungera men har inte testats.
 
-Inte knuten till, godkänd av eller sponsrad av LG Electronics. LG och webOS är varumärken som tillhör LG Electronics. Appen fungerar bara i ditt hemnätverk och skickar inga data någonstans.
+Inte knuten till, godkänd av eller sponsrad av LG Electronics. LG och webOS är varumärken som tillhör LG Electronics. Appen fungerar bara i ditt hemnätverk. Det enda den skickar ut är en felrapport till utvecklaren när något går fel.

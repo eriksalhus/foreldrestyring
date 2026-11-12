@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "homey-log": "^2.1.2",
     "lgtv2": "^2.1.0"
   },
   "devDependencies": {

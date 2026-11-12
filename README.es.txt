@@ -4,4 +4,4 @@ La aplicación se comunica directamente con el televisor a través de tu red dom
 
 Compatible actualmente con televisores LG webOS. Probada en un LG G2 (webOS 22); otros modelos webOS deberían funcionar, pero no se han probado.
 
-No está afiliada, respaldada ni patrocinada por LG Electronics. LG y webOS son marcas de LG Electronics. La aplicación funciona solo en tu red doméstica y no envía datos a ningún sitio.
+No está afiliada, respaldada ni patrocinada por LG Electronics. LG y webOS son marcas de LG Electronics. La aplicación funciona solo en tu red doméstica. Lo único que envía es un informe de errores al desarrollador cuando algo falla.

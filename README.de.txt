@@ -4,4 +4,4 @@ Die App kommuniziert direkt über dein Heimnetzwerk mit dem Fernseher. Ein Widge
 
 Unterstützt derzeit LG-webOS-Fernseher. Getestet mit einem LG G2 (webOS 22); andere webOS-Modelle sollten funktionieren, wurden aber nicht getestet.
 
-Nicht mit LG Electronics verbunden und nicht von LG Electronics unterstützt oder gesponsert. LG und webOS sind Marken von LG Electronics. Die App arbeitet nur in deinem Heimnetzwerk und sendet keine Daten irgendwohin.
+Nicht mit LG Electronics verbunden und nicht von LG Electronics unterstützt oder gesponsert. LG und webOS sind Marken von LG Electronics. Die App arbeitet nur in deinem Heimnetzwerk. Das Einzige, was sie nach außen sendet, ist ein Fehlerbericht an den Entwickler, wenn etwas schiefgeht.

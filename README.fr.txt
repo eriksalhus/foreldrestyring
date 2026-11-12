@@ -4,4 +4,4 @@ L’application communique directement avec votre téléviseur via votre réseau
 
 Prend actuellement en charge les téléviseurs LG webOS. Testée sur un LG G2 (webOS 22) ; les autres modèles webOS devraient fonctionner, mais n’ont pas été testés.
 
-Sans lien avec LG Electronics, non approuvée ni sponsorisée par LG Electronics. LG et webOS sont des marques de LG Electronics. L’application fonctionne uniquement sur votre réseau domestique et n’envoie aucune donnée ailleurs.
+Sans lien avec LG Electronics, non approuvée ni sponsorisée par LG Electronics. LG et webOS sont des marques de LG Electronics. L’application fonctionne uniquement sur votre réseau domestique. La seule chose qu’elle envoie est un rapport d’erreur au développeur en cas de problème.

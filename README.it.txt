@@ -4,4 +4,4 @@ L’app comunica direttamente con il televisore tramite la rete domestica. Un wi
 
 Supporta attualmente i televisori LG webOS. Testata su un LG G2 (webOS 22); gli altri modelli webOS dovrebbero funzionare, ma non sono stati testati.
 
-Non affiliata, approvata né sponsorizzata da LG Electronics. LG e webOS sono marchi di LG Electronics. L’app funziona solo sulla tua rete domestica e non invia dati da nessuna parte.
+Non affiliata, approvata né sponsorizzata da LG Electronics. LG e webOS sono marchi di LG Electronics. L’app funziona solo sulla tua rete domestica. L’unica cosa che invia è una segnalazione di errore allo sviluppatore quando qualcosa va storto.

@@ -4,4 +4,4 @@ Appen kommunikerer direkte med tv'et over dit hjemmenetværk. En widget til dit 
 
 Understøtter i øjeblikket LG webOS-tv. Testet på en LG G2 (webOS 22); andre webOS-modeller bør virke, men er ikke testet.
 
-Ikke tilknyttet, godkendt af eller sponsoreret af LG Electronics. LG og webOS er varemærker tilhørende LG Electronics. Appen virker kun på dit hjemmenetværk og sender ingen data nogen steder hen.
+Ikke tilknyttet, godkendt af eller sponsoreret af LG Electronics. LG og webOS er varemærker tilhørende LG Electronics. Appen virker kun på dit hjemmenetværk. Det eneste, den sender ud, er en fejlrapport til udvikleren, når noget går galt.

@@ -111,10 +111,13 @@ export class Controller {
 
   private readonly host: Host;
   private readonly drivers: readonly TvDriver[];
+  private readonly reportError: (err: Error) => void;
 
-  constructor(host: Host, drivers: readonly TvDriver[] = DRIVERS) {
+  /** `reportError` gets failures worth a developer's attention, such as the Lock failing to turn the TV off. */
+  constructor(host: Host, drivers: readonly TvDriver[] = DRIVERS, reportError: (err: Error) => void = () => {}) {
     this.host = host;
     this.drivers = drivers;
+    this.reportError = reportError;
   }
 
   async start(): Promise<void> {
@@ -303,7 +306,10 @@ export class Controller {
     this.say(this.host.__('toast.timeUp'));
     this.host.setTimeout(() => {
       if (!isLocked(this.state, Date.now(), this.config)) return;
-      this.tv?.turnOff().catch((err) => this.host.error('turnOff failed:', err.message));
+      this.tv?.turnOff().catch((err) => {
+        this.host.error('turnOff failed:', err.message);
+        this.reportError(err);
+      });
     }, TURN_OFF_DELAY_MS);
   }
 

@@ -1,13 +1,27 @@
 import Homey from 'homey';
+import { Log } from 'homey-log';
 import { Controller, Status, TvSettings } from './lib/controller.ts';
 
 module.exports = class TvParentalControlApp extends Homey.App {
   private controller!: Controller;
+  private homeyLog!: Log;
 
   async onInit() {
-    this.controller = new Controller(this.homey);
-    await this.controller.start();
+    // Sends uncaught errors to Sentry when env.json has HOMEY_LOG_URL. Off under `homey app run`.
+    // homey-log's types ask for the Homey module, but it wants this.homey (see its README).
+    this.homeyLog = new Log({ homey: this.homey as any });
+    this.controller = new Controller(this.homey, undefined, (err) => this.reportError(err));
+    try {
+      await this.controller.start();
+    } catch (err) {
+      this.reportError(err as Error);
+      throw err;
+    }
     this.log('TV Parental Control started');
+  }
+
+  private reportError(err: Error): void {
+    this.homeyLog.captureException(err)?.catch((sendErr) => this.error('Could not send error report:', sendErr));
   }
 
   async onUninit() {
