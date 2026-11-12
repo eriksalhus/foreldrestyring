@@ -6,4 +6,4 @@ Fonctionne avec tout téléviseur ajouté à Homey (l’application l’éteint 
 
 L’application demande un accès complet à Homey afin de lister vos téléviseurs et d’éteindre et d’allumer celui que vous choisissez. Elle ne lit ni ne modifie rien d’autre.
 
-Sans lien avec LG Electronics, non approuvée ni sponsorisée par LG Electronics. LG et webOS sont des marques de LG Electronics. L’application fonctionne uniquement sur votre réseau domestique et n’envoie aucune donnée ailleurs.
+Sans lien avec LG Electronics, non approuvée ni sponsorisée par LG Electronics. LG et webOS sont des marques de LG Electronics. L’application fonctionne uniquement sur votre réseau domestique. La seule chose qu’elle envoie est un rapport d’erreur au développeur en cas de problème.

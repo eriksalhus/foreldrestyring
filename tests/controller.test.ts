@@ -103,6 +103,27 @@ test('the Lock turns the TV off through the driver and shows a message', async (
   assert.equal(connections[0].isOn, false);
 });
 
+test('a failed turn-off by the Lock is reported as an error', async () => {
+  const { driver, connections } = createSimulatedDriver();
+  const { host, timeouts } = fakeHost();
+  const reported: Error[] = [];
+  const controller = new Controller(host, [driver], undefined, undefined, (err) => reported.push(err));
+  await controller.start();
+  await controller.configure(settings());
+  const failure = new Error('TV did not answer');
+  connections[0].turnOff = async () => {
+    throw failure;
+  };
+  controller.setChildMode(true);
+  controller.reduceTime(1000);
+
+  connections[0].simulatePower(true);
+  for (const run of timeouts.splice(0)) run();
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(reported, [failure]);
+});
+
 test('without Child mode the TV is left alone', async () => {
   const { controller, connections, timeouts } = await setup();
   await controller.configure(settings());

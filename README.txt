@@ -6,4 +6,4 @@ Works with any TV that has been added to Homey (the app switches it off and on t
 
 The app asks for full access to Homey so that it can list your TVs and switch the one you choose off and on. It reads and changes nothing else.
 
-Not affiliated with, endorsed by or sponsored by LG Electronics. LG and webOS are trademarks of LG Electronics. The app works only on your home network and sends no data anywhere.
+Not affiliated with, endorsed by or sponsored by LG Electronics. LG and webOS are trademarks of LG Electronics. The app works only on your home network. The only thing it sends out is an error report to the developer when something goes wrong.

@@ -6,4 +6,4 @@ Virker med alle tv, der er føjet til Homey (appen slukker og tænder dem via en
 
 Appen beder om fuld adgang til Homey for at kunne vise dine tv og slukke og tænde det, du vælger. Den læser og ændrer intet andet.
 
-Ikke tilknyttet, godkendt af eller sponsoreret af LG Electronics. LG og webOS er varemærker tilhørende LG Electronics. Appen virker kun på dit hjemmenetværk og sender ingen data nogen steder hen.
+Ikke tilknyttet, godkendt af eller sponsoreret af LG Electronics. LG og webOS er varemærker tilhørende LG Electronics. Appen virker kun på dit hjemmenetværk. Det eneste, den sender ud, er en fejlrapport til udvikleren, når noget går galt.

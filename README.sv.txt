@@ -6,4 +6,4 @@ Fungerar med alla TV-apparater som lagts till i Homey (appen stänger av och sl�
 
 Appen ber om full åtkomst till Homey för att kunna lista dina TV-apparater och slå av och på den du väljer. Den läser och ändrar inget annat.
 
-Inte knuten till, godkänd av eller sponsrad av LG Electronics. LG och webOS är varumärken som tillhör LG Electronics. Appen fungerar bara i ditt hemnätverk och skickar inga data någonstans.
+Inte knuten till, godkänd av eller sponsrad av LG Electronics. LG och webOS är varumärken som tillhör LG Electronics. Appen fungerar bara i ditt hemnätverk. Det enda den skickar ut är en felrapport till utvecklaren när något går fel.

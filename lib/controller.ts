@@ -207,22 +207,26 @@ export class Controller extends EventEmitter<ControllerEvents> {
   private readonly drivers: readonly TvDriver[];
   private readonly devices: TvDevices | undefined;
   private readonly providers: readonly MessageProvider[];
+  private readonly reportError: (err: Error) => void;
 
   /**
    * `devices` is the app's access to the TVs in Homey. Without it only Direct connections work.
    * `providers` are the message providers that can show On-screen messages for a Homey TV.
+   * `reportError` gets failures worth a developer's attention, such as the Lock failing to turn the TV off.
    */
   constructor(
     host: Host,
     drivers: readonly TvDriver[] = DRIVERS,
     devices?: TvDevices,
     providers: readonly MessageProvider[] = MESSAGE_PROVIDERS,
+    reportError: (err: Error) => void = () => {},
   ) {
     super();
     this.host = host;
     this.drivers = drivers;
     this.devices = devices;
     this.providers = providers;
+    this.reportError = reportError;
   }
 
   async start(): Promise<void> {
@@ -686,7 +690,10 @@ export class Controller extends EventEmitter<ControllerEvents> {
       this.tv
         ?.turnOff()
         .then(() => this.report('tvTurnedOff', this.tokens()))
-        .catch((err) => this.host.error('turnOff failed:', err.message));
+        .catch((err) => {
+          this.host.error('turnOff failed:', err.message);
+          this.reportError(err);
+        });
     }, TURN_OFF_DELAY_MS);
   }
 
