@@ -1,0 +1,89 @@
+{
+  "title": {
+    "en": "… minutes of TV time left",
+    "no": "… minutter TV-tid igjen",
+    "nl": "Nog … minuten tv-tijd over",
+    "de": "Noch … Minuten Fernsehzeit",
+    "sv": "… minuter TV-tid kvar",
+    "da": "… minutters tv-tid tilbage",
+    "fr": "Il reste … minutes de télé",
+    "it": "Restano … minuti di TV",
+    "es": "Quedan … minutos de TV"
+  },
+  "titleFormatted": {
+    "en": "[[minutes]] minutes of TV time left",
+    "no": "[[minutes]] minutter TV-tid igjen",
+    "nl": "Nog [[minutes]] minuten tv-tijd over",
+    "de": "Noch [[minutes]] Minuten Fernsehzeit",
+    "sv": "[[minutes]] minuter TV-tid kvar",
+    "da": "[[minutes]] minutters tv-tid tilbage",
+    "fr": "Il reste [[minutes]] minutes de télé",
+    "it": "Restano [[minutes]] minuti di TV",
+    "es": "Quedan [[minutes]] minutos de TV"
+  },
+  "hint": {
+    "en": "While the TV is on in Child mode and the time left reaches this number. Not when a parent removes time past it.",
+    "no": "Mens TV-en står på i Barnemodus og tiden som er igjen når dette tallet. Ikke når en forelder trekker fra tid forbi det.",
+    "nl": "Als de tv aan staat in Kindermodus en de resterende tijd dit getal bereikt. Niet als een ouder er tijd voorbij afhaalt.",
+    "de": "Wenn der Fernseher im Kindermodus läuft und die verbleibende Zeit diese Zahl erreicht. Nicht, wenn ein Elternteil darüber hinaus Zeit abzieht.",
+    "sv": "När TV:n är på i barnläget och tiden som är kvar når detta tal. Inte när en förälder drar av tid förbi det.",
+    "da": "Når TV’et er tændt i børnetilstand, og den tid, der er tilbage, når dette tal. Ikke når en forælder trækker tid fra forbi det.",
+    "fr": "Quand la télé est allumée en mode enfant et que le temps restant atteint ce nombre. Pas quand un parent retire du temps au-delà.",
+    "it": "Quando la TV è accesa in modalità bambini e il tempo rimasto raggiunge questo numero. Non quando un genitore toglie tempo oltre.",
+    "es": "Cuando la TV está encendida en modo infantil y el tiempo restante llega a este número. No cuando un padre quita tiempo más allá."
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "minutes",
+      "min": 1,
+      "max": 240,
+      "step": 1,
+      "placeholder": {
+        "en": "Minutes",
+        "no": "Minutter",
+        "nl": "Minuten",
+        "de": "Minuten",
+        "sv": "Minuter",
+        "da": "Minutter",
+        "fr": "Minutes",
+        "it": "Minuti",
+        "es": "Minutos"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "minutes_left",
+      "type": "number",
+      "title": {
+        "en": "Minutes left",
+        "no": "Minutter igjen",
+        "nl": "Minuten over",
+        "de": "Restliche Minuten",
+        "sv": "Minuter kvar",
+        "da": "Minutter tilbage",
+        "fr": "Minutes restantes",
+        "it": "Minuti rimasti",
+        "es": "Minutos restantes"
+      },
+      "example": 25
+    },
+    {
+      "name": "minutes_used",
+      "type": "number",
+      "title": {
+        "en": "Minutes used today",
+        "no": "Minutter brukt i dag",
+        "nl": "Minuten gebruikt vandaag",
+        "de": "Heute genutzte Minuten",
+        "sv": "Minuter använda i dag",
+        "da": "Minutter brugt i dag",
+        "fr": "Minutes utilisées aujourd'hui",
+        "it": "Minuti usati oggi",
+        "es": "Minutos usados hoy"
+      },
+      "example": 35
+    }
+  ]
+}

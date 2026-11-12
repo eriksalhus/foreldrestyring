@@ -1,0 +1,55 @@
+{
+  "title": {
+    "en": "Remove time",
+    "no": "Trekk fra tid",
+    "nl": "Tijd afhalen",
+    "de": "Zeit abziehen",
+    "sv": "Dra av tid",
+    "da": "Træk tid fra",
+    "fr": "Retirer du temps",
+    "it": "Togli tempo",
+    "es": "Quitar tiempo"
+  },
+  "titleFormatted": {
+    "en": "Remove [[minutes]] minutes",
+    "no": "Trekk fra [[minutes]] minutter",
+    "nl": "Haal [[minutes]] minuten af",
+    "de": "[[minutes]] Minuten abziehen",
+    "sv": "Dra av [[minutes]] minuter",
+    "da": "Træk [[minutes]] minutter fra",
+    "fr": "Retirer [[minutes]] minutes",
+    "it": "Togli [[minutes]] minuti",
+    "es": "Quitar [[minutes]] minutos"
+  },
+  "hint": {
+    "en": "Takes minutes off today's quota, like − in the widget (1–240). With nothing left, the TV is turned off.",
+    "no": "Trekker minutter fra dagens kvote, som − i widgeten (1–240). Er det ingenting igjen, slås TV-en av.",
+    "nl": "Haalt minuten van de limiet van vandaag af, zoals − in de widget (1–240). Is er niets over, dan gaat de tv uit.",
+    "de": "Zieht Minuten vom heutigen Kontingent ab, wie − im Widget (1–240). Ist nichts mehr übrig, geht der Fernseher aus.",
+    "sv": "Drar av minuter från dagens kvot, som − i widgeten (1–240). Finns inget kvar stängs TV:n av.",
+    "da": "Trækker minutter fra dagens kvote, som − i widgetten (1–240). Er der intet tilbage, slukkes TV’et.",
+    "fr": "Retire des minutes du quota du jour, comme − dans le widget (1–240). S’il ne reste rien, la télé s’éteint.",
+    "it": "Toglie minuti dalla quota di oggi, come − nel widget (1–240). Se non resta nulla, la TV si spegne.",
+    "es": "Quita minutos de la cuota de hoy, como − en el widget (1–240). Si no queda nada, la TV se apaga."
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "minutes",
+      "min": 1,
+      "max": 240,
+      "step": 1,
+      "placeholder": {
+        "en": "Minutes",
+        "no": "Minutter",
+        "nl": "Minuten",
+        "de": "Minuten",
+        "sv": "Minuter",
+        "da": "Minutter",
+        "fr": "Minutes",
+        "it": "Minuti",
+        "es": "Minutos"
+      }
+    }
+  ]
+}

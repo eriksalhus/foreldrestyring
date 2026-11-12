@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "no.salhus.foreldrestyring",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "platforms": [
@@ -98,6 +98,704 @@
   "source": "https://github.com/eriksalhus/foreldrestyring",
   "bugs": {
     "url": "https://github.com/eriksalhus/foreldrestyring/issues"
+  },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Child mode was turned off",
+          "no": "Barnemodus ble slått av",
+          "nl": "Kindermodus is uitgezet",
+          "de": "Kindermodus wurde ausgeschaltet",
+          "sv": "Barnläget slogs av",
+          "da": "Børnetilstand blev slået fra",
+          "fr": "Le mode enfant a été désactivé",
+          "it": "La modalità bambini è stata disattivata",
+          "es": "Se desactivó el modo infantil"
+        },
+        "hint": {
+          "en": "By a parent, a Flow or when a new day begins.",
+          "no": "Av en forelder, en Flow eller når et nytt døgn begynner.",
+          "nl": "Door een ouder, een Flow of als een nieuwe dag begint.",
+          "de": "Durch ein Elternteil, einen Flow oder wenn ein neuer Tag beginnt.",
+          "sv": "Av en förälder, ett Flow eller när ett nytt dygn börjar.",
+          "da": "Af en forælder, et Flow eller når et nyt døgn begynder.",
+          "fr": "Par un parent, un Flow ou au début d’une nouvelle journée.",
+          "it": "Da un genitore, un Flow o all’inizio di un nuovo giorno.",
+          "es": "Por un padre, un Flow o al empezar un nuevo día."
+        },
+        "tokens": [
+          {
+            "name": "minutes_left",
+            "type": "number",
+            "title": {
+              "en": "Minutes left",
+              "no": "Minutter igjen",
+              "nl": "Minuten over",
+              "de": "Restliche Minuten",
+              "sv": "Minuter kvar",
+              "da": "Minutter tilbage",
+              "fr": "Minutes restantes",
+              "it": "Minuti rimasti",
+              "es": "Minutos restantes"
+            },
+            "example": 25
+          },
+          {
+            "name": "minutes_used",
+            "type": "number",
+            "title": {
+              "en": "Minutes used today",
+              "no": "Minutter brukt i dag",
+              "nl": "Minuten gebruikt vandaag",
+              "de": "Heute genutzte Minuten",
+              "sv": "Minuter använda i dag",
+              "da": "Minutter brugt i dag",
+              "fr": "Minutes utilisées aujourd'hui",
+              "it": "Minuti usati oggi",
+              "es": "Minutos usados hoy"
+            },
+            "example": 35
+          }
+        ],
+        "id": "child_mode_turned_off"
+      },
+      {
+        "title": {
+          "en": "Child mode was turned on",
+          "no": "Barnemodus ble slått på",
+          "nl": "Kindermodus is aangezet",
+          "de": "Kindermodus wurde eingeschaltet",
+          "sv": "Barnläget slogs på",
+          "da": "Børnetilstand blev slået til",
+          "fr": "Le mode enfant a été activé",
+          "it": "La modalità bambini è stata attivata",
+          "es": "Se activó el modo infantil"
+        },
+        "hint": {
+          "en": "By a parent, a Flow or at the set time.",
+          "no": "Av en forelder, en Flow eller på det valgte klokkeslettet.",
+          "nl": "Door een ouder, een Flow of op de ingestelde tijd.",
+          "de": "Durch ein Elternteil, einen Flow oder zur eingestellten Zeit.",
+          "sv": "Av en förälder, ett Flow eller vid den valda tiden.",
+          "da": "Af en forælder, et Flow eller på det valgte tidspunkt.",
+          "fr": "Par un parent, un Flow ou à l’heure choisie.",
+          "it": "Da un genitore, un Flow o all’ora impostata.",
+          "es": "Por un padre, un Flow o a la hora fijada."
+        },
+        "tokens": [
+          {
+            "name": "minutes_left",
+            "type": "number",
+            "title": {
+              "en": "Minutes left",
+              "no": "Minutter igjen",
+              "nl": "Minuten over",
+              "de": "Restliche Minuten",
+              "sv": "Minuter kvar",
+              "da": "Minutter tilbage",
+              "fr": "Minutes restantes",
+              "it": "Minuti rimasti",
+              "es": "Minutos restantes"
+            },
+            "example": 25
+          },
+          {
+            "name": "minutes_used",
+            "type": "number",
+            "title": {
+              "en": "Minutes used today",
+              "no": "Minutter brukt i dag",
+              "nl": "Minuten gebruikt vandaag",
+              "de": "Heute genutzte Minuten",
+              "sv": "Minuter använda i dag",
+              "da": "Minutter brugt i dag",
+              "fr": "Minutes utilisées aujourd'hui",
+              "it": "Minuti usati oggi",
+              "es": "Minutos usados hoy"
+            },
+            "example": 35
+          }
+        ],
+        "id": "child_mode_turned_on"
+      },
+      {
+        "title": {
+          "en": "… minutes of TV time left",
+          "no": "… minutter TV-tid igjen",
+          "nl": "Nog … minuten tv-tijd over",
+          "de": "Noch … Minuten Fernsehzeit",
+          "sv": "… minuter TV-tid kvar",
+          "da": "… minutters tv-tid tilbage",
+          "fr": "Il reste … minutes de télé",
+          "it": "Restano … minuti di TV",
+          "es": "Quedan … minutos de TV"
+        },
+        "titleFormatted": {
+          "en": "[[minutes]] minutes of TV time left",
+          "no": "[[minutes]] minutter TV-tid igjen",
+          "nl": "Nog [[minutes]] minuten tv-tijd over",
+          "de": "Noch [[minutes]] Minuten Fernsehzeit",
+          "sv": "[[minutes]] minuter TV-tid kvar",
+          "da": "[[minutes]] minutters tv-tid tilbage",
+          "fr": "Il reste [[minutes]] minutes de télé",
+          "it": "Restano [[minutes]] minuti di TV",
+          "es": "Quedan [[minutes]] minutos de TV"
+        },
+        "hint": {
+          "en": "While the TV is on in Child mode and the time left reaches this number. Not when a parent removes time past it.",
+          "no": "Mens TV-en står på i Barnemodus og tiden som er igjen når dette tallet. Ikke når en forelder trekker fra tid forbi det.",
+          "nl": "Als de tv aan staat in Kindermodus en de resterende tijd dit getal bereikt. Niet als een ouder er tijd voorbij afhaalt.",
+          "de": "Wenn der Fernseher im Kindermodus läuft und die verbleibende Zeit diese Zahl erreicht. Nicht, wenn ein Elternteil darüber hinaus Zeit abzieht.",
+          "sv": "När TV:n är på i barnläget och tiden som är kvar når detta tal. Inte när en förälder drar av tid förbi det.",
+          "da": "Når TV’et er tændt i børnetilstand, og den tid, der er tilbage, når dette tal. Ikke når en forælder trækker tid fra forbi det.",
+          "fr": "Quand la télé est allumée en mode enfant et que le temps restant atteint ce nombre. Pas quand un parent retire du temps au-delà.",
+          "it": "Quando la TV è accesa in modalità bambini e il tempo rimasto raggiunge questo numero. Non quando un genitore toglie tempo oltre.",
+          "es": "Cuando la TV está encendida en modo infantil y el tiempo restante llega a este número. No cuando un padre quita tiempo más allá."
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "minutes",
+            "min": 1,
+            "max": 240,
+            "step": 1,
+            "placeholder": {
+              "en": "Minutes",
+              "no": "Minutter",
+              "nl": "Minuten",
+              "de": "Minuten",
+              "sv": "Minuter",
+              "da": "Minutter",
+              "fr": "Minutes",
+              "it": "Minuti",
+              "es": "Minutos"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "minutes_left",
+            "type": "number",
+            "title": {
+              "en": "Minutes left",
+              "no": "Minutter igjen",
+              "nl": "Minuten over",
+              "de": "Restliche Minuten",
+              "sv": "Minuter kvar",
+              "da": "Minutter tilbage",
+              "fr": "Minutes restantes",
+              "it": "Minuti rimasti",
+              "es": "Minutos restantes"
+            },
+            "example": 25
+          },
+          {
+            "name": "minutes_used",
+            "type": "number",
+            "title": {
+              "en": "Minutes used today",
+              "no": "Minutter brukt i dag",
+              "nl": "Minuten gebruikt vandaag",
+              "de": "Heute genutzte Minuten",
+              "sv": "Minuter använda i dag",
+              "da": "Minutter brugt i dag",
+              "fr": "Minutes utilisées aujourd'hui",
+              "it": "Minuti usati oggi",
+              "es": "Minutos usados hoy"
+            },
+            "example": 35
+          }
+        ],
+        "id": "minutes_left"
+      },
+      {
+        "title": {
+          "en": "TV time is up",
+          "no": "TV-tiden er brukt opp",
+          "nl": "De tv-tijd is op",
+          "de": "Die Fernsehzeit ist abgelaufen",
+          "sv": "TV-tiden är slut",
+          "da": "TV-tiden er brugt op",
+          "fr": "Le temps de télé est écoulé",
+          "it": "Il tempo davanti alla TV è finito",
+          "es": "Se acabó el tiempo de TV"
+        },
+        "hint": {
+          "en": "Once, when Child mode is on and the time runs out, whether the TV is on or off.",
+          "no": "Én gang, når Barnemodus er på og tiden går ut, uansett om TV-en står på.",
+          "nl": "Eén keer, als Kindermodus aan staat en de tijd op is, of de tv nu aan staat of niet.",
+          "de": "Einmal, wenn Kindermodus an ist und die Zeit abläuft, egal ob der Fernseher läuft.",
+          "sv": "En gång, när barnläget är på och tiden tar slut, oavsett om TV:n är på.",
+          "da": "Én gang, når børnetilstand er slået til og tiden løber ud, uanset om TV’et er tændt.",
+          "fr": "Une fois, quand le mode enfant est activé et que le temps est écoulé, télé allumée ou non.",
+          "it": "Una volta, quando la modalità bambini è attiva e il tempo finisce, che la TV sia accesa o no.",
+          "es": "Una vez, cuando el modo infantil está activado y se acaba el tiempo, esté la TV encendida o no."
+        },
+        "tokens": [
+          {
+            "name": "minutes_left",
+            "type": "number",
+            "title": {
+              "en": "Minutes left",
+              "no": "Minutter igjen",
+              "nl": "Minuten over",
+              "de": "Restliche Minuten",
+              "sv": "Minuter kvar",
+              "da": "Minutter tilbage",
+              "fr": "Minutes restantes",
+              "it": "Minuti rimasti",
+              "es": "Minutos restantes"
+            },
+            "example": 25
+          },
+          {
+            "name": "minutes_used",
+            "type": "number",
+            "title": {
+              "en": "Minutes used today",
+              "no": "Minutter brukt i dag",
+              "nl": "Minuten gebruikt vandaag",
+              "de": "Heute genutzte Minuten",
+              "sv": "Minuter använda i dag",
+              "da": "Minutter brugt i dag",
+              "fr": "Minutes utilisées aujourd'hui",
+              "it": "Minuti usati oggi",
+              "es": "Minutos usados hoy"
+            },
+            "example": 35
+          }
+        ],
+        "id": "time_is_up"
+      },
+      {
+        "title": {
+          "en": "A message for the TV",
+          "no": "En melding til TV-en",
+          "nl": "Een bericht voor de tv",
+          "de": "Eine Nachricht für den Fernseher",
+          "sv": "Ett meddelande till TV:n",
+          "da": "En besked til TV’et",
+          "fr": "Un message pour la télé",
+          "it": "Un messaggio per la TV",
+          "es": "Un mensaje para la TV"
+        },
+        "hint": {
+          "en": "Every message the app wants to show on the TV, also when the TV cannot show it. Send it to a speaker or a phone.",
+          "no": "Hver melding appen vil vise på TV-en, også når TV-en ikke kan vise den. Send den til en høyttaler eller en telefon.",
+          "nl": "Elk bericht dat de app op de tv wil tonen, ook als de tv het niet kan tonen. Stuur het naar een speaker of een telefoon.",
+          "de": "Jede Nachricht, die die App auf dem Fernseher zeigen will, auch wenn er sie nicht zeigen kann. Schicke sie an einen Lautsprecher oder ein Handy.",
+          "sv": "Varje meddelande som appen vill visa på TV:n, även när TV:n inte kan visa det. Skicka det till en högtalare eller en telefon.",
+          "da": "Hver besked, appen vil vise på TV’et, også når TV’et ikke kan vise den. Send den til en højttaler eller en telefon.",
+          "fr": "Chaque message que l’app veut afficher sur la télé, même si la télé ne peut pas l’afficher. Envoyez-le à une enceinte ou un téléphone.",
+          "it": "Ogni messaggio che l’app vuole mostrare sulla TV, anche quando la TV non può mostrarlo. Invialo a un altoparlante o a un telefono.",
+          "es": "Cada mensaje que la app quiere mostrar en la TV, aunque la TV no pueda mostrarlo. Envíalo a un altavoz o a un teléfono."
+        },
+        "tokens": [
+          {
+            "name": "text",
+            "type": "string",
+            "title": {
+              "en": "Message",
+              "no": "Melding",
+              "nl": "Bericht",
+              "de": "Nachricht",
+              "sv": "Meddelande",
+              "da": "Besked",
+              "fr": "Message",
+              "it": "Messaggio",
+              "es": "Mensaje"
+            },
+            "example": {
+              "en": "You have 5 min left",
+              "no": "Du har 5 min igjen",
+              "nl": "Je hebt nog 5 min over",
+              "de": "Du hast noch 5 Min.",
+              "sv": "Du har 5 min kvar",
+              "da": "Du har 5 min tilbage",
+              "fr": "Il te reste 5 min",
+              "it": "Ti restano 5 min",
+              "es": "Te quedan 5 min"
+            }
+          },
+          {
+            "name": "minutes_left",
+            "type": "number",
+            "title": {
+              "en": "Minutes left",
+              "no": "Minutter igjen",
+              "nl": "Minuten over",
+              "de": "Restliche Minuten",
+              "sv": "Minuter kvar",
+              "da": "Minutter tilbage",
+              "fr": "Minutes restantes",
+              "it": "Minuti rimasti",
+              "es": "Minutos restantes"
+            },
+            "example": 25
+          },
+          {
+            "name": "minutes_used",
+            "type": "number",
+            "title": {
+              "en": "Minutes used today",
+              "no": "Minutter brukt i dag",
+              "nl": "Minuten gebruikt vandaag",
+              "de": "Heute genutzte Minuten",
+              "sv": "Minuter använda i dag",
+              "da": "Minutter brugt i dag",
+              "fr": "Minutes utilisées aujourd'hui",
+              "it": "Minuti usati oggi",
+              "es": "Minutos usados hoy"
+            },
+            "example": 35
+          }
+        ],
+        "id": "tv_message"
+      },
+      {
+        "title": {
+          "en": "The TV was turned off because time is up",
+          "no": "TV-en ble slått av fordi tiden er brukt opp",
+          "nl": "De tv is uitgezet omdat de tijd op is",
+          "de": "Der Fernseher wurde ausgeschaltet, weil die Zeit abgelaufen ist",
+          "sv": "TV:n stängdes av eftersom tiden är slut",
+          "da": "TV’et blev slukket, fordi tiden er brugt op",
+          "fr": "La télé a été éteinte car le temps est écoulé",
+          "it": "La TV è stata spenta perché il tempo è finito",
+          "es": "Se apagó la TV porque se acabó el tiempo"
+        },
+        "hint": {
+          "en": "Each time the app turns the TV off, for example when it is turned on again.",
+          "no": "Hver gang appen slår av TV-en, for eksempel når den blir slått på igjen.",
+          "nl": "Elke keer dat de app de tv uitzet, bijvoorbeeld als die weer wordt aangezet.",
+          "de": "Jedes Mal, wenn die App den Fernseher ausschaltet, etwa wenn er wieder eingeschaltet wird.",
+          "sv": "Varje gång appen stänger av TV:n, till exempel när den slås på igen.",
+          "da": "Hver gang appen slukker TV’et, for eksempel når det bliver tændt igen.",
+          "fr": "Chaque fois que l’app éteint la télé, par exemple quand elle est rallumée.",
+          "it": "Ogni volta che l’app spegne la TV, per esempio quando viene riaccesa.",
+          "es": "Cada vez que la app apaga la TV, por ejemplo cuando se vuelve a encender."
+        },
+        "tokens": [
+          {
+            "name": "minutes_left",
+            "type": "number",
+            "title": {
+              "en": "Minutes left",
+              "no": "Minutter igjen",
+              "nl": "Minuten over",
+              "de": "Restliche Minuten",
+              "sv": "Minuter kvar",
+              "da": "Minutter tilbage",
+              "fr": "Minutes restantes",
+              "it": "Minuti rimasti",
+              "es": "Minutos restantes"
+            },
+            "example": 25
+          },
+          {
+            "name": "minutes_used",
+            "type": "number",
+            "title": {
+              "en": "Minutes used today",
+              "no": "Minutter brukt i dag",
+              "nl": "Minuten gebruikt vandaag",
+              "de": "Heute genutzte Minuten",
+              "sv": "Minuter använda i dag",
+              "da": "Minutter brugt i dag",
+              "fr": "Minutes utilisées aujourd'hui",
+              "it": "Minuti usati oggi",
+              "es": "Minutos usados hoy"
+            },
+            "example": 35
+          }
+        ],
+        "id": "tv_turned_off_time_up"
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "Child mode !{{is|is not}} on",
+          "no": "Barnemodus !{{er|er ikke}} på",
+          "nl": "Kindermodus !{{staat|staat niet}} aan",
+          "de": "Kindermodus !{{ist|ist nicht}} an",
+          "sv": "Barnläget !{{är|är inte}} på",
+          "da": "Børnetilstand !{{er|er ikke}} slået til",
+          "fr": "Le mode enfant !{{est|n’est pas}} activé",
+          "it": "La modalità bambini !{{è|non è}} attiva",
+          "es": "El modo infantil !{{está|no está}} activado"
+        },
+        "id": "child_mode_is_on"
+      },
+      {
+        "title": {
+          "en": "!{{Less|Not less}} than … minutes left",
+          "no": "!{{Mindre|Ikke mindre}} enn … minutter igjen",
+          "nl": "!{{Minder|Niet minder}} dan … minuten over",
+          "de": "!{{Weniger|Nicht weniger}} als … Minuten übrig",
+          "sv": "!{{Mindre|Inte mindre}} än … minuter kvar",
+          "da": "!{{Mindre|Ikke mindre}} end … minutter tilbage",
+          "fr": "Il reste !{{moins de|au moins}} … minutes",
+          "it": "!{{Restano meno di|Restano almeno}} … minuti",
+          "es": "!{{Quedan menos de|Quedan al menos}} … minutos"
+        },
+        "titleFormatted": {
+          "en": "!{{Less|Not less}} than [[minutes]] minutes left",
+          "no": "!{{Mindre|Ikke mindre}} enn [[minutes]] minutter igjen",
+          "nl": "!{{Minder|Niet minder}} dan [[minutes]] minuten over",
+          "de": "!{{Weniger|Nicht weniger}} als [[minutes]] Minuten übrig",
+          "sv": "!{{Mindre|Inte mindre}} än [[minutes]] minuter kvar",
+          "da": "!{{Mindre|Ikke mindre}} end [[minutes]] minutter tilbage",
+          "fr": "Il reste !{{moins de|au moins}} [[minutes]] minutes",
+          "it": "!{{Restano meno di|Restano almeno}} [[minutes]] minuti",
+          "es": "!{{Quedan menos de|Quedan al menos}} [[minutes]] minutos"
+        },
+        "hint": {
+          "en": "Today's time left, whether or not Child mode is on.",
+          "no": "Tiden som er igjen i dag, uansett om Barnemodus er på.",
+          "nl": "De resterende tijd van vandaag, of Kindermodus nu aan staat of niet.",
+          "de": "Die heute verbleibende Zeit, egal ob Kindermodus an ist.",
+          "sv": "Tiden som finns kvar i dag, oavsett om barnläget är på.",
+          "da": "Den tid, der er tilbage i dag, uanset om børnetilstand er slået til.",
+          "fr": "Le temps restant aujourd’hui, que le mode enfant soit activé ou non.",
+          "it": "Il tempo rimasto oggi, che la modalità bambini sia attiva o no.",
+          "es": "El tiempo que queda hoy, esté o no activado el modo infantil."
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "minutes",
+            "min": 1,
+            "max": 240,
+            "step": 1,
+            "placeholder": {
+              "en": "Minutes",
+              "no": "Minutter",
+              "nl": "Minuten",
+              "de": "Minuten",
+              "sv": "Minuter",
+              "da": "Minutter",
+              "fr": "Minutes",
+              "it": "Minuti",
+              "es": "Minutos"
+            }
+          }
+        ],
+        "id": "less_than_minutes_left"
+      },
+      {
+        "title": {
+          "en": "TV time !{{is|is not}} up",
+          "no": "TV-tiden !{{er|er ikke}} brukt opp",
+          "nl": "De tv-tijd !{{is|is niet}} op",
+          "de": "Die Fernsehzeit !{{ist|ist nicht}} abgelaufen",
+          "sv": "TV-tiden !{{är|är inte}} slut",
+          "da": "TV-tiden !{{er|er ikke}} brugt op",
+          "fr": "Le temps de télé !{{est|n’est pas}} écoulé",
+          "it": "Il tempo davanti alla TV !{{è|non è}} finito",
+          "es": "El tiempo de TV !{{se ha|no se ha}} acabado"
+        },
+        "hint": {
+          "en": "Child mode is on and no time is left today. Always false while Child mode is off.",
+          "no": "Barnemodus er på og det er ingen tid igjen i dag. Alltid usann når Barnemodus er av.",
+          "nl": "Kindermodus staat aan en er is vandaag geen tijd meer over. Altijd onwaar als Kindermodus uit staat.",
+          "de": "Kindermodus ist an und heute ist keine Zeit mehr übrig. Immer falsch, solange Kindermodus aus ist.",
+          "sv": "Barnläget är på och ingen tid finns kvar i dag. Alltid falskt när barnläget är av.",
+          "da": "Børnetilstand er slået til, og der er ingen tid tilbage i dag. Altid falsk, når børnetilstand er slået fra.",
+          "fr": "Le mode enfant est activé et il ne reste plus de temps aujourd’hui. Toujours faux si le mode enfant est désactivé.",
+          "it": "La modalità bambini è attiva e oggi non resta più tempo. Sempre falso con la modalità bambini disattivata.",
+          "es": "El modo infantil está activado y hoy no queda tiempo. Siempre falso con el modo infantil desactivado."
+        },
+        "id": "time_is_up"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Give Extra time",
+          "no": "Gi ekstra tid",
+          "nl": "Extra tijd geven",
+          "de": "Extra Zeit geben",
+          "sv": "Ge extra tid",
+          "da": "Giv ekstra tid",
+          "fr": "Donner du temps en plus",
+          "it": "Aggiungi tempo",
+          "es": "Dar tiempo extra"
+        },
+        "titleFormatted": {
+          "en": "Give [[minutes]] minutes of Extra time",
+          "no": "Gi [[minutes]] minutter ekstra tid",
+          "nl": "Geef [[minutes]] minuten extra tijd",
+          "de": "[[minutes]] Minuten extra Zeit geben",
+          "sv": "Ge [[minutes]] minuter extra tid",
+          "da": "Giv [[minutes]] minutters ekstra tid",
+          "fr": "Donner [[minutes]] minutes en plus",
+          "it": "Aggiungi [[minutes]] minuti",
+          "es": "Dar [[minutes]] minutos de tiempo extra"
+        },
+        "hint": {
+          "en": "Adds minutes to today's quota, like + in the widget (1–240).",
+          "no": "Legger minutter til dagens kvote, som + i widgeten (1–240).",
+          "nl": "Voegt minuten toe aan de limiet van vandaag, zoals + in de widget (1–240).",
+          "de": "Fügt dem heutigen Kontingent Minuten hinzu, wie + im Widget (1–240).",
+          "sv": "Lägger till minuter i dagens kvot, som + i widgeten (1–240).",
+          "da": "Lægger minutter til dagens kvote, som + i widgetten (1–240).",
+          "fr": "Ajoute des minutes au quota du jour, comme + dans le widget (1–240).",
+          "it": "Aggiunge minuti alla quota di oggi, come + nel widget (1–240).",
+          "es": "Añade minutos a la cuota de hoy, como + en el widget (1–240)."
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "minutes",
+            "min": 1,
+            "max": 240,
+            "step": 1,
+            "placeholder": {
+              "en": "Minutes",
+              "no": "Minutter",
+              "nl": "Minuten",
+              "de": "Minuten",
+              "sv": "Minuter",
+              "da": "Minutter",
+              "fr": "Minutes",
+              "it": "Minuti",
+              "es": "Minutos"
+            }
+          }
+        ],
+        "id": "add_extra_time"
+      },
+      {
+        "title": {
+          "en": "Remove time",
+          "no": "Trekk fra tid",
+          "nl": "Tijd afhalen",
+          "de": "Zeit abziehen",
+          "sv": "Dra av tid",
+          "da": "Træk tid fra",
+          "fr": "Retirer du temps",
+          "it": "Togli tempo",
+          "es": "Quitar tiempo"
+        },
+        "titleFormatted": {
+          "en": "Remove [[minutes]] minutes",
+          "no": "Trekk fra [[minutes]] minutter",
+          "nl": "Haal [[minutes]] minuten af",
+          "de": "[[minutes]] Minuten abziehen",
+          "sv": "Dra av [[minutes]] minuter",
+          "da": "Træk [[minutes]] minutter fra",
+          "fr": "Retirer [[minutes]] minutes",
+          "it": "Togli [[minutes]] minuti",
+          "es": "Quitar [[minutes]] minutos"
+        },
+        "hint": {
+          "en": "Takes minutes off today's quota, like − in the widget (1–240). With nothing left, the TV is turned off.",
+          "no": "Trekker minutter fra dagens kvote, som − i widgeten (1–240). Er det ingenting igjen, slås TV-en av.",
+          "nl": "Haalt minuten van de limiet van vandaag af, zoals − in de widget (1–240). Is er niets over, dan gaat de tv uit.",
+          "de": "Zieht Minuten vom heutigen Kontingent ab, wie − im Widget (1–240). Ist nichts mehr übrig, geht der Fernseher aus.",
+          "sv": "Drar av minuter från dagens kvot, som − i widgeten (1–240). Finns inget kvar stängs TV:n av.",
+          "da": "Trækker minutter fra dagens kvote, som − i widgetten (1–240). Er der intet tilbage, slukkes TV’et.",
+          "fr": "Retire des minutes du quota du jour, comme − dans le widget (1–240). S’il ne reste rien, la télé s’éteint.",
+          "it": "Toglie minuti dalla quota di oggi, come − nel widget (1–240). Se non resta nulla, la TV si spegne.",
+          "es": "Quita minutos de la cuota de hoy, como − en el widget (1–240). Si no queda nada, la TV se apaga."
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "minutes",
+            "min": 1,
+            "max": 240,
+            "step": 1,
+            "placeholder": {
+              "en": "Minutes",
+              "no": "Minutter",
+              "nl": "Minuten",
+              "de": "Minuten",
+              "sv": "Minuter",
+              "da": "Minutter",
+              "fr": "Minutes",
+              "it": "Minuti",
+              "es": "Minutos"
+            }
+          }
+        ],
+        "id": "remove_time"
+      },
+      {
+        "title": {
+          "en": "Turn Child mode on or off",
+          "no": "Slå Barnemodus på eller av",
+          "nl": "Kindermodus aan- of uitzetten",
+          "de": "Kindermodus ein- oder ausschalten",
+          "sv": "Slå på eller av barnläget",
+          "da": "Slå børnetilstand til eller fra",
+          "fr": "Activer ou désactiver le mode enfant",
+          "it": "Attiva o disattiva la modalità bambini",
+          "es": "Activar o desactivar el modo infantil"
+        },
+        "titleFormatted": {
+          "en": "Turn Child mode [[state]]",
+          "no": "Slå Barnemodus [[state]]",
+          "nl": "Zet Kindermodus [[state]]",
+          "de": "Kindermodus [[state]]",
+          "sv": "Slå [[state]] barnläget",
+          "da": "Slå børnetilstand [[state]]",
+          "fr": "[[state]] le mode enfant",
+          "it": "[[state]] la modalità bambini",
+          "es": "[[state]] el modo infantil"
+        },
+        "hint": {
+          "en": "Like the switch in the widget. Turning it on with no time left turns the TV off.",
+          "no": "Som bryteren i widgeten. Slås den på uten tid igjen, slås TV-en av.",
+          "nl": "Zoals de schakelaar in de widget. Aanzetten zonder resterende tijd zet de tv uit.",
+          "de": "Wie der Schalter im Widget. Wird er ohne verbleibende Zeit eingeschaltet, geht der Fernseher aus.",
+          "sv": "Som reglaget i widgeten. Slås det på utan tid kvar stängs TV:n av.",
+          "da": "Som kontakten i widgetten. Slås den til uden tid tilbage, slukkes TV’et.",
+          "fr": "Comme l’interrupteur du widget. L’activer sans temps restant éteint la télé.",
+          "it": "Come l’interruttore del widget. Attivarla senza tempo rimasto spegne la TV.",
+          "es": "Como el interruptor del widget. Activarlo sin tiempo restante apaga la TV."
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "state",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "no": "på",
+                  "nl": "aan",
+                  "de": "einschalten",
+                  "sv": "på",
+                  "da": "til",
+                  "fr": "Activer",
+                  "it": "Attiva",
+                  "es": "Activar"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "no": "av",
+                  "nl": "uit",
+                  "de": "ausschalten",
+                  "sv": "av",
+                  "da": "fra",
+                  "fr": "Désactiver",
+                  "it": "Disattiva",
+                  "es": "Desactivar"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set_child_mode"
+      }
+    ]
   },
   "widgets": {
     "barnemodus": {

@@ -2,7 +2,7 @@
 
 A [Homey Pro](https://homey.app) app that gives your TV a daily time quota, controlled from your phone. Works with **any TV that is already a device in Homey**, and with **LG webOS** TVs directly by IP address. More brands can be added as TV drivers, and contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-When Child mode is on, the app counts how long the TV is switched on. When the Quota is used up, the TV is turned off and stays locked until a parent gives extra time or turns Child mode off. A dashboard widget shows the time left and lets both parents turn Child mode on or off, give or remove time, and see how much has been used today and this week. The app and its settings page are available in English, Norwegian, Dutch, German, Swedish, Danish, French, Italian and Spanish.
+When Child mode is on, the app counts how long the TV is switched on. When the Quota is used up, the TV is turned off and stays locked until a parent gives extra time or turns Child mode off. A dashboard widget shows the time left and lets both parents turn Child mode on or off, give or remove time, and see how much has been used today and this week. Flow cards let Homey Flows do the same and react when time runs low or is up. The app and its settings page are available in English, Norwegian, Dutch, German, Swedish, Danish, French, Italian and Spanish.
 
 The project's shared vocabulary is defined in [GLOSSARY.md](GLOSSARY.md), and the main design decisions are in [docs/adr](docs/adr).
 
@@ -57,6 +57,31 @@ Nothing contacts the TV until you press **Link to TV**, so never pressing it is 
 3. In the app's settings, choose **By IP address (LG webOS)**, enter the IP address and MAC address, and press "Allow" on the TV.
 
 This talks to the TV itself, so the power state is immediate and Wake-on-LAN works, and the app shows messages on the TV without a separate link (the **Show messages on the TV** switch is there too). It does not need the TV to be a device in Homey.
+
+## Flows
+
+The app has its own Flow cards, so Homey Flows can control it and react to it. They are app cards: there is no device to pick, because the app controls one Connected TV.
+
+| | Card | Notes |
+| --- | --- | --- |
+| Then | Turn Child mode [on/off] | Exactly like the switch in the widget, including the message on the TV |
+| Then | Give [N] minutes of Extra time | Like + in the widget, 1–240 minutes |
+| Then | Remove [N] minutes | Like − in the widget, 1–240 minutes. With nothing left, the TV is turned off |
+| And | Child mode is (not) on | |
+| And | TV time is (not) up | True while the Lock is engaged |
+| And | (Not) less than [N] minutes left | Today's time left, whether or not Child mode is on |
+| When | Child mode was turned on / off | By a parent, a Flow, the set time or the new day |
+| When | [N] minutes of TV time left | While the TV is on in Child mode. Not when a parent removes time past N |
+| When | TV time is up | Once, when the time runs out in Child mode, whether the TV is on or off |
+| When | The TV was turned off because time is up | Each time the app turns the TV off, for example when a child turns it on again |
+| When | A message for the TV | Every message the app wants to show on the TV, with its text, also when the TV cannot show it |
+
+Every **When** card has the tokens *Minutes left* and *Minutes used today*, and **A message for the TV** also has *Message*. The triggers only report: a Flow that fails never affects counting or the Lock, and nothing that happened while the app was not running is reported afterwards. The design is in [ADR 0005](docs/adr/0005-flow-cards-act-like-a-parent-and-only-report.md).
+
+Two examples:
+
+- **Child mode on when everyone has left.** *When* the last person left home, *Then* Turn Child mode on.
+- **Messages for a TV that cannot show them,** such as a Samsung or a Sony. *When* A message for the TV, *Then* let a speaker say the *Message* token, or send it as a push notification. The text is the same as an LG TV would show, in Homey's language.
 
 ## Why this app asks for full access to Homey
 

@@ -5,6 +5,8 @@ import {
   addExtra,
   applyAutoOn,
   applyDayRolloverOff,
+  crossedAnyMinute,
+  crossedMinutesLeft,
   dayKey,
   emptyState,
   isLocked,
@@ -289,4 +291,29 @@ test('Child mode is turned off at the chosen start time of the Quota day', () =>
   assert.equal(s.childMode, true);
   assert.equal(applyDayRolloverOff(s, Date.parse('2026-10-26T06:00:00Z'), late), true); // 07:00 local
   assert.equal(s.childMode, false);
+});
+
+test('crossedMinutesLeft is true only when the time left goes from above N to N or below', () => {
+  assert.equal(crossedMinutesLeft(5 * MIN + 1, 5 * MIN, 5), true);
+  assert.equal(crossedMinutesLeft(5 * MIN + 1, 4 * MIN, 5), true);
+  assert.equal(crossedMinutesLeft(5 * MIN, 4 * MIN, 5), false, 'already at N before');
+  assert.equal(crossedMinutesLeft(6 * MIN, 5 * MIN + 1, 5), false, 'not there yet');
+  assert.equal(crossedMinutesLeft(4 * MIN, 5 * MIN + 1, 5), false, 'going up');
+});
+
+test('crossedAnyMinute finds a crossed whole minute from 1 upwards, and ignores 0', () => {
+  assert.equal(crossedAnyMinute(10 * MIN + 2_000, 10 * MIN - 3_000), true);
+  assert.equal(crossedAnyMinute(10 * MIN - 2_000, 10 * MIN - 7_000), false, 'within one minute');
+  assert.equal(crossedAnyMinute(MIN + 2_000, -3_000), true, 'past 1 and 0 at once');
+  assert.equal(crossedAnyMinute(30_000, -5_000), false, '0 alone is "time is up", not a countdown');
+});
+
+test('tick says how far it counted, and nothing when it did not count', () => {
+  const s = emptyState();
+  setChildMode(s, true);
+  tick(s, MON_16, true, cfg);
+  assert.deepEqual(tick(s, MON_16 + 5_000, true, cfg).counted, { beforeMs: 30 * MIN, afterMs: 30 * MIN - 5_000 });
+  assert.equal(tick(s, MON_16 + 10_000, false, cfg).counted, null, 'TV off');
+  setChildMode(s, false);
+  assert.equal(tick(s, MON_16 + 15_000, true, cfg).counted, null, 'Child mode off');
 });

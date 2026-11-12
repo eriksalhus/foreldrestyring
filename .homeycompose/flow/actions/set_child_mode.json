@@ -1,0 +1,71 @@
+{
+  "title": {
+    "en": "Turn Child mode on or off",
+    "no": "Slå Barnemodus på eller av",
+    "nl": "Kindermodus aan- of uitzetten",
+    "de": "Kindermodus ein- oder ausschalten",
+    "sv": "Slå på eller av barnläget",
+    "da": "Slå børnetilstand til eller fra",
+    "fr": "Activer ou désactiver le mode enfant",
+    "it": "Attiva o disattiva la modalità bambini",
+    "es": "Activar o desactivar el modo infantil"
+  },
+  "titleFormatted": {
+    "en": "Turn Child mode [[state]]",
+    "no": "Slå Barnemodus [[state]]",
+    "nl": "Zet Kindermodus [[state]]",
+    "de": "Kindermodus [[state]]",
+    "sv": "Slå [[state]] barnläget",
+    "da": "Slå børnetilstand [[state]]",
+    "fr": "[[state]] le mode enfant",
+    "it": "[[state]] la modalità bambini",
+    "es": "[[state]] el modo infantil"
+  },
+  "hint": {
+    "en": "Like the switch in the widget. Turning it on with no time left turns the TV off.",
+    "no": "Som bryteren i widgeten. Slås den på uten tid igjen, slås TV-en av.",
+    "nl": "Zoals de schakelaar in de widget. Aanzetten zonder resterende tijd zet de tv uit.",
+    "de": "Wie der Schalter im Widget. Wird er ohne verbleibende Zeit eingeschaltet, geht der Fernseher aus.",
+    "sv": "Som reglaget i widgeten. Slås det på utan tid kvar stängs TV:n av.",
+    "da": "Som kontakten i widgetten. Slås den til uden tid tilbage, slukkes TV’et.",
+    "fr": "Comme l’interrupteur du widget. L’activer sans temps restant éteint la télé.",
+    "it": "Come l’interruttore del widget. Attivarla senza tempo rimasto spegne la TV.",
+    "es": "Como el interruptor del widget. Activarlo sin tiempo restante apaga la TV."
+  },
+  "args": [
+    {
+      "type": "dropdown",
+      "name": "state",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "on",
+            "no": "på",
+            "nl": "aan",
+            "de": "einschalten",
+            "sv": "på",
+            "da": "til",
+            "fr": "Activer",
+            "it": "Attiva",
+            "es": "Activar"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "off",
+            "no": "av",
+            "nl": "uit",
+            "de": "ausschalten",
+            "sv": "av",
+            "da": "fra",
+            "fr": "Désactiver",
+            "it": "Disattiva",
+            "es": "Desactivar"
+          }
+        }
+      ]
+    }
+  ]
+}
