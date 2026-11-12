@@ -1,16 +1,39 @@
 {
   "toast": {
     "minutesLeft": "Je hebt nog __minutes__ min over",
-    "timeUp": "De tv-tijd is op"
+    "timeUp": "De tv-tijd is op",
+    "childModeOn": "Kindermodus staat aan. Je hebt nog __minutes__ min over",
+    "childModeOff": "Kindermodus staat uit",
+    "test": "Testbericht van Tv-tijdbeheer"
   },
   "error": {
-    "invalidMinutes": "Ongeldig aantal minuten"
+    "invalidMinutes": "Ongeldig aantal minuten",
+    "cannotLink": "Vul eerst het IP-adres van de tv in",
+    "testFailed": "Het bericht kon niet worden getoond. Controleer of de tv aan staat en berichten zijn ingeschakeld.",
+    "testIgnored": "De tv is verbonden, maar toonde het bericht niet. Haal de stekker van de tv een minuut uit het stopcontact en probeer het opnieuw."
   },
   "settings": {
     "title": "Tv-tijdbeheer",
-    "sectionTv": "Tv-verbinding",
-    "sectionTvSub": "Zo vindt de app je tv",
-    "tvBrand": "Tv-merk",
+    "sectionTv": "Gekoppelde tv",
+    "sectionTvSub": "Welke tv de app bedient",
+    "tvChoose": "Tv",
+    "byIpAddress": "Via IP-adres (__name__)",
+    "noHomeyTvs": "Geen tv's gevonden in Homey. Tv's die je aan Homey toevoegt, verschijnen in de lijst.",
+    "tvGone": "Niet gevonden in Homey",
+    "messages": "Berichten op de tv tonen",
+    "messagesHint": "“Minuten over” en “tv-tijd is om” verschijnen op het tv-scherm.",
+    "messagesUnsupported": "Berichten op het scherm zijn nog niet beschikbaar voor deze tv. Daarvoor is een LG-tv nodig die via een ondersteunde LG-app aan Homey is toegevoegd (deze tv komt van “__app__”).",
+    "testMessage": "Testbericht sturen",
+    "testSent": "Verstuurd. Kijk op de tv.",
+    "linkPreface": "Voor berichten is eenmalig een koppeling tussen deze app en de tv nodig.",
+    "link": "Koppelen met tv",
+    "unlink": "Ontkoppelen",
+    "linkState": {
+      "connecting": "Verbinden …",
+      "prompt": "Druk op “Toestaan” op de tv",
+      "linked": "Gekoppeld met de tv",
+      "unreachable": "Kan de tv niet bereiken. Zet hem aan en controleer het IP-adres."
+    },
     "wake": "Tv inschakelen",
     "sectionQuota": "Tijdlimiet",
     "sectionQuotaSub": "Minuten tv-tijd per dag",
@@ -41,7 +64,8 @@
       "connecting": "Verbinden …",
       "prompt": "Druk op “Toestaan” op de tv",
       "connected": "Verbonden",
-      "offline": "Tv niet beschikbaar"
+      "offline": "Tv niet beschikbaar",
+      "missing": "De gekozen tv bestaat niet meer in Homey"
     }
   },
   "widget": {

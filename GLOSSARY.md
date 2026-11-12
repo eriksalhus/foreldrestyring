@@ -1,6 +1,6 @@
 # TV Parental Control
 
-A phone-controlled time limit for the children's use of the family TV (today LG webOS; more brands can be added as TV drivers).
+A phone-controlled time limit for the children's use of the family TV (any TV that is a device in Homey, or an LG webOS TV by IP address; more brands can be added as TV drivers).
 
 This is the project's shared language. Use these words in code, tests, docs and issues. The user interface shows them in nine languages; the Norwegian term (the project's original language) is given for each, so that `locales/no.json` stays recognisable.
 
@@ -31,12 +31,36 @@ Minutes a Parent adds to today's Quota. It only applies to the current Quota day
 _Avoid_: Bonus, postponement
 
 **Remove time** (*Trekk av tid*; `reduceTime` in code):
-Minutes a Parent takes away from today's Quota. Never more than what is left is removed, and when the remainder reaches 0 the Lock engages, so the TV shows "time is up" and is turned off. Only applies to the current Quota day.
+Minutes a Parent takes away from today's Quota. Never more than what is left is removed, and when the remainder reaches 0 the Lock engages, so the TV is turned off (with a "time is up" message where the TV can show one). Only applies to the current Quota day.
 _Avoid_: Punishment, cut
 
+**Connected TV** (*Tilkoblet TV*):
+The one TV the app controls, chosen in the settings section of the same name. It is either a Homey device or reached by a Direct connection.
+_Avoid_: Device, screen, set
+
+**Homey device** (*Homey-enhet*):
+A TV that already exists in Homey, added there through another app. The app reads its on/off state and switches it off and on through that device, so it works with any brand Homey supports.
+_Avoid_: Paired TV
+
+**Direct connection** (*Direkte tilkobling*):
+The app talks to the TV itself by IP address, without Homey knowing the TV as a device. LG webOS today.
+_Avoid_: Manual connection, IP mode
+
 **TV driver** (*TV-driver*):
-The code that connects the app to one TV brand. It knows how to reach the TV, whether it is on, and how to show it a message and turn it off. Everything else in the app is the same for every brand.
+The code that connects the app to a Connected TV. It knows whether the TV is on and how to turn it off, and may also be able to turn it on or show it a message. Everything else in the app is the same for every TV driver. Not to be confused with a Homey driver, which is Homey's word for the code behind a device.
 _Avoid_: Plugin, adapter, integration
+
+**On-screen message** (*Skjermmelding*; `toast` in code):
+A short text the app shows on the Connected TV: the minutes left, a welcome when the TV is switched on, that Child mode was switched on or off, and "time is up". It is a supplement and never affects the Quota or the Lock. A Parent can switch it off.
+_Avoid_: Notification, popup, alert
+
+**Message provider** (*Meldingsleverandør*):
+The code that can show On-screen messages on one kind of TV when the Connected TV is a Homey device, which cannot show them by itself. LG webOS today. A Direct connection shows messages through its own TV driver and needs no message provider.
+_Avoid_: Notifier, messenger
+
+**Link** (*Kobling*):
+The one-time approval, "Allow" on the TV, that lets the app show On-screen messages on a Homey device. A Parent presses Link on the settings page, and until then nothing contacts the TV. A Direct connection is always linked.
+_Avoid_: Pair, authorise
 
 **The Lock** (*Låsen*):
 The state that occurs when the Quota is used up while Child mode is on. The TV is turned off as soon as it is on, until a Parent gives Extra time or turns Child mode off, or until the next Quota day begins.

@@ -1,6 +1,6 @@
 {
   "name": "foreldrestyring",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "private": true,
   "description": "Phone-controlled daily TV time quota for your TV, as a Homey Pro app",
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "homey-api": "^3.21.2",
     "homey-log": "^2.1.2",
     "lgtv2": "^2.1.0"
   },

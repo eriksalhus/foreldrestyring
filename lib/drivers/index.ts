@@ -1,11 +1,13 @@
+import { homeyDevice } from './homey-device.ts';
 import { lgWebos } from './lg-webos.ts';
 import type { DriverField, LocalizedText, TvDriver } from './types.ts';
 
 /**
  * Every TV brand the app can control. To add one: write a driver (docs/adding-a-tv.md)
- * and put it here. The first entry is the default for new installations.
+ * and put it here. The first entry is the default for new installations. Existing installations keep
+ * the driver stored in their settings, so adding a driver here never changes their TV.
  */
-export const DRIVERS: readonly TvDriver[] = [lgWebos];
+export const DRIVERS: readonly TvDriver[] = [homeyDevice, lgWebos];
 
 export const DEFAULT_DRIVER_ID = DRIVERS[0].id;
 
@@ -21,7 +23,7 @@ export function resolveText(text: LocalizedText | undefined, language: string): 
 }
 
 /** Keeps only the driver's own fields, as trimmed strings. Anything else the client sent is dropped. */
-export function sanitizeConfig(driver: TvDriver, raw: unknown): Record<string, string> {
+export function sanitizeConfig(driver: { fields: readonly DriverField[] }, raw: unknown): Record<string, string> {
   const source = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
   const config: Record<string, string> = {};
   for (const field of driver.fields) {
@@ -32,8 +34,16 @@ export function sanitizeConfig(driver: TvDriver, raw: unknown): Record<string, s
 }
 
 /** True when every required field has a value. */
-export function isConfigured(driver: TvDriver, config: Readonly<Record<string, string>>): boolean {
+export function isConfigured(driver: { fields: readonly DriverField[] }, config: Readonly<Record<string, string>>): boolean {
   return driver.fields.every((f) => !f.required || Boolean(config[f.key]));
+}
+
+export interface FieldDescription extends Required<Pick<DriverField, 'key' | 'required'>> {
+  kind: NonNullable<DriverField['kind']>;
+  label: string;
+  hint: string;
+  placeholder: string;
+  inputMode: NonNullable<DriverField['inputMode']>;
 }
 
 export interface DriverDescription {
@@ -41,28 +51,31 @@ export interface DriverDescription {
   name: string;
   hint: string;
   canWake: boolean;
-  fields: Array<Required<Pick<DriverField, 'key' | 'required'>> & {
-    label: string;
-    hint: string;
-    placeholder: string;
-    inputMode: NonNullable<DriverField['inputMode']>;
-  }>;
+  canToast: boolean;
+  fields: FieldDescription[];
 }
 
-/** What the settings page needs to draw the brand picker and each driver's fields, in the user's language. */
+/** The fields of a TV driver or message provider as the settings page draws them, in the user's language. */
+export function describeFields(fields: readonly DriverField[], language: string): FieldDescription[] {
+  return fields.map((f) => ({
+    key: f.key,
+    kind: f.kind ?? 'text',
+    required: Boolean(f.required),
+    label: resolveText(f.label, language),
+    hint: resolveText(f.hint, language),
+    placeholder: f.placeholder ?? '',
+    inputMode: f.inputMode ?? 'text',
+  }));
+}
+
+/** What the settings page needs to draw the Connected TV list and each driver's fields, in the user's language. */
 export function describeDrivers(language: string, drivers: readonly TvDriver[] = DRIVERS): DriverDescription[] {
   return drivers.map((d) => ({
     id: d.id,
     name: d.name,
     hint: resolveText(d.hint, language),
     canWake: Boolean(d.canWake),
-    fields: d.fields.map((f) => ({
-      key: f.key,
-      required: Boolean(f.required),
-      label: resolveText(f.label, language),
-      hint: resolveText(f.hint, language),
-      placeholder: f.placeholder ?? '',
-      inputMode: f.inputMode ?? 'text',
-    })),
+    canToast: Boolean(d.canToast),
+    fields: describeFields(d.fields, language),
   }));
 }
