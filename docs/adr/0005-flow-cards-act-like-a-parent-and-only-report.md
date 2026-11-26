@@ -19,7 +19,7 @@ All cards are **app cards** with no device argument, because the app has one Con
 | Kind | Card | Behaviour |
 | --- | --- | --- |
 | Action | Turn Child mode [on/off] | As the widget switch, including the On-screen message and the Lock when nothing is left |
-| Action | Give [N] minutes of Extra time | As the widget's +, 1–240 |
+| Action | Give [N] minutes of extra time | As the widget's +, 1–240 |
 | Action | Remove [N] minutes | As the widget's −, 1–240 |
 | Condition | Child mode is on | Invertible |
 | Condition | TV time is up | Exactly the Lock, so always false while Child mode is off |

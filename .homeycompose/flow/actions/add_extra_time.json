@@ -1,6 +1,6 @@
 {
   "title": {
-    "en": "Give Extra time",
+    "en": "Give extra time",
     "no": "Gi ekstra tid",
     "nl": "Extra tijd geven",
     "de": "Extra Zeit geben",
@@ -11,7 +11,7 @@
     "es": "Dar tiempo extra"
   },
   "titleFormatted": {
-    "en": "Give [[minutes]] minutes of Extra time",
+    "en": "Give [[minutes]] minutes of extra time",
     "no": "Gi [[minutes]] minutter ekstra tid",
     "nl": "Geef [[minutes]] minuten extra tijd",
     "de": "[[minutes]] Minuten extra Zeit geben",
