@@ -49,7 +49,7 @@ The **Update Homey App Version** workflow on GitHub does the bump and the change
 
 - **Do not change the app id** (`no.salhus.foreldrestyring`) or the widget id (`barnemodus`) after publishing. Users' installs and dashboards depend on them.
 - **Brand names.** The app name does not contain a TV brand, and the store text says it is not affiliated with LG Electronics. Keep it that way when adding drivers: the app name stays generic, and brands appear only in the description of what is supported.
-- **Privacy.** The app talks only to the TV on the local network. The one exception is error reports to Sentry through `homey-log`: the error message and stack trace, tagged with the app version, Homey version and Homey ID. Breadcrumbs are off, so the app log is not sent. The store text says this; update it if anything more is ever sent.
+- **Privacy.** The app talks only to the TV on the local network. The one exception is error reports to Sentry through `homey-log`: the error message and stack trace, tagged with the app version, Homey version and Homey ID. Breadcrumbs are off, so the app log is not sent. The short store readme no longer spells this out: the full disclosure is in `docs/community-topic-draft.md`, for the Homey Community topic. Update it there if anything more is ever sent.
 - **Error reports need `env.json`.** `homey-log` reads the Sentry DSN from `HOMEY_LOG_URL` in `env.json`, which is not in git. Without it, nothing is sent. Create it before a local `homey app publish` (the workflow creates it from the `HOMEY_LOG_URL` secret):
 
   ```json
