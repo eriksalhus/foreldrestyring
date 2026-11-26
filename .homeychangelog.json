@@ -14,5 +14,9 @@
   "1.0.1": {
     "en": "New Flow cards: Flows can turn Child mode on or off, give or remove time, and check whether Child mode is on, whether time is up or how many minutes are left. They can react when Child mode is switched on or off, when a chosen number of minutes is left, when time is up, when the TV is turned off because time is up, and to every message for the TV, so a TV of any brand can have its messages read aloud on a speaker or sent to a phone.",
     "no": "Nye Flow-kort: Flows kan slå Barnemodus på eller av, gi eller trekke fra tid, og sjekke om Barnemodus er på, om tiden er brukt opp eller hvor mange minutter som er igjen. De kan reagere når Barnemodus slås på eller av, når et valgt antall minutter er igjen, når tiden er brukt opp, når TV-en slås av fordi tiden er brukt opp, og på hver melding til TV-en, slik at en TV av hvilket som helst merke kan få meldingene lest opp på en høyttaler eller sendt til en telefon."
+  },
+  "1.0.2": {
+    "en": "Smaller polish for the App Store page: a shorter description, a new app image and a tidier name for the “Give extra time” Flow card.",
+    "no": "Litt finpuss av App Store-siden: kortere beskrivelse, nytt appbilde og penere navn på Flow-kortet «Gi ekstra tid»."
   }
 }
