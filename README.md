@@ -65,7 +65,7 @@ The app has its own Flow cards, so Homey Flows can control it and react to it. T
 | | Card | Notes |
 | --- | --- | --- |
 | Then | Turn Child mode [on/off] | Exactly like the switch in the widget, including the message on the TV |
-| Then | Give [N] minutes of Extra time | Like + in the widget, 1–240 minutes |
+| Then | Give [N] minutes of extra time | Like + in the widget, 1–240 minutes |
 | Then | Remove [N] minutes | Like − in the widget, 1–240 minutes. With nothing left, the TV is turned off |
 | And | Child mode is (not) on | |
 | And | TV time is (not) up | True while the Lock is engaged |
